@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mijn Vondsten App</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --accent-color: #d4af37; /* Goud */
+            --accent-blue: #4a90e2;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+            padding-bottom: 60px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--accent-color);
+        }
+
+        /* Formulier styling */
+        .form-container {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #555;
+            background-color: #1a1a1a;
+            color: white;
+            box-sizing: border-box;
+            font-size: 16px; /* Voorkomt inzoomen op iPhone */
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent-color);
+            color: black;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        button.gps-btn {
+            background-color: var(--accent-blue);
+            color: white;
+        }
+
+        /* Mapjes / Categorie Tabs */
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            padding: 10px 18px;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid #444;
+            font-size: 14px;
+        }
+
+        .tab.active {
+            background-color: var(--accent-color);
+            color: black;
+            font-weight: bold;
+        }
+
+        /* Vondsten Lijst / Kaarten */
+        .vondst-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .vondst-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .vondst-meta {
+            font-size: 14px;
+            color: #ccc;
+            margin: 5px 0;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .card-img {
+            max-width: 100%;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🪙 Mijn Vondsten Log</h1>
+
+    <!-- FORMULIER OM VONDST TOE TE VOEGEN -->
+    <div class="form-container">
+        <h2>Nieuwe Vondst</h2>
+        
+        <div class="form-group">
+            <label for="categorie">Categorie (Mapje)</label>
+            <select id="categorie">
+                <option value="Munten">🪙 Munten</option>
+                <option value="Gespen">🔍 Gespen & Knopen</option>
+                <option value="Militaria">🛡️ Militaria</option>
+                <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
+                <option value="Overig">🏺 Overig / Keramiek</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="titel">Beschrijving / Naam</label>
+            <input type="text" id="titel" placeholder="Bijv. Romeinse denarius, koperen knoop...">
+        </div>
+
+        <div class="form-group">
+            <label for="datering">Vermoedelijke Periode</label>
+            <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr., Middeleeuws...">
+        </div>
+
+        <div class="form-group">
+            <label for="locatie">GPS Coördinaten</label>
+            <input type="text" id="locatie" placeholder="Klik op de blauwe knop hieronder" readonly>
+            <button type="button" class="gps-btn" onclick="haalGPS() font-size:14px;">📍 Leg Huidige GPS Vast</button>
+        </div>
+
+        <div class="form-group">
+            <label for="foto">Foto nemen</label>
+            <input type="file" id="foto" accept="image/*" onchange="previewFoto(event)">
+            <img id="img-preview" class="preview-img" alt="Voorbeeld">
+        </div>
+
+        <button onclick="slaVondstOp()">Vondst Opslaan</button>
+    </div>
+
+    <!-- MAPJES / TABS OM TE FILTEREN -->
+    <h2>Mijn Verzameling</h2>
+    <div class="tabs">
+        <div class="tab active" onclick="filterCategorie('Alles')">Alles</div>
+        <div class="tab" onclick="filterCategorie('Munten')">🪙 Munten</div>
+        <div class="tab" onclick="filterCategorie('Gespen')">🔍 Gespen</div>
+        <div class="tab" onclick="filterCategorie('Militaria')">🛡️ Militaria</div>
+        <div class="tab" onclick="filterCategorie('Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
+        <div class="tab" onclick="filterCategorie('Overig')">🏺 Overig</div>
+    </div>
+
+    <!-- HIER KOMEN DE OPGESLAGEN VONDSTEN -->
+    <div id="vondsten-lijst"></div>
+
+    <script>
+        let fotoDataUrl = "";
+
+        // 1. GPS Functie
+        function haalGPS() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    document.getElementById('locatie').value = 
+                        position.coords.latitude.toFixed(6) + ", " + position.coords.longitude.toFixed(6);
+                }, function() {
+                    alert("Kan GPS-locatie niet ophalen. Controleer je instellingen.");
+                });
+            } else {
+                alert("GPS wordt niet ondersteund door deze browser.");
+            }
+        }
+
+        // 2. Foto Preview Functie
+        function previewFoto(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('img-preview');
+                preview.src = reader.result;
+                preview.style.display = 'block';
+                fotoDataUrl = reader.result; // Slaat de foto tijdelijk op
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // 3. Vondst Opslaan in Lokale Geheugen (LocalStorage)
+        function slaVondstOp() {
+            const categorie = document.getElementById('categorie').value;
+            const titel = document.getElementById('titel').value;
+            const datering = document.getElementById('datering').value;
+            const locatie = document.getElementById('locatie').value;
+
+            if(!titel) { alert("Vul tenminste een beschrijving in."); return; }
+
+            const nieuweVondst = {
+                id: Date.now(),
+                categorie, titel, datering, locatie, foto: fotoDataUrl
+            };
+
+            let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            huidigeVondsten.push(nieuweVondst);
+            localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
+
+            // Formulier resetten
+            document.getElementById('titel').value = "";
+            document.getElementById('datering').value = "";
+            document.getElementById('locatie').value = "";
+            document.getElementById('img-preview').style.display = 'none';
+            fotoDataUrl = "";
+
+            alert("Vondst succesvol opgeslagen!");
+            toonVondsten();
+        }
+
+        // 4. Vondsten Tonen en Filteren per Mapje
+        function toonVondsten(filter = 'Alles') {
+            const lijst = document.getElementById('vondsten-lijst');
+            lijst.innerHTML = "";
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+
+            huidigeVondsten.forEach(vondst => {
+                if (filter !== 'Alles' && vondst.categorie !== filter) return;
+
+                const card = document.createElement('div');
+                card.className = 'vondst-card';
+                card.innerHTML = `
+                    <div class="vondst-header">
+                        <span>${vondst.titel}</span>
+                        <span style="color:var(--accent-color); font-size:12px;">${vondst.categorie}</span>
+                    </div>
+                    <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
+                    <div class="vondst-meta">📍 <b>GPS:</b> ${vondst.locatie || 'Niet vastgelegd'}</div>
+                    ${vondst.foto ? `<img src="${vondst.foto}" class="card-img">` : ''}
+                `;
+                lijst.appendChild(card);
+            });
+
+            if(lijst.innerHTML === "") {
+                lijst.innerHTML = "<p style='text-align:center; color:#888;'>Nieuwsgierig... Nog geen vondsten in dit mapje!</p>";
+            }
+        }
+
+        // Tab wisselen styling
+        function filterCategorie(cat) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            toonVondsten(cat);
+        }
+
+        // Starten met tonen van alle vondsten als de app opstart
+        window.onload = function() { toonVondsten(); };
+    </script>
+</body>
+</html>
