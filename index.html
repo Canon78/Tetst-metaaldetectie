@@ -33,26 +33,10 @@
             color: var(--accent-color);
         }
 
-        /* Grote actieknop bovenaan */
-        .scroll-to-form-btn {
-            background-color: var(--accent-color);
-            color: black;
-            font-weight: bold;
-            font-size: 18px;
-            padding: 16px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
-        }
-
         .form-container {
             background-color: var(--card-bg);
             padding: 15px;
             border-radius: 10px;
-            margin-top: 30px;
             margin-bottom: 20px;
             border: 1px solid #444;
         }
@@ -84,6 +68,7 @@
             resize: vertical;
         }
 
+        /* Snelknoppen voor datering */
         .quick-tags {
             display: flex;
             flex-wrap: wrap;
@@ -260,14 +245,14 @@
             width: 100%;
             height: 350px;
             border-radius: 10px;
-            margin-top: 10px;
-            margin-bottom: 25px;
+            margin-top: 15px;
             border: 2px solid var(--accent-color);
             z-index: 1;
         }
 
         .leaflet-popup-content { color: #000000 !important; }
 
+        /* LIGHTBOX & INFO POP-UP STYLING */
         .lightbox {
             display: none;
             position: fixed;
@@ -335,26 +320,8 @@
 
     <h1>🪙 Mijn Vondsten Log</h1>
 
-    <button type="button" class="scroll-to-form-btn" onclick="scroleNaarFormulier()">➕ Nieuwe Vondst Toevoegen</button>
-
-    <h2>🗺️ Mijn Vondstenkaart</h2>
-    <div id="map"></div>
-
-    <h2>Mijn Verzameling</h2>
-    <div class="tabs">
-        <div class="tab active" onclick="filterCategorie(event, 'Alles')">Alles</div>
-        <div class="tab" onclick="filterCategorie(event, 'Munten')">🪙 Munten</div>
-        <div class="tab" onclick="filterCategorie(event, 'Gespen')">🔍 Gespen</div>
-        <div class="tab" onclick="filterCategorie(event, 'Militaria')">🛡️ Militaria</div>
-        <div class="tab" onclick="filterCategorie(event, 'Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
-        <div class="tab" onclick="filterCategorie(event, 'Overig')">🏺 Overig</div>
-    </div>
-
-    <div id="vondsten-lijst"></div>
-
-
-    <div class="form-container" id="invoer-formulier">
-        <h2 id="form-titel">Nieuwe Vondst Invoeren</h2>
+    <div class="form-container">
+        <h2 id="form-titel">Nieuwe Vondst</h2>
         <input type="hidden" id="bewerk-id" value="">
         
         <div class="form-group">
@@ -427,6 +394,21 @@
         <button id="annuleer-btn" style="display:none; background-color:#555; color:white;" onclick="resetFormulier()">Annuleer Bewerken</button>
     </div>
 
+    <h2>🗺️ Mijn Vondstenkaart</h2>
+    <div id="map"></div>
+
+    <h2>Mijn Verzameling</h2>
+    <div class="tabs">
+        <div class="tab active" onclick="filterCategorie(event, 'Alles')">Alles</div>
+        <div class="tab" onclick="filterCategorie(event, 'Munten')">🪙 Munten</div>
+        <div class="tab" onclick="filterCategorie(event, 'Gespen')">🔍 Gespen</div>
+        <div class="tab" onclick="filterCategorie(event, 'Militaria')">🛡️ Militaria</div>
+        <div class="tab" onclick="filterCategorie(event, 'Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
+        <div class="tab" onclick="filterCategorie(event, 'Overig')">🏺 Overig</div>
+    </div>
+
+    <div id="vondsten-lijst"></div>
+
     <button class="excel-btn" onclick="exporteerNaarCSV()">📥 Exporteer Vondsten naar Excel (CSV)</button>
     <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Volledig Wissen</button>
 
@@ -453,15 +435,6 @@
             }).addTo(map);
             markerGroup = L.layerGroup().addTo(map);
             updateKaartPinnetjes();
-        }
-
-        // Automatische scroll-functies voor gebruiksgemak
-        function scroleNaarFormulier() {
-            document.getElementById('invoer-formulier').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function scroleNaarBoven() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function setDatering(waarde) {
@@ -562,7 +535,6 @@
                 resetFormulier();
                 toonVondsten();
                 updateKaartPinnetjes();
-                scroleNaarBoven(); // Na opslaan direct weer naar je kaart/lijst springen
             } catch (e) {
                 alert("⚠️ Geheugen vol. Exporteer je data en wis oude items.");
             }
@@ -580,6 +552,215 @@
             document.getElementById('img-preview1').style.display = 'none';
             document.getElementById('img-preview2').style.display = 'none';
             
-            document.getElementById('form-titel').innerText = "Nieuwe Vondst Invoeren";
+            document.getElementById('form-titel').innerText = "Nieuwe Vondst";
             document.getElementById('opslaan-btn').innerText = "Vondst Opslaan";
-            document.getElementById
+            document.getElementById('annuleer-btn').style.display = 'none';
+            
+            foto1DataUrl = "";
+            foto2DataUrl = "";
+        }
+
+        function bewerkVondst(id) {
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            const vondst = huidigeVondsten.find(v => v.id == id);
+            
+            if (vondst) {
+                document.getElementById('categorie').value = vondst.categorie;
+                document.getElementById('materiaal').value = vondst.materiaal || "Onbekend";
+                document.getElementById('titel').value = vondst.titel;
+                document.getElementById('datering').value = vondst.datering || "";
+                document.getElementById('locatie').value = vondst.locatie || "";
+                document.getElementById('info').value = vondst.info || "";
+                document.getElementById('bewerk-id').value = vondst.id;
+
+                if (vondst.foto1) {
+                    document.getElementById('img-preview1').src = vondst.foto1;
+                    document.getElementById('img-preview1').style.display = 'block';
+                    foto1DataUrl = vondst.foto1;
+                }
+                if (vondst.foto2) {
+                    document.getElementById('img-preview2').src = vondst.foto2;
+                    document.getElementById('img-preview2').style.display = 'block';
+                    foto2DataUrl = vondst.foto2;
+                }
+
+                document.getElementById('form-titel').innerText = "✏️ Vondst Bewerken";
+                document.getElementById('opslaan-btn').innerText = "Wijzigingen Opslaan";
+                document.getElementById('annuleer-btn').style.display = 'block';
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function verwijderVondst(id) {
+            if (confirm("Weet je zeker dat je deze specifieke vondst wilt verwijderen?")) {
+                let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+                huidigeVondsten = huidigeVondsten.filter(v => v.id != id);
+                localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
+                
+                toonVondsten();
+                updateKaartPinnetjes();
+            }
+        }
+
+        function updateKaartPinnetjes() {
+            markerGroup.clearLayers();
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            let geldigePunten = [];
+
+            huidigeVondsten.forEach(vondst => {
+                if (vondst.locatie && vondst.locatie.includes(',')) {
+                    const coords = vondst.locatie.split(',');
+                    const lat = parseFloat(coords[0].trim());
+                    const lng = parseFloat(coords[1].trim());
+
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        const marker = L.marker([lat, lng]);
+                        marker.bindPopup(`<b>${vondst.titel}</b><br><small>Materiaal: ${vondst.materiaal || 'Onbekend'}</small>`);
+                        markerGroup.addLayer(marker);
+                        geldigePunten.push([lat, lng]);
+                    }
+                }
+            });
+
+            if (geldigePunten.length > 0) {
+                const bounds = L.latLngBounds(geldigePunten);
+                map.fitBounds(bounds, { padding: [30, 30] });
+            }
+        }
+
+        function toonVondsten(filter = 'Alles') {
+            const lijst = document.getElementById('vondsten-lijst');
+            lijst.innerHTML = "";
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+
+            huidigeVondsten.forEach(vondst => {
+                if (filter !== 'Alles' && vondst.categorie !== filter) return;
+
+                let gpsWeergave = 'Niet vastgelegd';
+                if (vondst.locatie && vondst.locatie.includes(',')) {
+                    const schoneGps = vondst.locatie.trim();
+                    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoneGps)}`;
+                    gpsWeergave = `${schoneGps} <br><a href="${googleMapsUrl}" target="_blank" class="maps-btn-inline">🗺️ Open route in Google Maps</a>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'vondst-card';
+                
+                card.innerHTML = `
+                    <div class="vondst-header">
+                        <span>${vondst.titel}</span>
+                        <span style="color:var(--accent-color); font-size:12px;">${vondst.categorie}</span>
+                    </div>
+                    <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal || 'Onbekend'}</div>
+                    <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
+                    <div class="vondst-meta">📍 <b>GPS:</b> ${gpsWeergave}</div>
+                    
+                    <div class="foto-container">
+                        ${vondst.foto1 ? `
+                            <div class="img-wrapper" onclick="openFoto('${vondst.foto1}', '${vondst.titel} - Voorkant')">
+                                <img src="${vondst.foto1}" class="card-img">
+                                <div class="zoom-icon">🔍</div>
+                            </div>` : ''}
+                        ${vondst.foto2 ? `
+                            <div class="img-wrapper" onclick="openFoto('${vondst.foto2}', '${vondst.titel} - Achterkant')">
+                                <img src="${vondst.foto2}" class="card-img">
+                                <div class="zoom-icon">🔍</div>
+                            </div>` : ''}
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
+                        <button class="btn-small btn-edit" onclick="bewerkVondst(${vondst.id})">✏️ Bewerk</button>
+                        <button class="btn-small btn-delete" onclick="verwijderVondst(${vondst.id})">🗑️ Wis</button>
+                    </div>
+                `;
+                lijst.appendChild(card);
+            });
+
+            if(lijst.innerHTML === "") {
+                lijst.innerHTML = "<p style='text-align:center; color:#888;'>Nog geen vondsten in dit mapje!</p>";
+            }
+        }
+
+        // EXPORT FUNCTIE NAAR EXCEL/CSV
+        function exporteerNaarCSV() {
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            if (huidigeVondsten.length === 0) { alert("Er zijn nog geen vondsten om te exporteren!"); return; }
+
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // \uFEFF zorgt voor juiste weergave accenten in Excel
+            csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;GPS-Coordinaten;Extra Informatie\r\n";
+
+            huidigeVondsten.forEach(v => {
+                // Haal enters en puntkomma's uit de tekst om CSV-fouten te voorkomen
+                let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
+                let schoneTitel = (v.titel || "").replace(/;/g, ",");
+                let schoneDatering = (v.datering || "").replace(/;/g, ",");
+                let schoneLocatie = (v.locatie || "").replace(/;/g, " ");
+
+                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${schoneTitel};${schoneDatering};${schoneLocatie};${schoneInfo}\r\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Mijn_Vondsten_Backup.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function openFoto(src, caption) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-caption').innerText = caption;
+            
+            document.getElementById('lightbox-img').style.display = 'block';
+            document.getElementById('lightbox-caption').style.display = 'block';
+            document.getElementById('info-popup-box').style.display = 'none';
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function openInfo(id) {
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            const vondst = huidigeVondsten.find(v => v.id == id);
+            
+            if (vondst) {
+                document.getElementById('info-popup-titel').innerText = `📜 Info: ${vondst.titel}`;
+                document.getElementById('info-popup-tekst').innerText = vondst.info || "Nog geen extra historische informatie toegevoegd.";
+                
+                document.getElementById('lightbox-img').style.display = 'none';
+                document.getElementById('lightbox-caption').style.display = 'none';
+                document.getElementById('info-popup-box').style.display = 'block';
+                document.getElementById('lightbox').style.display = 'flex';
+            }
+        }
+
+        function sluitPopups(event) {
+            if (event.target.id === 'lightbox' || event.target.className === 'lightbox-close' || event.target.tagName === 'BUTTON') {
+                document.getElementById('lightbox').style.display = 'none';
+            }
+        }
+
+        function filterCategorie(event, cat) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            toonVondsten(cat);
+        }
+
+        function wisAlles() {
+            if(confirm("Weet je zeker dat je ALLES wilt wissen?")) {
+                localStorage.removeItem('detectorVondsten');
+                resetFormulier();
+                toonVondsten();
+                if(markerGroup) markerGroup.clearLayers();
+                alert("Geheugen gewist!");
+            }
+        }
+
+        window.onload = function() { 
+            toonVondsten(); 
+            initKaart();
+        };
+    </script>
+</body>
+</html>
