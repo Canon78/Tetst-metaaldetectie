@@ -121,6 +121,16 @@
             margin: 5px 0;
         }
 
+        .maps-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .maps-link:hover {
+            text-decoration: underline;
+        }
+
         .preview-img {
             max-width: 100%;
             height: auto;
@@ -196,7 +206,6 @@
 
         function haalGPS() {
             if (navigator.geolocation) {
-                // Hoge nauwkeurigheid inschakelen, handig voor het veld
                 const opties = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 };
                 
                 navigator.geolocation.getCurrentPosition(
@@ -207,16 +216,16 @@
                     function(error) {
                         switch(error.code) {
                             case error.PERMISSION_DENIED:
-                                alert("Locatietoegang geweigerd. Klik op het slotje/schuifje in de adresbalk van je browser om toegang te geven.");
+                                alert("Locatietoegang geweigerd. Geef toestemming in je browser.");
                                 break;
                             case error.POSITION_UNAVAILABLE:
-                                alert("Locatiegegevens zijn niet beschikbaar op dit apparaat (geen GPS-ontvanger).");
+                                alert("Locatiegegevens niet beschikbaar op dit apparaat.");
                                 break;
                             case error.TIMEOUT:
-                                alert("Het duurde te lang om de locatie te bepalen.");
+                                alert("Time-out bij het ophalen van de locatie.");
                                 break;
                             default:
-                                alert("Er is een onbekende fout opgetreden bij het ophalen van de GPS.");
+                                alert("Er is een GPS-fout opgetreden.");
                         }
                     },
                     opties
@@ -274,6 +283,13 @@
             huidigeVondsten.forEach(vondst => {
                 if (filter !== 'Alles' && vondst.categorie !== filter) return;
 
+                // Controleer of er een geldige GPS-locatie is om een link te maken
+                let gpsWeergave = 'Niet vastgelegd';
+                if (vondst.locatie && vondst.locatie.includes(',')) {
+                    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(vondst.locatie)}`;
+                    gpsWeergave = `<a href="${mapsUrl}" target="_blank" class="maps-link">🗺️ Bekijk op Google Maps (${vondst.locatie})</a>`;
+                }
+
                 const card = document.createElement('div');
                 card.className = 'vondst-card';
                 card.innerHTML = `
@@ -282,7 +298,7 @@
                         <span style="color:var(--accent-color); font-size:12px;">${vondst.categorie}</span>
                     </div>
                     <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
-                    <div class="vondst-meta">📍 <b>GPS:</b> ${vondst.locatie || 'Niet vastgelegd'}</div>
+                    <div class="vondst-meta">📍 <b>GPS:</b> ${gpsWeergave}</div>
                     ${vondst.foto ? `<img src="${vondst.foto}" class="card-img">` : ''}
                 `;
                 lijst.appendChild(card);
