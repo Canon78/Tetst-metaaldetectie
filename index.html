@@ -131,18 +131,25 @@
             text-decoration: underline;
         }
 
+        /* Foto grid voor weergave naast elkaar */
+        .foto-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
         .preview-img {
-            max-width: 100%;
+            max-width: 48%;
             height: auto;
             border-radius: 6px;
-            margin-top: 10px;
             display: none;
         }
 
         .card-img {
-            max-width: 100%;
+            width: 48%;
+            height: auto;
             border-radius: 6px;
-            margin-top: 10px;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -181,9 +188,18 @@
         </div>
 
         <div class="form-group">
-            <label for="foto">Foto nemen</label>
-            <input type="file" id="foto" accept="image/*" onchange="previewFoto(event)">
-            <img id="img-preview" class="preview-img" alt="Voorbeeld">
+            <label for="foto1">📸 Foto 1 (Voorkant / Keerzijde)</label>
+            <input type="file" id="foto1" accept="image/*" onchange="previewFoto(event, 'img-preview1', 1)">
+        </div>
+
+        <div class="form-group">
+            <label for="foto2">📸 Foto 2 (Achterkant / Kruiszijde)</label>
+            <input type="file" id="foto2" accept="image/*" onchange="previewFoto(event, 'img-preview2', 2)">
+        </div>
+
+        <div class="foto-container">
+            <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
+            <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
         </div>
 
         <button onclick="slaVondstOp()">Vondst Opslaan</button>
@@ -202,7 +218,8 @@
     <div id="vondsten-lijst"></div>
 
     <script>
-        let fotoDataUrl = "";
+        let foto1DataUrl = "";
+        let foto2DataUrl = "";
 
         function haalGPS() {
             if (navigator.geolocation) {
@@ -214,19 +231,7 @@
                             position.coords.latitude.toFixed(6) + ", " + position.coords.longitude.toFixed(6);
                     }, 
                     function(error) {
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED:
-                                alert("Locatietoegang geweigerd. Geef toestemming in je browser.");
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                alert("Locatiegegevens niet beschikbaar op dit apparaat.");
-                                break;
-                            case error.TIMEOUT:
-                                alert("Time-out bij het ophalen van de locatie.");
-                                break;
-                            default:
-                                alert("Er is een GPS-fout opgetreden.");
-                        }
+                        alert("GPS-signaal niet gevonden of toegang geweigerd.");
                     },
                     opties
                 );
@@ -235,13 +240,15 @@
             }
         }
 
-        function previewFoto(event) {
+        function previewFoto(event, previewId, fotoNummer) {
             const reader = new FileReader();
             reader.onload = function() {
-                const preview = document.getElementById('img-preview');
+                const preview = document.getElementById(previewId);
                 preview.src = reader.result;
                 preview.style.display = 'block';
-                fotoDataUrl = reader.result;
+                
+                if (fotoNummer === 1) foto1DataUrl = reader.result;
+                if (fotoNummer === 2) foto2DataUrl = reader.result;
             }
             if(event.target.files[0]) {
                 reader.readAsDataURL(event.target.files[0]);
@@ -258,18 +265,25 @@
 
             const nieuweVondst = {
                 id: Date.now(),
-                categorie, titel, datering, locatie, foto: fotoDataUrl
+                categorie, titel, datering, locatie, 
+                foto1: foto1DataUrl,
+                foto2: foto2DataUrl
             };
 
             let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
             huidigeVondsten.push(nieuweVondst);
             localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
 
+            // Reset het formulier
             document.getElementById('titel').value = "";
             document.getElementById('datering').value = "";
             document.getElementById('locatie').value = "";
-            document.getElementById('img-preview').style.display = 'none';
-            fotoDataUrl = "";
+            document.getElementById('foto1').value = "";
+            document.getElementById('foto2').value = "";
+            document.getElementById('img-preview1').style.display = 'none';
+            document.getElementById('img-preview2').style.display = 'none';
+            foto1DataUrl = "";
+            foto2DataUrl = "";
 
             alert("Vondst succesvol opgeslagen!");
             toonVondsten();
@@ -283,11 +297,12 @@
             huidigeVondsten.forEach(vondst => {
                 if (filter !== 'Alles' && vondst.categorie !== filter) return;
 
-                // Controleer of er een geldige GPS-locatie is om een link te maken
                 let gpsWeergave = 'Niet vastgelegd';
                 if (vondst.locatie && vondst.locatie.includes(',')) {
-                    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(vondst.locatie)}`;
-                    gpsWeergave = `<a href="${mapsUrl}" target="_blank" class="maps-link">🗺️ Bekijk op Google Maps (${vondst.locatie})</a>`;
+                    // Herstelde Google Maps link
+                    const schoneGps = vondst.locatie.trim();
+                    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoneGps)}`;
+                    gpsWeergave = `<a href="${mapsUrl}" target="_blank" class="maps-link">🗺️ Google Maps (${schoneGps})</a>`;
                 }
 
                 const card = document.createElement('div');
@@ -299,7 +314,10 @@
                     </div>
                     <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
                     <div class="vondst-meta">📍 <b>GPS:</b> ${gpsWeergave}</div>
-                    ${vondst.foto ? `<img src="${vondst.foto}" class="card-img">` : ''}
+                    <div class="foto-container">
+                        ${vondst.foto1 ? `<img src="${vondst.foto1}" class="card-img">` : ''}
+                        ${vondst.foto2 ? `<img src="${vondst.foto2}" class="card-img">` : ''}
+                    </div>
                 `;
                 lijst.appendChild(card);
             });
