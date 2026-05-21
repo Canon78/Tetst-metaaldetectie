@@ -16,6 +16,7 @@
             --accent-color: #d4af37; /* Goud */
             --accent-blue: #4a90e2;
             --accent-red: #cc0000;
+            --btn-green: #2ecc71;
         }
 
         body {
@@ -50,7 +51,7 @@
             font-weight: bold;
         }
 
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 12px;
             border-radius: 6px;
@@ -59,6 +60,38 @@
             color: white;
             box-sizing: border-box;
             font-size: 16px;
+            font-family: inherit;
+        }
+
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        /* Snelknoppen voor datering */
+        .quick-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .tag-btn {
+            background-color: #444;
+            color: #ccc;
+            border: 1px solid #555;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: auto;
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        .tag-btn:hover {
+            border-color: var(--accent-color);
+            color: white;
         }
 
         button {
@@ -79,6 +112,12 @@
             color: white;
         }
 
+        button.excel-btn {
+            background-color: var(--btn-green);
+            color: white;
+            margin-top: 20px;
+        }
+
         button.danger-btn {
             background-color: #444;
             color: #ff6666;
@@ -87,6 +126,23 @@
             font-size: 12px;
             margin-top: 30px;
         }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 13px;
+            width: auto;
+            margin-bottom: 0;
+        }
+
+        .btn-edit { background-color: #e67e22; color: white; }
+        .btn-delete { background-color: var(--accent-red); color: white; }
+        .btn-info { background-color: var(--accent-blue); color: white; }
 
         .maps-btn-inline {
             display: inline-block;
@@ -148,7 +204,6 @@
             margin: 5px 0;
         }
 
-        /* Foto grid met miniaturen */
         .foto-container {
             display: flex;
             gap: 12px;
@@ -166,9 +221,7 @@
             background-color: #1a1a1a;
         }
 
-        .img-wrapper:hover {
-            border-color: var(--accent-color);
-        }
+        .img-wrapper:hover { border-color: var(--accent-color); }
 
         .card-img {
             width: 100%;
@@ -176,7 +229,6 @@
             object-fit: cover;
         }
 
-        /* Vergrootglas-icoontje rechtsonder */
         .zoom-icon {
             position: absolute;
             bottom: 4px;
@@ -189,19 +241,6 @@
             pointer-events: none;
         }
 
-        .preview-img-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .preview-img {
-            max-width: 48%;
-            height: auto;
-            border-radius: 6px;
-            display: none;
-        }
-
         #map {
             width: 100%;
             height: 350px;
@@ -211,11 +250,9 @@
             z-index: 1;
         }
 
-        .leaflet-popup-content {
-            color: #000000 !important;
-        }
+        .leaflet-popup-content { color: #000000 !important; }
 
-        /* LIGHTBOX POP-UP STYLING */
+        /* LIGHTBOX & INFO POP-UP STYLING */
         .lightbox {
             display: none;
             position: fixed;
@@ -228,14 +265,33 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .lightbox-img {
             max-width: 90%;
-            max-height: 80%;
+            max-height: 70%;
             border-radius: 8px;
             border: 3px solid var(--accent-color);
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .info-box {
+            background-color: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            color: white;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+            color: var(--accent-color);
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
         }
 
         .lightbox-caption {
@@ -243,6 +299,7 @@
             margin-top: 15px;
             font-size: 16px;
             font-weight: bold;
+            text-align: center;
         }
 
         .lightbox-close {
@@ -264,7 +321,8 @@
     <h1>🪙 Mijn Vondsten Log</h1>
 
     <div class="form-container">
-        <h2>Nieuwe Vondst</h2>
+        <h2 id="form-titel">Nieuwe Vondst</h2>
+        <input type="hidden" id="bewerk-id" value="">
         
         <div class="form-group">
             <label for="categorie">Categorie (Mapje)</label>
@@ -278,6 +336,19 @@
         </div>
 
         <div class="form-group">
+            <label for="materiaal">Metaal / Materiaal</label>
+            <select id="materiaal">
+                <option value="Onbekend">❓ Onbekend</option>
+                <option value="Goud">🪙 Goud</option>
+                <option value="Zilver">🥈 Zilver</option>
+                <option value="Brons / Koper">🥉 Brons / Koper</option>
+                <option value="Lood / Tin">🛡️ Lood / Tin</option>
+                <option value="IJzer">⚙️ IJzer</option>
+                <option value="Glas / Keramiek">🏺 Glas / Keramiek</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label for="titel">Beschrijving / Naam</label>
             <input type="text" id="titel" placeholder="Bijv. Romeinse denarius, koperen knoop...">
         </div>
@@ -285,12 +356,23 @@
         <div class="form-group">
             <label for="datering">Vermoedelijke Periode</label>
             <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr., Middeleeuws...">
+            <div class="quick-tags">
+                <button type="button" class="tag-btn" onclick="setDatering('Romeins')">Romeins</button>
+                <button type="button" class="tag-btn" onclick="setDatering('Middeleeuws')">Middeleeuws</button>
+                <button type="button" class="tag-btn" onclick="setDatering('16e-18e eeuw')">16e-18e eeuw</button>
+                <button type="button" class="tag-btn" onclick="setDatering('Modern / WO')">Modern / WO</button>
+            </div>
         </div>
 
         <div class="form-group">
             <label for="locatie">GPS Coördinaten</label>
             <input type="text" id="locatie" placeholder="Klik op de blauwe knop of typ zelf">
             <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige GPS Vast</button>
+        </div>
+
+        <div class="form-group">
+            <label for="info">📜 Extra Informatie (Functie, achtergrond, determinatie...)</label>
+            <textarea id="info" placeholder="Waarvoor diende het? Welke details vallen op? Schrijf het hier..."></textarea>
         </div>
 
         <div class="form-group">
@@ -308,7 +390,8 @@
             <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
         </div>
 
-        <button onclick="slaVondstOp()">Vondst Opslaan</button>
+        <button id="opslaan-btn" onclick="slaVondstOp()">Vondst Opslaan</button>
+        <button id="annuleer-btn" style="display:none; background-color:#555; color:white;" onclick="resetFormulier()">Annuleer Bewerken</button>
     </div>
 
     <h2>🗺️ Mijn Vondstenkaart</h2>
@@ -326,13 +409,18 @@
 
     <div id="vondsten-lijst"></div>
 
-    <div id="lightbox" class="lightbox" onclick="sluitVergroting()">
-        <button class="lightbox-close">✕ Sluiten</button>
-        <img id="lightbox-img" class="lightbox-img" src="" alt="Vergroting">
-        <div id="lightbox-caption" class="lightbox-caption"></div>
-    </div>
-
+    <button class="excel-btn" onclick="exporteerNaarCSV()">📥 Exporteer Vondsten naar Excel (CSV)</button>
     <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Volledig Wissen</button>
+
+    <div id="lightbox" class="lightbox" onclick="sluitPopups(event)">
+        <button class="lightbox-close" onclick="sluitPopups(event)">✕ Sluiten</button>
+        <img id="lightbox-img" class="lightbox-img" src="" alt="Vergroting" style="display:none;">
+        <div id="lightbox-caption" class="lightbox-caption" style="display:none;"></div>
+        <div id="info-popup-box" class="info-box" style="display:none;">
+            <h3 id="info-popup-titel">Voorwerp Info</h3>
+            <p id="info-popup-tekst" style="white-space: pre-wrap; line-height: 1.5;"></p>
+        </div>
+    </div>
 
     <script>
         let foto1DataUrl = "";
@@ -347,6 +435,10 @@
             }).addTo(map);
             markerGroup = L.layerGroup().addTo(map);
             updateKaartPinnetjes();
+        }
+
+        function setDatering(waarde) {
+            document.getElementById('datering').value = waarde;
         }
 
         function haalGPS() {
@@ -403,39 +495,111 @@
 
         function slaVondstOp() {
             const categorie = document.getElementById('categorie').value;
+            const materiaal = document.getElementById('materiaal').value;
             const titel = document.getElementById('titel').value;
             const datering = document.getElementById('datering').value;
             const locatie = document.getElementById('locatie').value;
+            const info = document.getElementById('info').value;
+            const bewerkId = document.getElementById('bewerk-id').value;
 
             if(!titel) { alert("Vul tenminste een beschrijving in."); return; }
 
-            const nieuweVondst = {
-                id: Date.now(),
-                categorie, titel, datering, locatie, 
-                foto1: foto1DataUrl,
-                foto2: foto2DataUrl
-            };
+            let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+
+            if (bewerkId) {
+                huidigeVondsten = huidigeVondsten.map(vondst => {
+                    if (vondst.id == bewerkId) {
+                        return {
+                            id: vondst.id,
+                            categorie, materiaal, titel, datering, locatie, info,
+                            foto1: foto1DataUrl || vondst.foto1,
+                            foto2: foto2DataUrl || vondst.foto2
+                        };
+                    }
+                    return vondst;
+                });
+                alert("Vondst succesvol bijgewerkt!");
+            } else {
+                const nieuweVondst = {
+                    id: Date.now(),
+                    categorie, materiaal, titel, datering, locatie, info,
+                    foto1: foto1DataUrl,
+                    foto2: foto2DataUrl
+                };
+                huidigeVondsten.push(nieuweVondst);
+                alert("Vondst succesvol opgeslagen!");
+            }
 
             try {
-                let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-                huidigeVondsten.push(nieuweVondst);
                 localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
-
-                document.getElementById('titel').value = "";
-                document.getElementById('datering').value = "";
-                document.getElementById('locatie').value = "";
-                document.getElementById('foto1').value = "";
-                document.getElementById('foto2').value = "";
-                document.getElementById('img-preview1').style.display = 'none';
-                document.getElementById('img-preview2').style.display = 'none';
-                foto1DataUrl = "";
-                foto2DataUrl = "";
-
-                alert("Vondst succesvol opgeslagen!");
+                resetFormulier();
                 toonVondsten();
                 updateKaartPinnetjes();
             } catch (e) {
-                alert("⚠️ Geheugen vol. Wis het geheugen onderaan.");
+                alert("⚠️ Geheugen vol. Exporteer je data en wis oude items.");
+            }
+        }
+
+        function resetFormulier() {
+            document.getElementById('titel').value = "";
+            document.getElementById('datering').value = "";
+            document.getElementById('locatie').value = "";
+            document.getElementById('info').value = "";
+            document.getElementById('bewerk-id').value = "";
+            document.getElementById('materiaal').value = "Onbekend";
+            document.getElementById('foto1').value = "";
+            document.getElementById('foto2').value = "";
+            document.getElementById('img-preview1').style.display = 'none';
+            document.getElementById('img-preview2').style.display = 'none';
+            
+            document.getElementById('form-titel').innerText = "Nieuwe Vondst";
+            document.getElementById('opslaan-btn').innerText = "Vondst Opslaan";
+            document.getElementById('annuleer-btn').style.display = 'none';
+            
+            foto1DataUrl = "";
+            foto2DataUrl = "";
+        }
+
+        function bewerkVondst(id) {
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            const vondst = huidigeVondsten.find(v => v.id == id);
+            
+            if (vondst) {
+                document.getElementById('categorie').value = vondst.categorie;
+                document.getElementById('materiaal').value = vondst.materiaal || "Onbekend";
+                document.getElementById('titel').value = vondst.titel;
+                document.getElementById('datering').value = vondst.datering || "";
+                document.getElementById('locatie').value = vondst.locatie || "";
+                document.getElementById('info').value = vondst.info || "";
+                document.getElementById('bewerk-id').value = vondst.id;
+
+                if (vondst.foto1) {
+                    document.getElementById('img-preview1').src = vondst.foto1;
+                    document.getElementById('img-preview1').style.display = 'block';
+                    foto1DataUrl = vondst.foto1;
+                }
+                if (vondst.foto2) {
+                    document.getElementById('img-preview2').src = vondst.foto2;
+                    document.getElementById('img-preview2').style.display = 'block';
+                    foto2DataUrl = vondst.foto2;
+                }
+
+                document.getElementById('form-titel').innerText = "✏️ Vondst Bewerken";
+                document.getElementById('opslaan-btn').innerText = "Wijzigingen Opslaan";
+                document.getElementById('annuleer-btn').style.display = 'block';
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function verwijderVondst(id) {
+            if (confirm("Weet je zeker dat je deze specifieke vondst wilt verwijderen?")) {
+                let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+                huidigeVondsten = huidigeVondsten.filter(v => v.id != id);
+                localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
+                
+                toonVondsten();
+                updateKaartPinnetjes();
             }
         }
 
@@ -452,7 +616,7 @@
 
                     if (!isNaN(lat) && !isNaN(lng)) {
                         const marker = L.marker([lat, lng]);
-                        marker.bindPopup(`<b>${vondst.titel}</b><br><small>${vondst.categorie}</small>`);
+                        marker.bindPopup(`<b>${vondst.titel}</b><br><small>Materiaal: ${vondst.materiaal || 'Onbekend'}</small>`);
                         markerGroup.addLayer(marker);
                         geldigePunten.push([lat, lng]);
                     }
@@ -483,25 +647,32 @@
                 const card = document.createElement('div');
                 card.className = 'vondst-card';
                 
-                // HTML structuur met de nieuwe compacte wrappers en zoom icoontjes
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span>${vondst.titel}</span>
                         <span style="color:var(--accent-color); font-size:12px;">${vondst.categorie}</span>
                     </div>
+                    <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal || 'Onbekend'}</div>
                     <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
                     <div class="vondst-meta">📍 <b>GPS:</b> ${gpsWeergave}</div>
+                    
                     <div class="foto-container">
                         ${vondst.foto1 ? `
-                            <div class="img-wrapper" onclick="toonVergroting('${vondst.foto1}', '${vondst.titel} - Voorkant')">
+                            <div class="img-wrapper" onclick="openFoto('${vondst.foto1}', '${vondst.titel} - Voorkant')">
                                 <img src="${vondst.foto1}" class="card-img">
                                 <div class="zoom-icon">🔍</div>
                             </div>` : ''}
                         ${vondst.foto2 ? `
-                            <div class="img-wrapper" onclick="toonVergroting('${vondst.foto2}', '${vondst.titel} - Achterkant')">
+                            <div class="img-wrapper" onclick="openFoto('${vondst.foto2}', '${vondst.titel} - Achterkant')">
                                 <img src="${vondst.foto2}" class="card-img">
                                 <div class="zoom-icon">🔍</div>
                             </div>` : ''}
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
+                        <button class="btn-small btn-edit" onclick="bewerkVondst(${vondst.id})">✏️ Bewerk</button>
+                        <button class="btn-small btn-delete" onclick="verwijderVondst(${vondst.id})">🗑️ Wis</button>
                     </div>
                 `;
                 lijst.appendChild(card);
@@ -512,15 +683,62 @@
             }
         }
 
-        // Functies voor de Pop-up vergroting
-        function toonVergroting(src, caption) {
+        // EXPORT FUNCTIE NAAR EXCEL/CSV
+        function exporteerNaarCSV() {
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            if (huidigeVondsten.length === 0) { alert("Er zijn nog geen vondsten om te exporteren!"); return; }
+
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // \uFEFF zorgt voor juiste weergave accenten in Excel
+            csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;GPS-Coordinaten;Extra Informatie\r\n";
+
+            huidigeVondsten.forEach(v => {
+                // Haal enters en puntkomma's uit de tekst om CSV-fouten te voorkomen
+                let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
+                let schoneTitel = (v.titel || "").replace(/;/g, ",");
+                let schoneDatering = (v.datering || "").replace(/;/g, ",");
+                let schoneLocatie = (v.locatie || "").replace(/;/g, " ");
+
+                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${schoneTitel};${schoneDatering};${schoneLocatie};${schoneInfo}\r\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Mijn_Vondsten_Backup.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function openFoto(src, caption) {
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox-caption').innerText = caption;
+            
+            document.getElementById('lightbox-img').style.display = 'block';
+            document.getElementById('lightbox-caption').style.display = 'block';
+            document.getElementById('info-popup-box').style.display = 'none';
             document.getElementById('lightbox').style.display = 'flex';
         }
 
-        function sluitVergroting() {
-            document.getElementById('lightbox').style.display = 'none';
+        function openInfo(id) {
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            const vondst = huidigeVondsten.find(v => v.id == id);
+            
+            if (vondst) {
+                document.getElementById('info-popup-titel').innerText = `📜 Info: ${vondst.titel}`;
+                document.getElementById('info-popup-tekst').innerText = vondst.info || "Nog geen extra historische informatie toegevoegd.";
+                
+                document.getElementById('lightbox-img').style.display = 'none';
+                document.getElementById('lightbox-caption').style.display = 'none';
+                document.getElementById('info-popup-box').style.display = 'block';
+                document.getElementById('lightbox').style.display = 'flex';
+            }
+        }
+
+        function sluitPopups(event) {
+            if (event.target.id === 'lightbox' || event.target.className === 'lightbox-close' || event.target.tagName === 'BUTTON') {
+                document.getElementById('lightbox').style.display = 'none';
+            }
         }
 
         function filterCategorie(event, cat) {
@@ -530,8 +748,9 @@
         }
 
         function wisAlles() {
-            if(confirm("Weet je zeker dat je alles wilt wissen?")) {
+            if(confirm("Weet je zeker dat je ALLES wilt wissen?")) {
                 localStorage.removeItem('detectorVondsten');
+                resetFormulier();
                 toonVondsten();
                 if(markerGroup) markerGroup.clearLayers();
                 alert("Geheugen gewist!");
