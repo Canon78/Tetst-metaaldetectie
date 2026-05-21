@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mijn Vondsten App</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
         :root {
             --bg-color: #1a1a1a;
@@ -45,7 +49,7 @@
             font-weight: bold;
         }
 
-        input, select, textarea {
+        input, select {
             width: 100%;
             padding: 12px;
             border-radius: 6px;
@@ -72,6 +76,19 @@
         button.gps-btn {
             background-color: var(--accent-blue);
             color: white;
+        }
+
+        .maps-btn-inline {
+            display: inline-block;
+            width: auto;
+            padding: 5px 10px;
+            background-color: #444;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            font-size: 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 5px;
         }
 
         .tabs {
@@ -121,17 +138,6 @@
             margin: 5px 0;
         }
 
-        .maps-link {
-            color: var(--accent-blue);
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .maps-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Foto grid voor weergave naast elkaar */
         .foto-container {
             display: flex;
             gap: 10px;
@@ -150,6 +156,21 @@
             height: auto;
             border-radius: 6px;
             object-fit: cover;
+        }
+
+        /* KAART WINDOW STYLING */
+        #map {
+            width: 100%;
+            height: 350px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid var(--accent-color);
+            z-index: 1;
+        }
+
+        /* Kaart pop-up tekst kleur fix */
+        .leaflet-popup-content {
+            color: #000000 !important;
         }
     </style>
 </head>
@@ -188,12 +209,12 @@
         </div>
 
         <div class="form-group">
-            <label for="foto1">📸 Foto 1 (Voorkant / Keerzijde)</label>
+            <label for="foto1">📸 Foto 1 (Voorkant)</label>
             <input type="file" id="foto1" accept="image/*" onchange="previewFoto(event, 'img-preview1', 1)">
         </div>
 
         <div class="form-group">
-            <label for="foto2">📸 Foto 2 (Achterkant / Kruiszijde)</label>
+            <label for="foto2">📸 Foto 2 (Achterkant)</label>
             <input type="file" id="foto2" accept="image/*" onchange="previewFoto(event, 'img-preview2', 2)">
         </div>
 
@@ -204,6 +225,9 @@
 
         <button onclick="slaVondstOp()">Vondst Opslaan</button>
     </div>
+
+    <h2>🗺️ Mijn Vondstenkaart</h2>
+    <div id="map"></div>
 
     <h2>Mijn Verzameling</h2>
     <div class="tabs">
@@ -220,6 +244,21 @@
     <script>
         let foto1DataUrl = "";
         let foto2DataUrl = "";
+        let map;
+        let markerGroup;
+
+        // Kaart initialiseren bij opstarten
+        function initKaart() {
+            // Startpunt Vlaanderen/Antwerpen coördinaten
+            map = L.map('map').setView([51.3, 4.4], 10);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            markerGroup = L.layerGroup().addTo(map);
+            updateKaartPinnetjes();
+        }
 
         function haalGPS() {
             if (navigator.geolocation) {
@@ -274,7 +313,7 @@
             huidigeVondsten.push(nieuweVondst);
             localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
 
-            // Reset het formulier
+            // Reset formulier
             document.getElementById('titel').value = "";
             document.getElementById('datering').value = "";
             document.getElementById('locatie').value = "";
@@ -287,6 +326,34 @@
 
             alert("Vondst succesvol opgeslagen!");
             toonVondsten();
+            updateKaartPinnetjes();
+        }
+
+        function updateKaartPinnetjes() {
+            markerGroup.clearLayers();
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            let geldigePunten = [];
+
+            huidigeVondsten.forEach(vondst => {
+                if (vondst.locatie && vondst.locatie.includes(',')) {
+                    const coords = vondst.locatie.split(',');
+                    const lat = parseFloat(coords[0].trim());
+                    const lng = parseFloat(coords[1].trim());
+
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        const marker = L.marker([lat, lng]);
+                        marker.bindPopup(`<b>${vondst.titel}</b><br><small>${vondst.categorie}</small>`);
+                        markerGroup.addLayer(marker);
+                        geldigePunten.push([lat, lng]);
+                    }
+                }
+            });
+
+            // Zoom de kaart automatisch in op je opgeslagen vondsten als er punten zijn
+            if (geldigePunten.length > 0) {
+                const bounds = L.latLngBounds(geldigePunten);
+                map.fitBounds(bounds, { padding: [30, 30] });
+            }
         }
 
         function toonVondsten(filter = 'Alles') {
@@ -299,10 +366,9 @@
 
                 let gpsWeergave = 'Niet vastgelegd';
                 if (vondst.locatie && vondst.locatie.includes(',')) {
-                    // Herstelde Google Maps link
                     const schoneGps = vondst.locatie.trim();
-                    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoneGps)}`;
-                    gpsWeergave = `<a href="${mapsUrl}" target="_blank" class="maps-link">🗺️ Google Maps (${schoneGps})</a>`;
+                    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoneGps)}`;
+                    gpsWeergave = `${schoneGps} <br><a href="${googleMapsUrl}" target="_blank" class="maps-btn-inline">🗺️ Open route in Google Maps</a>`;
                 }
 
                 const card = document.createElement('div');
@@ -333,7 +399,10 @@
             toonVondsten(cat);
         }
 
-        window.onload = function() { toonVondsten(); };
+        window.onload = function() { 
+            toonVondsten(); 
+            initKaart();
+        };
     </script>
 </body>
 </html>
