@@ -15,6 +15,7 @@
             --text-color: #ffffff;
             --accent-color: #d4af37; /* Goud */
             --accent-blue: #4a90e2;
+            --accent-red: #cc0000;
         }
 
         body {
@@ -76,6 +77,15 @@
         button.gps-btn {
             background-color: var(--accent-blue);
             color: white;
+        }
+
+        button.danger-btn {
+            background-color: #444;
+            color: #ff6666;
+            border: 1px solid var(--accent-red);
+            padding: 8px;
+            font-size: 12px;
+            margin-top: 30px;
         }
 
         .maps-btn-inline {
@@ -158,7 +168,6 @@
             object-fit: cover;
         }
 
-        /* KAART WINDOW STYLING */
         #map {
             width: 100%;
             height: 350px;
@@ -168,7 +177,6 @@
             z-index: 1;
         }
 
-        /* Kaart pop-up tekst kleur fix */
         .leaflet-popup-content {
             color: #000000 !important;
         }
@@ -210,12 +218,12 @@
 
         <div class="form-group">
             <label for="foto1">📸 Foto 1 (Voorkant)</label>
-            <input type="file" id="foto1" accept="image/*" onchange="previewFoto(event, 'img-preview1', 1)">
+            <input type="file" id="foto1" accept="image/*" onchange="verwerkFoto(event, 'img-preview1', 1)">
         </div>
 
         <div class="form-group">
             <label for="foto2">📸 Foto 2 (Achterkant)</label>
-            <input type="file" id="foto2" accept="image/*" onchange="previewFoto(event, 'img-preview2', 2)">
+            <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 'img-preview2', 2)">
         </div>
 
         <div class="foto-container">
@@ -241,21 +249,19 @@
 
     <div id="vondsten-lijst"></div>
 
+    <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Volledig Wissen</button>
+
     <script>
         let foto1DataUrl = "";
         let foto2DataUrl = "";
         let map;
         let markerGroup;
 
-        // Kaart initialiseren bij opstarten
         function initKaart() {
-            // Startpunt Vlaanderen/Antwerpen coördinaten
             map = L.map('map').setView([51.3, 4.4], 10);
-            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
+                attribution: '© OpenStreetMap'
             }).addTo(map);
-
             markerGroup = L.layerGroup().addTo(map);
             updateKaartPinnetjes();
         }
@@ -263,35 +269,55 @@
         function haalGPS() {
             if (navigator.geolocation) {
                 const opties = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 };
-                
                 navigator.geolocation.getCurrentPosition(
                     function(position) {
                         document.getElementById('locatie').value = 
                             position.coords.latitude.toFixed(6) + ", " + position.coords.longitude.toFixed(6);
                     }, 
-                    function(error) {
-                        alert("GPS-signaal niet gevonden of toegang geweigerd.");
-                    },
+                    function(error) { alert("GPS-signaal niet gevonden."); },
                     opties
                 );
-            } else {
-                alert("GPS wordt niet ondersteund door deze browser.");
             }
         }
 
-        function previewFoto(event, previewId, fotoNummer) {
+        // SLIMME UPGRADE: Foto's automatisch verkleinen (compressie)
+        function verwerkFoto(event, previewId, fotoNummer) {
+            const file = event.target.files[0];
+            if (!file) return;
+
             const reader = new FileReader();
-            reader.onload = function() {
-                const preview = document.getElementById(previewId);
-                preview.src = reader.result;
-                preview.style.display = 'block';
-                
-                if (fotoNummer === 1) foto1DataUrl = reader.result;
-                if (fotoNummer === 2) foto2DataUrl = reader.result;
-            }
-            if(event.target.files[0]) {
-                reader.readAsDataURL(event.target.files[0]);
-            }
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const max_size = 600; // Maximale breedte/hoogte in pixels
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > max_size) { height *= max_size / width; width = max_size; }
+                    } else {
+                        if (height > max_size) { width *= max_size / height; height = max_size; }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2m');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Maak er een lichte JPG van (kwaliteit 0.7)
+                    const gecomprimeerdeDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    const preview = document.getElementById(previewId);
+                    preview.src = gecomprimeerdeDataUrl;
+                    preview.style.display = 'block';
+
+                    if (fotoNummer === 1) foto1DataUrl = gecomprimeerdeDataUrl;
+                    if (fotoNummer === 2) foto2DataUrl = gecomprimeerdeDataUrl;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         function slaVondstOp() {
@@ -309,24 +335,28 @@
                 foto2: foto2DataUrl
             };
 
-            let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            huidigeVondsten.push(nieuweVondst);
-            localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
+            try {
+                let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+                huidigeVondsten.push(nieuweVondst);
+                localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
 
-            // Reset formulier
-            document.getElementById('titel').value = "";
-            document.getElementById('datering').value = "";
-            document.getElementById('locatie').value = "";
-            document.getElementById('foto1').value = "";
-            document.getElementById('foto2').value = "";
-            document.getElementById('img-preview1').style.display = 'none';
-            document.getElementById('img-preview2').style.display = 'none';
-            foto1DataUrl = "";
-            foto2DataUrl = "";
+                // Reset formulier
+                document.getElementById('titel').value = "";
+                document.getElementById('datering').value = "";
+                document.getElementById('locatie').value = "";
+                document.getElementById('foto1').value = "";
+                document.getElementById('foto2').value = "";
+                document.getElementById('img-preview1').style.display = 'none';
+                document.getElementById('img-preview2').style.display = 'none';
+                foto1DataUrl = "";
+                foto2DataUrl = "";
 
-            alert("Vondst succesvol opgeslagen!");
-            toonVondsten();
-            updateKaartPinnetjes();
+                alert("Vondst succesvol opgeslagen!");
+                toonVondsten();
+                updateKaartPinnetjes();
+            } catch (e) {
+                alert("⚠️ Het geheugen zit vol door een te grote foto! Klik onderaan op de grijze knop om het geheugen te wissen en probeer het opnieuw met de nieuwe update.");
+            }
         }
 
         function updateKaartPinnetjes() {
@@ -349,7 +379,6 @@
                 }
             });
 
-            // Zoom de kaart automatisch in op je opgeslagen vondsten als er punten zijn
             if (geldigePunten.length > 0) {
                 const bounds = L.latLngBounds(geldigePunten);
                 map.fitBounds(bounds, { padding: [30, 30] });
@@ -397,6 +426,15 @@
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             event.target.classList.add('active');
             toonVondsten(cat);
+        }
+
+        function wisAlles() {
+            if(confirm("Weet je zeker dat je ALLE opgeslagen vondsten wilt wissen om ruimte te maken?")) {
+                localStorage.removeItem('detectorVondsten');
+                toonVondsten();
+                if(markerGroup) markerGroup.clearLayers();
+                alert("Het geheugen is weer helemaal leeg en klaar voor gebruik!");
+            }
         }
 
         window.onload = function() { 
