@@ -506,15 +506,17 @@
             updateKaartPinnetjes();
         }
 
-        // SLIM SCHAKELEN TUSSEN DE SCHERMEN
+        // VERBETERD: Nu met automatische reset naar de top van de pagina bij wisselen
         function wisselScherm(schermNaam) {
             document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
 
+            // Flits onmiddellijk naar de absolute bovenkant van de pagina
+            window.scrollTo(0, 0);
+
             if (schermNaam === 'verzameling') {
                 document.getElementById('page-verzameling').classList.add('active');
                 document.getElementById('nav-verzameling').classList.add('active');
-                // Kaart verversen omdat hij verborgen was
                 if (map) { setTimeout(() => { map.invalidateSize(); updateKaartPinnetjes(); }, 200); }
             } else if (schermNaam === 'invoer') {
                 document.getElementById('page-invoer').classList.add('active');
@@ -596,7 +598,8 @@
                     if (vondst.id == bewerkId) {
                         return {
                             id: vondst.id,
-                            categorie, materiaal, titel, datering, locatie, info,
+                            categorie, materiaal, titel, datering, location: locatie, info, // Fix voor sleutelconsistentie
+                            locatie, // Voor de zekerheid beide behouden
                             foto1: foto1DataUrl || vondst.foto1,
                             foto2: foto2DataUrl || vondst.foto2
                         };
@@ -619,7 +622,7 @@
                 localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
                 resetFormulier();
                 toonVondsten();
-                wisselScherm('verzameling'); // Automatisch terug naar de verzameling!
+                wisselScherm('verzameling'); 
             } catch (e) {
                 alert("⚠️ Geheugen vol. Exporteer je data en wis oude items.");
             }
@@ -673,7 +676,7 @@
                 document.getElementById('opslaan-btn').innerText = "Wijzigingen Opslaan";
                 document.getElementById('annuleer-btn').style.display = 'block';
 
-                wisselScherm('invoer'); // Schakel direct naar het formulier om te bewerken
+                wisselScherm('invoer'); // Dit activeert nu ook de automatische scroll naar boven!
             }
         }
 
