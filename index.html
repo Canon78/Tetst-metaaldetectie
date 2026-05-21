@@ -27,7 +27,6 @@
             color: var(--accent-color);
         }
 
-        /* Formulier styling */
         .form-container {
             background-color: var(--card-bg);
             padding: 15px;
@@ -54,7 +53,7 @@
             background-color: #1a1a1a;
             color: white;
             box-sizing: border-box;
-            font-size: 16px; /* Voorkomt inzoomen op iPhone */
+            font-size: 16px;
         }
 
         button {
@@ -75,7 +74,6 @@
             color: white;
         }
 
-        /* Mapjes / Categorie Tabs */
         .tabs {
             display: flex;
             overflow-x: auto;
@@ -100,7 +98,6 @@
             font-weight: bold;
         }
 
-        /* Vondsten Lijst / Kaarten */
         .vondst-card {
             background-color: var(--card-bg);
             border-radius: 10px;
@@ -143,7 +140,6 @@
 
     <h1>🪙 Mijn Vondsten Log</h1>
 
-    <!-- FORMULIER OM VONDST TOE TE VOEGEN -->
     <div class="form-container">
         <h2>Nieuwe Vondst</h2>
         
@@ -170,8 +166,8 @@
 
         <div class="form-group">
             <label for="locatie">GPS Coördinaten</label>
-            <input type="text" id="locatie" placeholder="Klik op de blauwe knop hieronder" readonly>
-            <button type="button" class="gps-btn" onclick="haalGPS() font-size:14px;">📍 Leg Huidige GPS Vast</button>
+            <input type="text" id="locatie" placeholder="Klik op de blauwe knop of typ zelf">
+            <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige GPS Vast</button>
         </div>
 
         <div class="form-group">
@@ -183,50 +179,66 @@
         <button onclick="slaVondstOp()">Vondst Opslaan</button>
     </div>
 
-    <!-- MAPJES / TABS OM TE FILTEREN -->
     <h2>Mijn Verzameling</h2>
     <div class="tabs">
-        <div class="tab active" onclick="filterCategorie('Alles')">Alles</div>
-        <div class="tab" onclick="filterCategorie('Munten')">🪙 Munten</div>
-        <div class="tab" onclick="filterCategorie('Gespen')">🔍 Gespen</div>
-        <div class="tab" onclick="filterCategorie('Militaria')">🛡️ Militaria</div>
-        <div class="tab" onclick="filterCategorie('Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
-        <div class="tab" onclick="filterCategorie('Overig')">🏺 Overig</div>
+        <div class="tab active" onclick="filterCategorie(event, 'Alles')">Alles</div>
+        <div class="tab" onclick="filterCategorie(event, 'Munten')">🪙 Munten</div>
+        <div class="tab" onclick="filterCategorie(event, 'Gespen')">🔍 Gespen</div>
+        <div class="tab" onclick="filterCategorie(event, 'Militaria')">🛡️ Militaria</div>
+        <div class="tab" onclick="filterCategorie(event, 'Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
+        <div class="tab" onclick="filterCategorie(event, 'Overig')">🏺 Overig</div>
     </div>
 
-    <!-- HIER KOMEN DE OPGESLAGEN VONDSTEN -->
     <div id="vondsten-lijst"></div>
 
     <script>
         let fotoDataUrl = "";
 
-        // 1. GPS Functie
         function haalGPS() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    document.getElementById('locatie').value = 
-                        position.coords.latitude.toFixed(6) + ", " + position.coords.longitude.toFixed(6);
-                }, function() {
-                    alert("Kan GPS-locatie niet ophalen. Controleer je instellingen.");
-                });
+                // Hoge nauwkeurigheid inschakelen, handig voor het veld
+                const opties = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 };
+                
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        document.getElementById('locatie').value = 
+                            position.coords.latitude.toFixed(6) + ", " + position.coords.longitude.toFixed(6);
+                    }, 
+                    function(error) {
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                alert("Locatietoegang geweigerd. Klik op het slotje/schuifje in de adresbalk van je browser om toegang te geven.");
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                alert("Locatiegegevens zijn niet beschikbaar op dit apparaat (geen GPS-ontvanger).");
+                                break;
+                            case error.TIMEOUT:
+                                alert("Het duurde te lang om de locatie te bepalen.");
+                                break;
+                            default:
+                                alert("Er is een onbekende fout opgetreden bij het ophalen van de GPS.");
+                        }
+                    },
+                    opties
+                );
             } else {
                 alert("GPS wordt niet ondersteund door deze browser.");
             }
         }
 
-        // 2. Foto Preview Functie
         function previewFoto(event) {
             const reader = new FileReader();
             reader.onload = function() {
                 const preview = document.getElementById('img-preview');
                 preview.src = reader.result;
                 preview.style.display = 'block';
-                fotoDataUrl = reader.result; // Slaat de foto tijdelijk op
+                fotoDataUrl = reader.result;
             }
-            reader.readAsDataURL(event.target.files[0]);
+            if(event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            }
         }
 
-        // 3. Vondst Opslaan in Lokale Geheugen (LocalStorage)
         function slaVondstOp() {
             const categorie = document.getElementById('categorie').value;
             const titel = document.getElementById('titel').value;
@@ -244,7 +256,6 @@
             huidigeVondsten.push(nieuweVondst);
             localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
 
-            // Formulier resetten
             document.getElementById('titel').value = "";
             document.getElementById('datering').value = "";
             document.getElementById('locatie').value = "";
@@ -255,7 +266,6 @@
             toonVondsten();
         }
 
-        // 4. Vondsten Tonen en Filteren per Mapje
         function toonVondsten(filter = 'Alles') {
             const lijst = document.getElementById('vondsten-lijst');
             lijst.innerHTML = "";
@@ -279,18 +289,16 @@
             });
 
             if(lijst.innerHTML === "") {
-                lijst.innerHTML = "<p style='text-align:center; color:#888;'>Nieuwsgierig... Nog geen vondsten in dit mapje!</p>";
+                lijst.innerHTML = "<p style='text-align:center; color:#888;'>Nog geen vondsten in dit mapje!</p>";
             }
         }
 
-        // Tab wisselen styling
-        function filterCategorie(cat) {
+        function filterCategorie(event, cat) {
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             event.target.classList.add('active');
             toonVondsten(cat);
         }
 
-        // Starten met tonen van alle vondsten als de app opstart
         window.onload = function() { toonVondsten(); };
     </script>
 </body>
