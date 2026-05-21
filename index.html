@@ -25,12 +25,56 @@
             color: var(--text-color);
             margin: 0;
             padding: 15px;
-            padding-bottom: 60px;
+            padding-bottom: 80px; /* Ruimte voor het menu onderaan */
         }
 
         h1, h2 {
             text-align: center;
             color: var(--accent-color);
+            margin-top: 5px;
+        }
+
+        /* Navigatiebalk onderaan */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #111;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 2px solid var(--accent-color);
+            z-index: 999;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: auto;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-btn.active {
+            color: var(--accent-color);
+        }
+
+        /* Schermen verbergen/tonen */
+        .app-page {
+            display: none;
+        }
+
+        .app-page.active {
+            display: block;
         }
 
         .form-container {
@@ -68,7 +112,6 @@
             resize: vertical;
         }
 
-        /* Snelknoppen voor datering */
         .quick-tags {
             display: flex;
             flex-wrap: wrap;
@@ -221,8 +264,6 @@
             background-color: #1a1a1a;
         }
 
-        .img-wrapper:hover { border-color: var(--accent-color); }
-
         .card-img {
             width: 100%;
             height: 100%;
@@ -245,14 +286,27 @@
             width: 100%;
             height: 350px;
             border-radius: 10px;
-            margin-top: 15px;
+            margin-top: 10px;
+            margin-bottom: 20px;
             border: 2px solid var(--accent-color);
             z-index: 1;
         }
 
+        .preview-img-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .preview-img {
+            max-width: 48%;
+            height: auto;
+            border-radius: 6px;
+            display: none;
+        }
+
         .leaflet-popup-content { color: #000000 !important; }
 
-        /* LIGHTBOX & INFO POP-UP STYLING */
         .lightbox {
             display: none;
             position: fixed;
@@ -320,97 +374,112 @@
 
     <h1>🪙 Mijn Vondsten Log</h1>
 
-    <div class="form-container">
-        <h2 id="form-titel">Nieuwe Vondst</h2>
-        <input type="hidden" id="bewerk-id" value="">
+    <div id="page-verzameling" class="app-page active">
+        <h2>🗺️ Mijn Vondstenkaart</h2>
+        <div id="map"></div>
+
+        <h2>Mijn Verzameling</h2>
+        <div class="tabs">
+            <div class="tab active" onclick="filterCategorie(event, 'Alles')">Alles</div>
+            <div class="tab" onclick="filterCategorie(event, 'Munten')">🪙 Munten</div>
+            <div class="tab" onclick="filterCategorie(event, 'Gespen')">🔍 Gespen</div>
+            <div class="tab" onclick="filterCategorie(event, 'Militaria')">🛡️ Militaria</div>
+            <div class="tab" onclick="filterCategorie(event, 'Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
+            <div class="tab" onclick="filterCategorie(event, 'Overig')">🏺 Overig</div>
+        </div>
+
+        <div id="vondsten-lijst"></div>
         
-        <div class="form-group">
-            <label for="categorie">Categorie (Mapje)</label>
-            <select id="categorie">
-                <option value="Munten">🪙 Munten</option>
-                <option value="Gespen">🔍 Gespen & Knopen</option>
-                <option value="Militaria">🛡️ Militaria</option>
-                <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
-                <option value="Overig">🏺 Overig / Keramiek</option>
-            </select>
-        </div>
+        <button class="excel-btn" onclick="exporteerNaarCSV()">📥 Exporteer naar Excel (CSV)</button>
+        <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Volledig Wissen</button>
+    </div>
 
-        <div class="form-group">
-            <label for="materiaal">Metaal / Materiaal</label>
-            <select id="materiaal">
-                <option value="Onbekend">❓ Onbekend</option>
-                <option value="Goud">🪙 Goud</option>
-                <option value="Zilver">🥈 Zilver</option>
-                <option value="Brons / Koper">🥉 Brons / Koper</option>
-                <option value="Lood / Tin">🛡️ Lood / Tin</option>
-                <option value="IJzer">⚙️ IJzer</option>
-                <option value="Glas / Keramiek">🏺 Glas / Keramiek</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="titel">Beschrijving / Naam</label>
-            <input type="text" id="titel" placeholder="Bijv. Romeinse denarius, koperen knoop...">
-        </div>
-
-        <div class="form-group">
-            <label for="datering">Vermoedelijke Periode</label>
-            <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr., Middeleeuws...">
-            <div class="quick-tags">
-                <button type="button" class="tag-btn" onclick="setDatering('Romeins')">Romeins</button>
-                <button type="button" class="tag-btn" onclick="setDatering('Middeleeuws')">Middeleeuws</button>
-                <button type="button" class="tag-btn" onclick="setDatering('16e-18e eeuw')">16e-18e eeuw</button>
-                <button type="button" class="tag-btn" onclick="setDatering('Modern / WO')">Modern / WO</button>
+    <div id="page-invoer" class="app-page">
+        <div class="form-container">
+            <h2 id="form-titel">Nieuwe Vondst</h2>
+            <input type="hidden" id="bewerk-id" value="">
+            
+            <div class="form-group">
+                <label for="categorie">Categorie (Mapje)</label>
+                <select id="categorie">
+                    <option value="Munten">🪙 Munten</option>
+                    <option value="Gespen">🔍 Gespen & Knopen</option>
+                    <option value="Militaria">🛡️ Militaria</option>
+                    <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
+                    <option value="Overig">🏺 Overig / Keramiek</option>
+                </select>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="locatie">GPS Coördinaten</label>
-            <input type="text" id="locatie" placeholder="Klik op de blauwe knop of typ zelf">
-            <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige GPS Vast</button>
-        </div>
+            <div class="form-group">
+                <label for="materiaal">Metaal / Materiaal</label>
+                <select id="materiaal">
+                    <option value="Onbekend">❓ Onbekend</option>
+                    <option value="Goud">🪙 Goud</option>
+                    <option value="Zilver">🥈 Zilver</option>
+                    <option value="Brons / Koper">🥉 Brons / Koper</option>
+                    <option value="Lood / Tin">🛡️ Lood / Tin</option>
+                    <option value="IJzer">⚙️ IJzer</option>
+                    <option value="Glas / Keramiek">🏺 Glas / Keramiek</option>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label for="info">📜 Extra Informatie (Functie, achtergrond, determinatie...)</label>
-            <textarea id="info" placeholder="Waarvoor diende het? Welke details vallen op? Schrijf het hier..."></textarea>
-        </div>
+            <div class="form-group">
+                <label for="titel">Beschrijving / Naam</label>
+                <input type="text" id="titel" placeholder="Bijv. Romeinse denarius, koperen knoop...">
+            </div>
 
-        <div class="form-group">
-            <label for="foto1">📸 Foto 1 (Voorkant)</label>
-            <input type="file" id="foto1" accept="image/*" onchange="verwerkFoto(event, 'img-preview1', 1)">
-        </div>
+            <div class="form-group">
+                <label for="datering">Vermoedelijke Periode</label>
+                <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr., Middeleeuws...">
+                <div class="quick-tags">
+                    <button type="button" class="tag-btn" onclick="setDatering('Romeins')">Romeins</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('Middeleeuws')">Middeleeuws</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('16e-18e eeuw')">16e-18e eeuw</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('Modern / WO')">Modern / WO</button>
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label for="foto2">📸 Foto 2 (Achterkant)</label>
-            <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 'img-preview2', 2)">
-        </div>
+            <div class="form-group">
+                <label for="locatie">GPS Coördinaten</label>
+                <input type="text" id="locatie" placeholder="Klik op de blauwe knop of typ zelf">
+                <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige GPS Vast</button>
+            </div>
 
-        <div class="preview-img-container">
-            <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
-            <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
-        </div>
+            <div class="form-group">
+                <label for="info">📜 Extra Informatie</label>
+                <textarea id="info" placeholder="Waarvoor diende het? Details..."></textarea>
+            </div>
 
-        <button id="opslaan-btn" onclick="slaVondstOp()">Vondst Opslaan</button>
-        <button id="annuleer-btn" style="display:none; background-color:#555; color:white;" onclick="resetFormulier()">Annuleer Bewerken</button>
+            <div class="form-group">
+                <label for="foto1">📸 Foto 1 (Voorkant)</label>
+                <input type="file" id="foto1" accept="image/*" onchange="verwerkFoto(event, 'img-preview1', 1)">
+            </div>
+
+            <div class="form-group">
+                <label for="foto2">📸 Foto 2 (Achterkant)</label>
+                <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 'img-preview2', 2)">
+            </div>
+
+            <div class="preview-img-container">
+                <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
+                <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
+            </div>
+
+            <button id="opslaan-btn" onclick="slaVondstOp()">Vondst Opslaan</button>
+            <button id="annuleer-btn" style="display:none; background-color:#555; color:white;" onclick="resetFormulier()">Annuleer Bewerken</button>
+        </div>
     </div>
 
-    <h2>🗺️ Mijn Vondstenkaart</h2>
-    <div id="map"></div>
-
-    <h2>Mijn Verzameling</h2>
-    <div class="tabs">
-        <div class="tab active" onclick="filterCategorie(event, 'Alles')">Alles</div>
-        <div class="tab" onclick="filterCategorie(event, 'Munten')">🪙 Munten</div>
-        <div class="tab" onclick="filterCategorie(event, 'Gespen')">🔍 Gespen</div>
-        <div class="tab" onclick="filterCategorie(event, 'Militaria')">🛡️ Militaria</div>
-        <div class="tab" onclick="filterCategorie(event, 'Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
-        <div class="tab" onclick="filterCategorie(event, 'Overig')">🏺 Overig</div>
+    <div class="bottom-nav">
+        <button id="nav-verzameling" class="nav-btn active" onclick="wisselScherm('verzameling')">
+            <span>🗺️</span>
+            <span>Mijn Verzameling</span>
+        </button>
+        <button id="nav-invoer" class="nav-btn" onclick="wisselScherm('invoer')">
+            <span>➕</span>
+            <span>Nieuwe Vondst</span>
+        </button>
     </div>
-
-    <div id="vondsten-lijst"></div>
-
-    <button class="excel-btn" onclick="exporteerNaarCSV()">📥 Exporteer Vondsten naar Excel (CSV)</button>
-    <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Volledig Wissen</button>
 
     <div id="lightbox" class="lightbox" onclick="sluitPopups(event)">
         <button class="lightbox-close" onclick="sluitPopups(event)">✕ Sluiten</button>
@@ -435,6 +504,22 @@
             }).addTo(map);
             markerGroup = L.layerGroup().addTo(map);
             updateKaartPinnetjes();
+        }
+
+        // SLIM SCHAKELEN TUSSEN DE SCHERMEN
+        function wisselScherm(schermNaam) {
+            document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+            if (schermNaam === 'verzameling') {
+                document.getElementById('page-verzameling').classList.add('active');
+                document.getElementById('nav-verzameling').classList.add('active');
+                // Kaart verversen omdat hij verborgen was
+                if (map) { setTimeout(() => { map.invalidateSize(); updateKaartPinnetjes(); }, 200); }
+            } else if (schermNaam === 'invoer') {
+                document.getElementById('page-invoer').classList.add('active');
+                document.getElementById('nav-invoer').classList.add('active');
+            }
         }
 
         function setDatering(waarde) {
@@ -534,7 +619,7 @@
                 localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
                 resetFormulier();
                 toonVondsten();
-                updateKaartPinnetjes();
+                wisselScherm('verzameling'); // Automatisch terug naar de verzameling!
             } catch (e) {
                 alert("⚠️ Geheugen vol. Exporteer je data en wis oude items.");
             }
@@ -588,7 +673,7 @@
                 document.getElementById('opslaan-btn').innerText = "Wijzigingen Opslaan";
                 document.getElementById('annuleer-btn').style.display = 'block';
 
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                wisselScherm('invoer'); // Schakel direct naar het formulier om te bewerken
             }
         }
 
@@ -604,6 +689,7 @@
         }
 
         function updateKaartPinnetjes() {
+            if (!map || !markerGroup) return;
             markerGroup.clearLayers();
             const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
             let geldigePunten = [];
@@ -683,16 +769,14 @@
             }
         }
 
-        // EXPORT FUNCTIE NAAR EXCEL/CSV
         function exporteerNaarCSV() {
             const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
             if (huidigeVondsten.length === 0) { alert("Er zijn nog geen vondsten om te exporteren!"); return; }
 
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // \uFEFF zorgt voor juiste weergave accenten in Excel
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
             csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;GPS-Coordinaten;Extra Informatie\r\n";
 
             huidigeVondsten.forEach(v => {
-                // Haal enters en puntkomma's uit de tekst om CSV-fouten te voorkomen
                 let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
                 let schoneTitel = (v.titel || "").replace(/;/g, ",");
                 let schoneDatering = (v.datering || "").replace(/;/g, ",");
