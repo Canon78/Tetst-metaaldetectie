@@ -148,7 +148,48 @@
             margin: 5px 0;
         }
 
+        /* Foto grid met miniaturen */
         .foto-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 2px solid #555;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            background-color: #1a1a1a;
+        }
+
+        .img-wrapper:hover {
+            border-color: var(--accent-color);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Vergrootglas-icoontje rechtsonder */
+        .zoom-icon {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: var(--accent-color);
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-size: 10px;
+            pointer-events: none;
+        }
+
+        .preview-img-container {
             display: flex;
             gap: 10px;
             margin-top: 10px;
@@ -159,13 +200,6 @@
             height: auto;
             border-radius: 6px;
             display: none;
-        }
-
-        .card-img {
-            width: 48%;
-            height: auto;
-            border-radius: 6px;
-            object-fit: cover;
         }
 
         #map {
@@ -179,6 +213,49 @@
 
         .leaflet-popup-content {
             color: #000000 !important;
+        }
+
+        /* LIGHTBOX POP-UP STYLING */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 8px;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .lightbox-caption {
+            color: white;
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--card-bg);
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -226,7 +303,7 @@
             <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 'img-preview2', 2)">
         </div>
 
-        <div class="foto-container">
+        <div class="preview-img-container">
             <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
             <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
         </div>
@@ -248,6 +325,12 @@
     </div>
 
     <div id="vondsten-lijst"></div>
+
+    <div id="lightbox" class="lightbox" onclick="sluitVergroting()">
+        <button class="lightbox-close">✕ Sluiten</button>
+        <img id="lightbox-img" class="lightbox-img" src="" alt="Vergroting">
+        <div id="lightbox-caption" class="lightbox-caption"></div>
+    </div>
 
     <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Volledig Wissen</button>
 
@@ -280,7 +363,6 @@
             }
         }
 
-        // SLIMME UPGRADE: Foto's automatisch verkleinen (compressie)
         function verwerkFoto(event, previewId, fotoNummer) {
             const file = event.target.files[0];
             if (!file) return;
@@ -290,7 +372,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const max_size = 600; // Maximale breedte/hoogte in pixels
+                    const max_size = 600; 
                     let width = img.width;
                     let height = img.height;
 
@@ -302,10 +384,9 @@
 
                     canvas.width = width;
                     canvas.height = height;
-                    const ctx = canvas.getContext('2m');
+                    const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Maak er een lichte JPG van (kwaliteit 0.7)
                     const gecomprimeerdeDataUrl = canvas.toDataURL('image/jpeg', 0.7);
                     
                     const preview = document.getElementById(previewId);
@@ -340,7 +421,6 @@
                 huidigeVondsten.push(nieuweVondst);
                 localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
 
-                // Reset formulier
                 document.getElementById('titel').value = "";
                 document.getElementById('datering').value = "";
                 document.getElementById('locatie').value = "";
@@ -355,7 +435,7 @@
                 toonVondsten();
                 updateKaartPinnetjes();
             } catch (e) {
-                alert("⚠️ Het geheugen zit vol door een te grote foto! Klik onderaan op de grijze knop om het geheugen te wissen en probeer het opnieuw met de nieuwe update.");
+                alert("⚠️ Geheugen vol. Wis het geheugen onderaan.");
             }
         }
 
@@ -402,6 +482,8 @@
 
                 const card = document.createElement('div');
                 card.className = 'vondst-card';
+                
+                // HTML structuur met de nieuwe compacte wrappers en zoom icoontjes
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span>${vondst.titel}</span>
@@ -410,8 +492,16 @@
                     <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
                     <div class="vondst-meta">📍 <b>GPS:</b> ${gpsWeergave}</div>
                     <div class="foto-container">
-                        ${vondst.foto1 ? `<img src="${vondst.foto1}" class="card-img">` : ''}
-                        ${vondst.foto2 ? `<img src="${vondst.foto2}" class="card-img">` : ''}
+                        ${vondst.foto1 ? `
+                            <div class="img-wrapper" onclick="toonVergroting('${vondst.foto1}', '${vondst.titel} - Voorkant')">
+                                <img src="${vondst.foto1}" class="card-img">
+                                <div class="zoom-icon">🔍</div>
+                            </div>` : ''}
+                        ${vondst.foto2 ? `
+                            <div class="img-wrapper" onclick="toonVergroting('${vondst.foto2}', '${vondst.titel} - Achterkant')">
+                                <img src="${vondst.foto2}" class="card-img">
+                                <div class="zoom-icon">🔍</div>
+                            </div>` : ''}
                     </div>
                 `;
                 lijst.appendChild(card);
@@ -422,6 +512,17 @@
             }
         }
 
+        // Functies voor de Pop-up vergroting
+        function toonVergroting(src, caption) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-caption').innerText = caption;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function sluitVergroting() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
         function filterCategorie(event, cat) {
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             event.target.classList.add('active');
@@ -429,11 +530,11 @@
         }
 
         function wisAlles() {
-            if(confirm("Weet je zeker dat je ALLE opgeslagen vondsten wilt wissen om ruimte te maken?")) {
+            if(confirm("Weet je zeker dat je alles wilt wissen?")) {
                 localStorage.removeItem('detectorVondsten');
                 toonVondsten();
                 if(markerGroup) markerGroup.clearLayers();
-                alert("Het geheugen is weer helemaal leeg en klaar voor gebruik!");
+                alert("Geheugen gewist!");
             }
         }
 
