@@ -564,8 +564,8 @@
             </div>
 
             <div class="form-group">
-                <label for="locatie-gps">🌍 Exacte GPS Coördinaten (Optioneel)</label>
-                <input type="text" id="locatie-gps" placeholder="Bijv. 51.331234, 4.365432">
+                <label for="locatie-gps">🌍 Exacte GPS Coördinaten of Google Maps Link (Plakken mag!)</label>
+                <input type="text" id="locatie-gps" placeholder="Plak hier coördinaten of de complete Google Maps link">
                 <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige Exacte GPS Vast</button>
             </div>
 
@@ -709,12 +709,40 @@
             }
         }
 
-        // ASYNC SERVICE DIE ADRES LIVE VERTAALT NAAR GEOGRAFISCHE COÖRDINATEN
+        // DE INTUÏTIEVE GOOGLE MAPS OPSCHONER (EXTRACTIE-ENGINE)
+        function maakGpsSchoon(invoerSnaar) {
+            if (!invoerSnaar) return "";
+            let text = invoerSnaar.trim();
+
+            // Scenario 1: Er is een complete Google Maps internetlink geplakt!
+            if (text.includes("google.com/maps") || text.includes("goo.gl/maps")) {
+                // Zoek naar het @-teken in de link (daar staan de coördinaten achter in Maps)
+                const regexAt = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+                const matchAt = text.match(regexAt);
+                if (matchAt) return `${matchAt[1]}, ${matchAt[2]}`;
+
+                // Zoek naar query coördinaten (?q=51.23,4.56)
+                const regexQ = /[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/;
+                const matchQ = text.match(regexQ);
+                if (matchQ) return `${matchQ[1]}, ${matchQ[2]}`;
+            }
+
+            // Scenario 2: Er staan letters, graden of rommel rondom de cijfers
+            // We vissen gewoon de twee reële cijferreeksen met een punt eruit
+            const regexCijfers = /(-?\d+\.\d+)[^\d-]+(-?\d+\.\d+)/;
+            const matchCijfers = text.match(regexCijfers);
+            if (matchCijfers) {
+                return `${matchCijfers[1]}, ${matchCijfers[2]}`;
+            }
+
+            return text; // Als het al schoon was, sturen we het gewoon terug
+        }
+
         async function zoekCoordinatenVanTekst(locatieNaam) {
             if (!locatieNaam || locatieNaam.toLowerCase() === "onbekend") return null;
             try {
                 const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locatieNaam + ', Belgium')}&limit=1`;
-                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV3' } });
+                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV4' } });
                 const data = await response.json();
                 if (data && data.length > 0) {
                     return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
@@ -806,7 +834,7 @@
                         titel: row[idxOmschrijving],
                         datering: idxDatering !== -1 ? row[idxDatering] : "Onbekend",
                         locatieNaam: idxVindplaats !== -1 ? row[idxVindplaats] : "Onbekend",
-                        locatieGps: "", // Blijft leeg, de kaart zoekt de tekst live op!
+                        locatieGps: "", 
                         weblink: "",
                         info: idxExtraInfo !== -1 ? row[idxExtraInfo] : "",
                         foto1: "", foto2: ""
@@ -818,7 +846,7 @@
 
                 try {
                     localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
-                    alert(`🎉 Succes! Er zijn ${geladenAantal} vondsten succesvol ingeladen! De kaarten werken direct live op basis van de plaatsnamen.`);
+                    alert(`🎉 Succes! Er zijn ${geladenAantal} vondsten succesvol ingeladen!`);
                     document.getElementById('csv-file').value = "";
                     toonVondsten(huidigeActieveCategorie);
                 } catch(error) {
@@ -835,7 +863,11 @@
             const titel = document.getElementById('titel').value;
             const datering = document.getElementById('datering').value;
             const locatieNaam = document.getElementById('locatie-naam').value;
-            const locatieGps = document.getElementById('locatie-gps').value;
+            
+            // HIER WORDT DE SCHOONMAAKFILTER TOEGEPAST BIJ HET OPSLAAN!
+            const ruweGps = document.getElementById('locatie-gps').value;
+            const locatieGps = maakGpsSchoon(ruweGps);
+
             const weblink = document.getElementById('weblink').value;
             const info = document.getElementById('info').value;
             const bewerkId = document.getElementById('bewerk-id').value;
@@ -864,7 +896,8 @@
                     categorie, materiaal, titel, datering, 
                     locatieNaam: locatieNaam || "Onbekende locatie", 
                     locatieGps, weblink, info,
-                    foto1: foto1DataUrl, foto2: foto2DataUrl
+                    foto1: foto1DataUrl,
+                    foto2: foto2DataUrl
                 };
                 huidigeVondsten.push(nieuweVondst);
                 alert("Vondst succesvol opgeslagen!");
@@ -900,12 +933,10 @@
             foto2DataUrl = "";
         }
 
-        // INTELLIGENTE INTEGRAAL LIVE-KAART MET AUTOMATISCHE ADRES-OMZETTING BIJ KLIK
         async function toggleKaart(id, gpsSnaar, locatieTekst, titel) {
             const mapDiv = document.getElementById(`map-${id}`);
             if (!mapDiv) return;
 
-            // Als de kaart al openstaat, klappen we hem netjes dicht
             if (mapDiv.style.display === 'block') {
                 mapDiv.style.display = 'none';
                 return;
@@ -917,13 +948,14 @@
             let lat = null;
             let lng = null;
 
-            // Scenario A: Er zijn al harde GPS coördinaten ingevuld
-            if (gpsSnaar && gpsSnaar.includes(',')) {
-                const coords = gpsSnaar.split(',');
+            // Maak de GPS snaar voor de zekerheid nogmaals schoon
+            const schoneGpsSnaar = maakGpsSchoon(gpsSnaar);
+
+            if (schoneGpsSnaar && schoneGpsSnaar.includes(',')) {
+                const coords = schoneGpsSnaar.split(',');
                 lat = parseFloat(coords[0].trim());
                 lng = parseFloat(coords[1].trim());
             } 
-            // Scenario B: Er is GEEN gps ingevuld, maar wel een adres of plaatsnaam!
             else if (locatieTekst && locatieTekst.trim() !== "" && locatieTekst.toLowerCase() !== "onbekend") {
                 const berekendeCoords = await zoekCoordinatenVanTekst(locatieTekst);
                 if (berekendeCoords) {
@@ -932,19 +964,18 @@
                 }
             }
 
-            // Als we een geldige locatie hebben gevonden (via GPS of Adres), bouwen we de Leaflet-kaart op
             if (lat !== null && !isNaN(lat) && lng !== null && !isNaN(lng)) {
-                mapDiv.innerHTML = ""; // Haal laad-tekst weg
+                mapDiv.innerHTML = ""; 
                 
                 setTimeout(() => {
-                    const m = L.map(`map-${id}`).setView([lat, lng], 14);
+                    const m = L.map(`map-${id}`).setView([lat, lng], 15);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
                     const marker = L.marker([lat, lng]).addTo(m);
-                    marker.bindPopup(`<b>${titel}</b><br><span style="font-size:12px; color:#555;">📍 ${locatieTekst}</span>`).openPopup();
+                    marker.bindPopup(`<b>${titel}</b><br><span style="font-size:12px; color:#555;">📍 ${locatieTekst || schoneGpsSnaar}</span>`).openPopup();
                     actieveKaarten[id] = m;
                 }, 100);
             } else {
-                mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>❌ Kon deze adreslocatie niet automatisch vinden op de kaart. Pas het adres aan via 'Bewerk'.</div>";
+                mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>❌ Kon deze locatie niet op de kaart laden. Controleer de coördinaten of het adres.</div>";
             }
         }
 
@@ -1015,8 +1046,7 @@
                 const schoneGps = (vondst.locatieGps || "").trim();
                 const schoneLocatieNaam = (vondst.locatieNaam || "").trim();
                 
-                // Er is een geldige kaartlocatie als er harde GPS is ÓF als het tekstvak niet leeg of onbekend is!
-                const heeftKaartLocatie = schoneGps.includes(',') || (schoneLocatieNaam !== "" && schoneLocatieNaam.toLowerCase() !== "onbekend");
+                const heeftKaartLocatie = schoneGps !== "" || (schoneLocatieNaam !== "" && schoneLocatieNaam.toLowerCase() !== "onbekend");
                 const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoneGps || schoneLocatieNaam)}`;
                 const heeftWeblink = vondst.weblink && vondst.weblink.trim().startsWith('http');
 
