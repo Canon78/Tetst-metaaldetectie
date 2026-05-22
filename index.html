@@ -2,12 +2,12 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Metaaldetectievondsten - Museum Editie</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,600;1,400&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -586,6 +586,20 @@
             z-index: 9999;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
+
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            .app-header { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+            .main-app-title { font-size: 22px; text-align: left; }
+            .btn-top-invoer { padding: 8px 12px; font-size: 13px; }
+            .vondst-header { font-size: 17px; flex-direction: row; gap: 10px; }
+            .img-wrapper { width: 100px; height: 100px; }
+            .btn-small {
+                padding: 11px 14px;
+                font-size: 13px;
+                flex: 1 1 calc(50% - 6px); 
+            }
+        }
     </style>
 </head>
 <body>
@@ -657,6 +671,14 @@
                         <option value="Glas / Keramiek">🏺 Glas / Keramiek</option>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="vondstType">Type Vondst</label>
+                    <select id="vondstType">
+                        <option value="Signaal (Metaaldetector)">🌟 Signaal (Metaaldetector)</option>
+                        <option value="Oogvondst (Zonder detector)">👀 Oogvondst (Zonder detector)</option>
+                    </select>
+                </div>
             </div>
 
             <div class="form-row">
@@ -667,6 +689,9 @@
                         <option value="Prachtig">✨ Prachtig</option>
                         <option value="Mooi">👍 Mooi</option>
                         <option value="Matig">📉 Matig</option>
+                        <option value="Onleesbaar">❌ Onleesbaar / Afgesleten</option>
+                        <option value="Voorkant blank">🔲 Voorkant blank</option>
+                        <option value="Achterkant blank">🔲 Achterkant blank</option>
                         <option value="Fragment">🧩 Fragment / Stukje</option>
                     </select>
                 </div>
@@ -751,7 +776,7 @@
 
     <div id="page-verzameling">
         <div class="search-container">
-            <input type="text" id="app-search" class="search-input" placeholder="COMBINATIE FILTER: Selecteer een tab hieronder én typ hier periode, locatie, materiaal..." oninput="filterVondstenLive()">
+            <input type="text" id="app-search" class="search-input" placeholder="COMBINATIE FILTER: Selecteer een tab én typ hier: periode, locatie, materiaal, staat of 'oogvondst'..." oninput="filterVondstenLive()">
         </div>
 
         <div class="tabs">
@@ -1004,6 +1029,7 @@
                         id: Date.now() + i, 
                         categorie: geselecteerdeCategorie,
                         materiaal: "Onbekend",
+                        vondstType: "Signaal (Metaaldetector)",
                         staat: "Bodemvondst (Topeffect)",
                         diameter: "",
                         gewicht: "",
@@ -1036,6 +1062,7 @@
         function slaVondstOp() {
             const categorie = document.getElementById('categorie').value;
             const materiaal = document.getElementById('materiaal').value;
+            const vondstType = document.getElementById('vondstType').value;
             const staat = document.getElementById('staat').value;
             const diameter = document.getElementById('diameter').value;
             const gewicht = document.getElementById('gewicht').value;
@@ -1057,7 +1084,7 @@
                     if (vondst.id == bewerkId) {
                         return {
                             id: vondst.id,
-                            categorie, materiaal, staat, diameter, gewicht, titel, datering, 
+                            categorie, materiaal, vondstType, staat, diameter, gewicht, titel, datering, 
                             locatieNaam: locatieNaam || "Onbekende locatie", 
                             locatieGps, weblink, info,
                             foto1: foto1DataUrl, foto2: foto2DataUrl
@@ -1069,7 +1096,7 @@
             } else {
                 const nieuweVondst = {
                     id: Date.now(),
-                    categorie, materiaal, staat, diameter, gewicht, titel, datering, 
+                    categorie, materiaal, vondstType, staat, diameter, gewicht, titel, datering, 
                     locatieNaam: locatieNaam || "Onbekende locatie", 
                     locatieGps, weblink, info,
                     foto1: foto1DataUrl,
@@ -1097,6 +1124,7 @@
             document.getElementById('info').value = "";
             document.getElementById('bewerk-id').value = "";
             document.getElementById('materiaal').value = "Onbekend";
+            document.getElementById('vondstType').value = "Signaal (Metaaldetector)";
             document.getElementById('staat').value = "Bodemvondst (Topeffect)";
             document.getElementById('diameter').value = "";
             document.getElementById('gewicht').value = "";
@@ -1170,6 +1198,7 @@
             if (vondst) {
                 document.getElementById('categorie').value = vondst.categorie;
                 document.getElementById('materiaal').value = vondst.materiaal || "Onbekend";
+                document.getElementById('vondstType').value = vondst.vondstType || "Signaal (Metaaldetector)";
                 document.getElementById('staat').value = vondst.staat || "Bodemvondst (Topeffect)";
                 document.getElementById('diameter').value = vondst.diameter || "";
                 document.getElementById('gewicht').value = vondst.gewicht || "";
@@ -1226,17 +1255,13 @@
             });
             localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
 
-            // Update live de tellers bovenaan op basis van ALLES in het geheugen
             updateDashboard(huidigeVondsten);
-
             actieveKaarten = {}; 
             const schoneZoekTerm = zoekTerm.toLowerCase().trim();
 
             huidigeVondsten.forEach(vondst => {
-                // COMBINATIE FILTER STAP 1: Klopt de categorie-tab?
                 if (filter !== 'Alles' && vondst.categorie !== filter) return;
 
-                // COMBINATIE FILTER STAP 2: Klopt de zoekterm (indien getypt)?
                 if (schoneZoekTerm !== "") {
                     const inTitel = (vondst.titel || "").toLowerCase().includes(schoneZoekTerm);
                     const inMateriaal = (vondst.materiaal || "").toLowerCase().includes(schoneZoekTerm);
@@ -1244,8 +1269,9 @@
                     const inLocatie = (vondst.locatieNaam || "").toLowerCase().includes(schoneZoekTerm);
                     const inInfo = (vondst.info || "").toLowerCase().includes(schoneZoekTerm);
                     const inStaat = (vondst.staat || "").toLowerCase().includes(schoneZoekTerm);
+                    const inType = (vondst.vondstType || "").toLowerCase().includes(schoneZoekTerm);
                     
-                    if (!inTitel && !inMateriaal && !inDatering && !inLocatie && !inInfo && !inStaat) return;
+                    if (!inTitel && !inMateriaal && !inDatering && !inLocatie && !inInfo && !inStaat && !inType) return;
                 }
 
                 const schoneGps = (vondst.locatieGps || "").trim();
@@ -1261,7 +1287,6 @@
                 const veiligeTitel = (vondst.titel || "").replace(/'/g, "\\'").replace(/"/g, '"');
                 const veiligeLocatie = (schoneLocatieNaam || "").replace(/'/g, "\\'").replace(/"/g, '"');
 
-                // Bouw optionele data elegant op voor weergave
                 let extraTagsLijn = "";
                 if(vondst.diameter || vondst.gewicht) {
                     let dm = vondst.diameter ? `📏 <b>Ø:</b> ${vondst.diameter} mm` : "";
@@ -1278,9 +1303,10 @@
                     
                     <div class="vondst-grid-meta">
                         <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal || 'Onbekend'}</div>
-                        <div class="vondst-meta">✨ <b>Staat:</b> ${vondst.staat || 'Bodemvondst (Topeffect)'}</div>
+                        <div class="vondst-meta">✨ <b>Staat:</b> ${vondst.staat || 'Bodemvondst'}</div>
                         <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
                         <div class="vondst-meta">📍 <b>Locatie:</b> ${vondst.locatieNaam || 'Niet vastgelegd'}</div>
+                        <div class="vondst-meta">🔎 <b>Methode:</b> ${vondst.vondstType || 'Signaal (Metaaldetector)'}</div>
                     </div>
                     
                     ${extraTagsLijn}
@@ -1334,7 +1360,7 @@
             const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
             if (huidigeVondsten.length === 0) { alert("Geen data."); return; }
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
-            csvContent += "ID;Categorie;Materiaal;Staat;Diameter_mm;Gewicht_gr;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
+            csvContent += "ID;Categorie;Materiaal;VondstType;Staat;Diameter_mm;Gewicht_gr;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
             huidigeVondsten.forEach(v => {
                 let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
                 let schoneTitel = (v.titel || "").replace(/;/g, ",");
@@ -1342,7 +1368,7 @@
                 let schoneLocatieNaam = (v.locatieNaam || "Onbekend").replace(/;/g, " ");
                 let schoneLocatieGps = (v.locatieGps || "").replace(/;/g, " ");
                 let schoneWeblink = (v.weblink || "").replace(/;/g, " ");
-                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${v.staat || 'Bodemvondst'};${v.diameter || ''};${v.gewicht || ''};${schoneTitel};${schoneDatering};${schoneLocatieNaam};${schoneLocatieGps};${schoneWeblink};${schoneInfo}\r\n`;
+                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${v.vondstType || 'Detector'};${v.staat || 'Bodemvondst'};${v.diameter || ''};${v.gewicht || ''};${schoneTitel};${schoneDatering};${schoneLocatieNaam};${schoneLocatieGps};${schoneWeblink};${schoneInfo}\r\n`;
             });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
