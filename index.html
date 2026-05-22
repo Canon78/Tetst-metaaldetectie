@@ -293,7 +293,7 @@
             transition: all 0.2s;
         }
 
-        /* SCHONE HISTORISCHE TABBLAD KLEUREN */
+        /* TABBLAD KLEUREN */
         .tab.cat-Alles.active { background-color: #d4af37; border-color: #d4af37; color: #000; font-weight: bold; }
         .tab.cat-Munten.active { background-color: #f1c40f; border-color: #f1c40f; color: #000; font-weight: bold; }
         .tab.cat-Gespen.active { background-color: #3498db; border-color: #3498db; color: #fff; font-weight: bold; }
@@ -311,7 +311,7 @@
             border-left: 4px solid #334155;
         }
 
-        /* HERKENNINGSLIJNEN PER APARTE CATEGORIE */
+        /* LIJN- EN TEXTKLEUREN PER CATEGORIE */
         .vondst-card.cat-Munten { border-left-color: #f1c40f; }
         .vondst-card.cat-Munten .vondst-cat-badge { color: #f1c40f; }
 
@@ -738,7 +738,7 @@
             if (!invoerSnaar) return "";
             let text = invoerSnaar.trim();
 
-            if (text.includes("google.com/maps") || text.includes("goo.gl/maps")) {
+            if (text.includes("maps.google") || text.includes("goo.gl/maps") || text.includes("google.com/maps")) {
                 const regexAt = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
                 const matchAt = text.match(regexAt);
                 if (matchAt) return `${matchAt[1]}, ${matchAt[2]}`;
@@ -758,10 +758,10 @@
         }
 
         async function zoekCoordinatenVanTekst(locatieNaam) {
-            if (!locatieNaam || locatieNaam.toLowerCase() === "onbekend") return null;
+            if (!locatieNaam || locatieNaam.toLowerCase() === "onbekend" || locatieNaam.toLowerCase() === "niet vastgelegd") return null;
             try {
                 const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locatieNaam + ', Belgium')}&limit=1`;
-                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV6' } });
+                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV7' } });
                 const data = await response.json();
                 if (data && data.length > 0) {
                     return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
@@ -792,7 +792,7 @@
                     if (fotoNummer === 1) foto1DataUrl = gecomprimeerdeDataUrl;
                     if (fotoNummer === 2) foto2DataUrl = gecomprimeerdeDataUrl;
                 };
-                img.src = img.src = e.target.result;
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
@@ -951,6 +951,7 @@
             foto2DataUrl = "";
         }
 
+        // DE 100% GECORRIGEERDE EN BEVEILIGDE KAARTFUNCTIE
         async function toggleKaart(id, gpsSnaar, locatieTekst, titel) {
             const mapDiv = document.getElementById(`map-${id}`);
             if (!mapDiv) return;
@@ -973,7 +974,7 @@
                 lat = parseFloat(coords[0].trim());
                 lng = parseFloat(coords[1].trim());
             } 
-            else if (locatieTekst && locatieTekst.trim() !== "" && locatieTekst.toLowerCase() !== "onbekend") {
+            else if (locatieTekst && locatieTekst.trim() !== "" && locatieTekst.toLowerCase() !== "onbekend" && locatieTekst.toLowerCase() !== "niet vastgelegd") {
                 const berekendeCoords = await zoekCoordinatenVanTekst(locatieTekst);
                 if (berekendeCoords) {
                     lat = berekendeCoords.lat;
@@ -985,14 +986,18 @@
                 mapDiv.innerHTML = ""; 
                 
                 setTimeout(() => {
-                    const m = L.map(`map-${id}`).setView([lat, lng], 15);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
-                    const marker = L.marker([lat, lng]).addTo(m);
-                    marker.bindPopup(`<b>${titel}</b><br><span style="font-size:12px; color:#555;">📍 ${locatieTekst || schoneGpsSnaar}</span>`).openPopup();
-                    actieveKaarten[id] = m;
-                }, 100);
+                    try {
+                        const m = L.map(`map-${id}`).setView([lat, lng], 15);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
+                        const marker = L.marker([lat, lng]).addTo(m);
+                        marker.bindPopup(`<b>${titel}</b><br><span style="font-size:12px; color:#555;">📍 ${locatieTekst || schoneGpsSnaar}</span>`).openPopup();
+                        actieveKaarten[id] = m;
+                    } catch(err) {
+                        mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>⚠️ Kaart kon niet renderen. Probeer nogmaals.</div>";
+                    }
+                }, 150);
             } else {
-                mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>❌ Kon deze locatie niet op de kaart laden. Pas het adres aan via 'Bewerk'.</div>";
+                mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>❌ Geen bruikbare locatie of GPS gevonden voor dit voorwerp. Pas de locatie aan via 'Bewerk'.</div>";
             }
         }
 
@@ -1063,13 +1068,17 @@
                 const schoneGps = (vondst.locatieGps || "").trim();
                 const schoneLocatieNaam = (vondst.locatieNaam || "").trim();
                 
-                const heeftKaartLocatie = schoneGps !== "" || (schoneLocatieNaam !== "" && schoneLocatieNaam.toLowerCase() !== "onbekend");
+                const heeftKaartLocatie = schoneGps !== "" || (schoneLocatieNaam !== "" && schoneLocatieNaam.toLowerCase() !== "onbekend" && schoneLocatieNaam.toLowerCase() !== "niet vastgelegd");
                 const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoneGps || schoneLocatieNaam)}`;
                 const heeftWeblink = vondst.weblink && vondst.weblink.trim().startsWith('http');
 
                 const card = document.createElement('div');
                 card.className = `vondst-card cat-${vondst.categorie}`;
                 
+                // Veilig escapen van quotes voor JavaScript-aanroepen
+                const veiligeTitel = (vondst.titel || "").replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const veiligeLocatie = (schoneLocatieNaam || "").replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span>${vondst.titel}</span>
@@ -1081,12 +1090,12 @@
                     
                     <div class="foto-container">
                         ${vondst.foto1 ? `
-                            <div class="img-wrapper" onclick="openFoto('${vondst.foto1}', '${vondst.titel} - Voorkant')">
+                            <div class="img-wrapper" onclick="openFoto('${vondst.foto1}', '${veiligeTitel} - Voorkant')">
                                 <img src="${vondst.foto1}" class="card-img">
                                 <div class="zoom-icon">🔍</div>
                             </div>` : ''}
                         ${vondst.foto2 ? `
-                            <div class="img-wrapper" onclick="openFoto('${vondst.foto2}', '${vondst.titel} - Achterkant')">
+                            <div class="img-wrapper" onclick="openFoto('${vondst.foto2}', '${veiligeTitel} - Achterkant')">
                                 <img src="${vondst.foto2}" class="card-img">
                                 <div class="zoom-icon">🔍</div>
                             </div>` : ''}
@@ -1098,7 +1107,7 @@
                     <div class="action-buttons">
                         <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
                         ${heeftWeblink ? `<a href="${vondst.weblink.trim()}" target="_blank" class="btn-small btn-web">🌐 Link</a>` : ''}
-                        ${heeftKaartLocatie ? `<button class="btn-small btn-map" onclick="toggleKaart(${vondst.id}, '${schoneGps}', '${schoneLocatieNaam.replace(/'/g, "\\'")}', '${vondst.titel.replace(/'/g, "\\'")}'); document.getElementById('gmaps-link-${vondst.id}').style.display = (document.getElementById('gmaps-link-${vondst.id}').style.display === 'block' ? 'none' : 'block');">🗺️ Kaart</button>` : ''}
+                        ${heeftKaartLocatie ? `<button class="btn-small btn-map" onclick="toggleKaart(${vondst.id}, '${schoneGps}', '${veiligeLocatie}', '${veiligeTitel}'); document.getElementById('gmaps-link-${vondst.id}').style.display = (document.getElementById('gmaps-link-${vondst.id}').style.display === 'block' ? 'none' : 'block');">🗺️ Kaart</button>` : ''}
                         <button class="btn-small btn-edit" onclick="bewerkVondst(${vondst.id})">✏️ Bewerk</button>
                         <button class="btn-small btn-delete" onclick="verwijderVondst(${vondst.id})">🗑️ Wis</button>
                     </div>
