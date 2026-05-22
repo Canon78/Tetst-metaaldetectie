@@ -463,8 +463,6 @@
             padding: 14px;
             border-radius: 8px;
             font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 10px;
         }
 
         button.danger-btn {
@@ -567,32 +565,31 @@
             cursor: pointer;
         }
 
-        /* GECORRIGEERD: DE PIJL STAAT NU ALTIJD PERMANENT EN MOOI ZICHTBAAR IN BEELD */
+        /* GECORRIGEERD: DE PIJL STAAT NU GECENTREERD, PERMANENT ÉN DUIDELIJK VOL-GOUD */
         .scroll-to-top {
             position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background-color: var(--card-bg);
-            color: var(--accent-gold);
-            border: 1px solid var(--accent-gold);
-            width: 45px;
-            height: 45px;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--accent-gold) !important; /* Volledig goud gevuld */
+            color: #000000 !important;                      /* Zwarte pijl voor maximaal contrast */
+            border: 2px solid #ffffff;
+            width: 52px;                                    /* Iets groter en kloeker */
+            height: 52px;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             cursor: pointer;
-            display: flex; /* Altijd flex weergave ipv none */
+            display: flex !important;                       /* Geforceerd permanent in beeld */
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            box-shadow: 0 0 12px rgba(212, 175, 55, 0.4); /* Goudkleurig gloedje */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.5); /* Zware diepe schaduw + gloed */
             transition: all 0.2s ease-in-out;
         }
         
         .scroll-to-top:hover {
-            background-color: var(--accent-gold);
-            color: black;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+            transform: translateY(-4px);                    /* Wipt chique omhoog bij aanwijzen */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.9);
         }
     </style>
 </head>
@@ -826,7 +823,6 @@
         let actieveKaarten = {}; 
         let huidigeActieveCategorie = "Alles";
 
-        // Scroll logica verwijderd zodat de knop ten allen tijde geforceerd blijft staan
         function gaNaarBoven() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -849,7 +845,7 @@
         }
 
         function setDatering(waarde) {
-            document.getElementById('datering').value = valeur = waarde;
+            document.getElementById('datering').value = waarde;
         }
 
         function haalGPS() {
@@ -1343,11 +1339,11 @@
         }
 
         function exporteerNaarCSV() {
-            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            if (huidigeVondsten.length === 0) { alert("Geen data."); return; }
+            const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            if (presidentialVondsten.length === 0) { alert("Geen data."); return; }
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
             csvContent += "ID;Categorie;Materiaal;VondstType;Staat;Diameter_mm;Gewicht_gr;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
-            huidigeVondsten.forEach(v => {
+            presidentialVondsten.forEach(v => {
                 let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
                 let schoneTitel = (v.titel || "").replace(/;/g, ",");
                 let schoneDatering = (v.datering || "").replace(/;/g, ",");
