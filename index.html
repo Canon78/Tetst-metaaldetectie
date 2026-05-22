@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metaaldetectievondsten</title>
+    <title>Metaaldetectievondsten - Museum Editie</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,600;1,400&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -42,7 +42,7 @@
             align-items: center;
             border-bottom: 2px solid rgba(212, 175, 55, 0.2);
             padding-bottom: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             margin-top: 10px;
         }
 
@@ -77,6 +77,49 @@
             background-color: rgba(212, 175, 55, 0.1);
         }
 
+        /* STATISTIEKEN DASHBOARD */
+        .stats-dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #1e2533 0%, #151a24 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .stat-item {
+            flex: 1;
+            min-width: 110px;
+            text-align: center;
+            padding: 8px;
+            background-color: rgba(15, 19, 26, 0.5);
+            border-radius: 6px;
+            border: 1px solid #2d3748;
+        }
+
+        .stat-item.total {
+            border-color: var(--accent-gold);
+            background-color: rgba(212, 175, 55, 0.05);
+        }
+
+        .stat-val {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 2px;
+        }
+        .stat-item.total .stat-val { color: var(--accent-gold); }
+
+        .stat-lbl {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         h2 {
             font-family: 'Playfair Display', serif;
             font-size: 24px;
@@ -100,6 +143,15 @@
             margin-bottom: 25px;
             border: 1px solid #2d3748;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
         }
 
         .form-group {
@@ -135,6 +187,27 @@
         textarea {
             height: 90px;
             resize: vertical;
+        }
+
+        .quick-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .tag-btn {
+            background-color: #1e2533;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .tag-btn:hover {
+            border-color: var(--accent-gold);
+            color: white;
         }
 
         .search-container {
@@ -215,10 +288,16 @@
             color: white;
         }
 
+        .vondst-grid-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 6px 15px;
+            margin-bottom: 10px;
+        }
+
         .vondst-meta {
             font-size: 14px;
             color: #cbd5e1;
-            margin: 6px 0;
         }
 
         .vondst-meta b {
@@ -327,7 +406,6 @@
             padding-top: 12px;
         }
 
-        /* STRAKKE COMPACTE DESKTOP KNOPPEN */
         .btn-small {
             padding: 8px 14px;
             font-size: 13px;
@@ -489,7 +567,6 @@
             cursor: pointer;
         }
 
-        /* DE VERWENEN SCROLL TO TOP PIJL IS TERUG */
         .scroll-to-top {
             position: fixed;
             bottom: 25px;
@@ -519,34 +596,88 @@
         <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuwe Vondst</button>
     </div>
 
+    <div class="stats-dashboard" id="dashboard-balk">
+        <div class="stat-item total">
+            <div class="stat-val" id="stat-total">0</div>
+            <div class="stat-lbl">📜 Totaal</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val" id="stat-munten">0</div>
+            <div class="stat-lbl">🪙 Munten</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val" id="stat-gespen">0</div>
+            <div class="stat-lbl">🔍 Gespen</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val" id="stat-knopen">0</div>
+            <div class="stat-lbl">🧷 Knopen</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val" id="stat-militaria">0</div>
+            <div class="stat-lbl">🛡️ Militaria</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val" id="stat-voorwerpen">0</div>
+            <div class="stat-lbl">🗝️ Voorwerpen</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-val" id="stat-overig">0</div>
+            <div class="stat-lbl">🏺 Overig</div>
+        </div>
+    </div>
+
     <div id="page-invoer" class="app-page">
         <div class="form-container">
             <h2 id="form-titel">Nieuwe Vondst</h2>
             <input type="hidden" id="bewerk-id" value="">
             
-            <div class="form-group">
-                <label for="categorie">Categorie (Mapje)</label>
-                <select id="categorie">
-                    <option value="Munten">🪙 Munten</option>
-                    <option value="Gespen">🔍 Gespen</option>
-                    <option value="Knopen">🧷 Knopen</option>
-                    <option value="Militaria">🛡️ Militaria</option>
-                    <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
-                    <option value="Overig">🏺 Overig / Keramiek</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="categorie">Categorie (Mapje)</label>
+                    <select id="categorie">
+                        <option value="Munten">🪙 Munten</option>
+                        <option value="Gespen">🔍 Gespen</option>
+                        <option value="Knopen">🧷 Knopen</option>
+                        <option value="Militaria">🛡️ Militaria</option>
+                        <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
+                        <option value="Overig">🏺 Overig / Keramiek</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="materiaal">Metaal / Materiaal</label>
+                    <select id="materiaal">
+                        <option value="Onbekend">❓ Onbekend</option>
+                        <option value="Goud">🪙 Goud</option>
+                        <option value="Zilver">🥈 Zilver</option>
+                        <option value="Brons / Koper">🥉 Brons / Koper</option>
+                        <option value="Lood / Tin">🛡️ Lood / Tin</option>
+                        <option value="IJzer">⚙️ IJzer</option>
+                        <option value="Glas / Keramiek">🏺 Glas / Keramiek</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="materiaal">Metaal / Materiaal</label>
-                <select id="materiaal">
-                    <option value="Onbekend">❓ Onbekend</option>
-                    <option value="Goud">🪙 Goud</option>
-                    <option value="Zilver">🥈 Zilver</option>
-                    <option value="Brons / Koper">🥉 Brons / Koper</option>
-                    <option value="Lood / Tin">🛡️ Lood / Tin</option>
-                    <option value="IJzer">⚙️ IJzer</option>
-                    <option value="Glas / Keramiek">🏺 Glas / Keramiek</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="staat">Staat van de vondst</label>
+                    <select id="staat">
+                        <option value="Bodemvondst (Topeffect)">Bodemvondst (Topeffect)</option>
+                        <option value="Prachtig">✨ Prachtig</option>
+                        <option value="Mooi">👍 Mooi</option>
+                        <option value="Matig">📉 Matig</option>
+                        <option value="Fragment">🧩 Fragment / Stukje</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="diameter">Diameter (mm)</label>
+                    <input type="number" id="diameter" step="0.1" placeholder="Bijv. 23.5">
+                </div>
+                <div class="form-group">
+                    <label for="gewicht">Gewicht (gram)</label>
+                    <input type="number" id="gewicht" step="0.01" placeholder="Bijv. 4.25">
+                </div>
             </div>
 
             <div class="form-group">
@@ -556,12 +687,16 @@
 
             <div class="form-group">
                 <label for="datering">Vermoedelijke Periode</label>
-                <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr...">
+                <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr, 18e eeuw...">
                 <div class="quick-tags">
                     <button type="button" class="tag-btn" onclick="setDatering('Romeins')">Romeins</button>
                     <button type="button" class="tag-btn" onclick="setDatering('Middeleeuws')">Middeleeuws</button>
-                    <button type="button" class="tag-btn" onclick="setDatering('16e-18e eeuw')">16e-18e eeuw</button>
-                    <button type="button" class="tag-btn" onclick="setDatering('Modern / WO')">Modern / WO</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('16e eeuw')">16e eeuw</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('17e eeuw')">17e eeuw</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('18e eeuw')">18e eeuw</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('19e eeuw')">19e eeuw</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('WO1')">WO1</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('WO2')">WO2</button>
                 </div>
             </div>
 
@@ -616,7 +751,7 @@
 
     <div id="page-verzameling">
         <div class="search-container">
-            <input type="text" id="app-search" class="search-input" placeholder="Zoek op omschrijving, datering, locatie..." oninput="filterVondstenLive()">
+            <input type="text" id="app-search" class="search-input" placeholder="COMBINATIE FILTER: Selecteer een tab hieronder én typ hier periode, locatie, materiaal..." oninput="filterVondstenLive()">
         </div>
 
         <div class="tabs">
@@ -717,6 +852,31 @@
                     { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
                 );
             }
+        }
+
+        function updateDashboard(vondsten) {
+            let munten = 0, gespen = 0, knopen = 0, militaria = 0, voorwerpen = 0, overig = 0;
+            
+            vondsten.forEach(v => {
+                let cat = v.categorie;
+                if (!cat || cat === "Gespen & Knopen" || cat.includes('&')) {
+                    cat = (v.titel || "").toLowerCase().includes('knoop') ? "Knopen" : "Gespen";
+                }
+                if(cat === "Munten") munten++;
+                else if(cat === "Gespen") gespen++;
+                else if(cat === "Knopen") knopen++;
+                else if(cat === "Militaria") militaria++;
+                else if(cat === "Gebruiksvoorwerpen") voorwerpen++;
+                else overig++;
+            });
+
+            document.getElementById('stat-total').innerText = vondsten.length;
+            document.getElementById('stat-munten').innerText = munten;
+            document.getElementById('stat-gespen').innerText = gespen;
+            document.getElementById('stat-knopen').innerText = knopen;
+            document.getElementById('stat-militaria').innerText = militaria;
+            document.getElementById('stat-voorwerpen').innerText = voorwerpen;
+            document.getElementById('stat-overig').innerText = overig;
         }
 
         function maakGpsSchoon(invoerSnaar) {
@@ -844,6 +1004,9 @@
                         id: Date.now() + i, 
                         categorie: geselecteerdeCategorie,
                         materiaal: "Onbekend",
+                        staat: "Bodemvondst (Topeffect)",
+                        diameter: "",
+                        gewicht: "",
                         titel: row[idxOmschrijving],
                         datering: row[idxDatering] || "Onbekend",
                         locatieNaam: row[idxVindplaats] || "Onbekend",
@@ -873,6 +1036,9 @@
         function slaVondstOp() {
             const categorie = document.getElementById('categorie').value;
             const materiaal = document.getElementById('materiaal').value;
+            const staat = document.getElementById('staat').value;
+            const diameter = document.getElementById('diameter').value;
+            const gewicht = document.getElementById('gewicht').value;
             const titel = document.getElementById('titel').value;
             const datering = document.getElementById('datering').value;
             const locatieNaam = document.getElementById('locatie-naam').value;
@@ -891,7 +1057,7 @@
                     if (vondst.id == bewerkId) {
                         return {
                             id: vondst.id,
-                            categorie, materiaal, titel, datering, 
+                            categorie, materiaal, staat, diameter, gewicht, titel, datering, 
                             locatieNaam: locatieNaam || "Onbekende locatie", 
                             locatieGps, weblink, info,
                             foto1: foto1DataUrl, foto2: foto2DataUrl
@@ -903,7 +1069,7 @@
             } else {
                 const nieuweVondst = {
                     id: Date.now(),
-                    categorie, materiaal, titel, datering, 
+                    categorie, materiaal, staat, diameter, gewicht, titel, datering, 
                     locatieNaam: locatieNaam || "Onbekende locatie", 
                     locatieGps, weblink, info,
                     foto1: foto1DataUrl,
@@ -931,6 +1097,9 @@
             document.getElementById('info').value = "";
             document.getElementById('bewerk-id').value = "";
             document.getElementById('materiaal').value = "Onbekend";
+            document.getElementById('staat').value = "Bodemvondst (Topeffect)";
+            document.getElementById('diameter').value = "";
+            document.getElementById('gewicht').value = "";
             if(document.getElementById('foto1')) document.getElementById('foto1').value = "";
             if(document.getElementById('foto2')) document.getElementById('foto2').value = "";
             document.getElementById('wrapper-preview1').style.display = 'none';
@@ -1001,6 +1170,9 @@
             if (vondst) {
                 document.getElementById('categorie').value = vondst.categorie;
                 document.getElementById('materiaal').value = vondst.materiaal || "Onbekend";
+                document.getElementById('staat').value = vondst.staat || "Bodemvondst (Topeffect)";
+                document.getElementById('diameter').value = vondst.diameter || "";
+                document.getElementById('gewicht').value = vondst.gewicht || "";
                 document.getElementById('titel').value = vondst.titel;
                 document.getElementById('datering').value = vondst.datering || "";
                 document.getElementById('locatie-naam').value = vondst.locatieNaam || "";
@@ -1046,7 +1218,6 @@
             
             let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
             
-            // HERSTELT OUDE SAMENGEVOEGDE CATEGORIEËN METEEN LIVE BIJ HET RENDUTEN
             huidigeVondsten = huidigeVondsten.map(v => {
                 if (!v.categorie || v.categorie === "Gespen & Knopen" || v.categorie.includes('&')) {
                     v.categorie = (v.titel || "").toLowerCase().includes('knoop') ? "Knopen" : "Gespen";
@@ -1055,19 +1226,26 @@
             });
             localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
 
+            // Update live de tellers bovenaan op basis van ALLES in het geheugen
+            updateDashboard(huidigeVondsten);
+
             actieveKaarten = {}; 
             const schoneZoekTerm = zoekTerm.toLowerCase().trim();
 
             huidigeVondsten.forEach(vondst => {
+                // COMBINATIE FILTER STAP 1: Klopt de categorie-tab?
                 if (filter !== 'Alles' && vondst.categorie !== filter) return;
 
+                // COMBINATIE FILTER STAP 2: Klopt de zoekterm (indien getypt)?
                 if (schoneZoekTerm !== "") {
                     const inTitel = (vondst.titel || "").toLowerCase().includes(schoneZoekTerm);
                     const inMateriaal = (vondst.materiaal || "").toLowerCase().includes(schoneZoekTerm);
                     const inDatering = (vondst.datering || "").toLowerCase().includes(schoneZoekTerm);
                     const inLocatie = (vondst.locatieNaam || "").toLowerCase().includes(schoneZoekTerm);
                     const inInfo = (vondst.info || "").toLowerCase().includes(schoneZoekTerm);
-                    if (!inTitel && !inMateriaal && !inDatering && !inLocatie && !inInfo) return;
+                    const inStaat = (vondst.staat || "").toLowerCase().includes(schoneZoekTerm);
+                    
+                    if (!inTitel && !inMateriaal && !inDatering && !inLocatie && !inInfo && !inStaat) return;
                 }
 
                 const schoneGps = (vondst.locatieGps || "").trim();
@@ -1083,14 +1261,29 @@
                 const veiligeTitel = (vondst.titel || "").replace(/'/g, "\\'").replace(/"/g, '"');
                 const veiligeLocatie = (schoneLocatieNaam || "").replace(/'/g, "\\'").replace(/"/g, '"');
 
+                // Bouw optionele data elegant op voor weergave
+                let extraTagsLijn = "";
+                if(vondst.diameter || vondst.gewicht) {
+                    let dm = vondst.diameter ? `📏 <b>Ø:</b> ${vondst.diameter} mm` : "";
+                    let gw = vondst.gewicht ? `⚖️ <b>Gewicht:</b> ${vondst.gewicht} gr` : "";
+                    let scheider = (vondst.diameter && vondst.gewicht) ? " | " : "";
+                    extraTagsLijn = `<div class="vondst-meta">${dm}${scheider}${gw}</div>`;
+                }
+
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span>${vondst.titel}</span>
                         <span class="vondst-cat-badge" style="font-size:13px; font-family:sans-serif; font-weight:bold;">${vondst.categorie}</span>
                     </div>
-                    <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal || 'Onbekend'}</div>
-                    <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
-                    <div class="vondst-meta">📍 <b>Locatie:</b> ${vondst.locatieNaam || 'Niet vastgelegd'}</div>
+                    
+                    <div class="vondst-grid-meta">
+                        <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal || 'Onbekend'}</div>
+                        <div class="vondst-meta">✨ <b>Staat:</b> ${vondst.staat || 'Bodemvondst (Topeffect)'}</div>
+                        <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
+                        <div class="vondst-meta">📍 <b>Locatie:</b> ${vondst.locatieNaam || 'Niet vastgelegd'}</div>
+                    </div>
+                    
+                    ${extraTagsLijn}
                     
                     <div class="foto-container">
                         ${vondst.foto1 ? `
@@ -1120,7 +1313,7 @@
             });
 
             if(lijst.innerHTML === "") {
-                lijst.innerHTML = "<p style='text-align:center; color:#64748b;'>Geen vondsten gevonden.</p>";
+                lijst.innerHTML = "<p style='text-align:center; color:#64748b;'>Geen vondsten gevonden binnen deze selectie.</p>";
             }
         }
 
@@ -1141,7 +1334,7 @@
             const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
             if (huidigeVondsten.length === 0) { alert("Geen data."); return; }
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
-            csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
+            csvContent += "ID;Categorie;Materiaal;Staat;Diameter_mm;Gewicht_gr;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
             huidigeVondsten.forEach(v => {
                 let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
                 let schoneTitel = (v.titel || "").replace(/;/g, ",");
@@ -1149,12 +1342,12 @@
                 let schoneLocatieNaam = (v.locatieNaam || "Onbekend").replace(/;/g, " ");
                 let schoneLocatieGps = (v.locatieGps || "").replace(/;/g, " ");
                 let schoneWeblink = (v.weblink || "").replace(/;/g, " ");
-                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${schoneTitel};${schoneDatering};${schoneLocatieNaam};${schoneLocatieGps};${schoneWeblink};${schoneInfo}\r\n`;
+                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${v.staat || 'Bodemvondst'};${v.diameter || ''};${v.gewicht || ''};${schoneTitel};${schoneDatering};${schoneLocatieNaam};${schoneLocatieGps};${schoneWeblink};${schoneInfo}\r\n`;
             });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Mijn_Vondsten_Backup.csv");
+            link.setAttribute("download", "Mijn_Vondsten_Museum_Backup.csv");
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
