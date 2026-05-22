@@ -32,10 +32,10 @@
             padding: 20px;
         }
 
-        /* Kopgedeelte met Titel en Subtiele Knop */
+        /* Gecorrigeerd: Kopgedeelte met perfect gecentreerde titel */
         .app-header {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
             border-bottom: 2px solid rgba(212, 175, 55, 0.2);
             padding-bottom: 15px;
@@ -44,16 +44,19 @@
         }
 
         .main-app-title {
+            grid-column: 2;
             font-family: 'Playfair Display', serif;
             font-size: 28px;
             color: var(--accent-gold);
             letter-spacing: 1px;
             text-transform: uppercase;
             margin: 0;
+            text-align: center;
         }
 
-        /* NIEUW: Subtiele knop bovenaan */
         .btn-top-invoer {
+            grid-column: 3;
+            justify-self: end;
             background-color: transparent;
             color: var(--accent-gold);
             border: 1px solid var(--accent-gold);
@@ -79,7 +82,6 @@
             margin-bottom: 15px;
         }
 
-        /* Schermen verbergen/tonen via overlay/in-page */
         .app-page {
             display: none;
         }
@@ -444,7 +446,7 @@
 <body>
 
     <div class="app-header">
-        <h1 class="main-app-title">Metaaldetectievondsten</h1>
+        <div></div> <h1 class="main-app-title">Metaaldetectievondsten</h1>
         <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuwe Vondst</button>
     </div>
 
@@ -570,7 +572,6 @@
         let actieveKaarten = {}; 
         let huidigeActieveCategorie = "Alles";
 
-        // INTUÏTIEVE TOGGLE FUNCTIE VOOR HET FORMULIER
         function toggleInvoerFormulier() {
             const formPage = document.getElementById('page-invoer');
             const btn = document.getElementById('top-toggle-btn');
@@ -780,11 +781,14 @@
                 document.getElementById('form-titel').innerText = "✏️ Vondst Bewerken";
                 document.getElementById('opslaan-btn').innerText = "Wijzigingen Opslaan";
                 
-                // Klap het invoerscherm open voor het bewerken
-                document.getElementById('page-invoer').classElement = document.getElementById('page-invoer').classList.add('active');
+                document.getElementById('page-invoer').classList.add('active');
                 document.getElementById('top-toggle-btn').innerText = "✕ Sluiten";
                 window.scrollTo(0, 0);
             }
+        }
+
+        function onClick(id) {
+            console.log(id);
         }
 
         function verwijderVondst(id) {
@@ -880,13 +884,13 @@
         }
 
         function exporteerNaarCSV() {
-            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            if (huidigeVondsten.length === 0) { alert("Geen data."); return; }
+            const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            if (presidentialVondsten.length === 0) { alert("Geen data."); return; }
 
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
             csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
 
-            huidigeVondsten.forEach(v => {
+            presidentialVondsten.forEach(v => {
                 let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
                 let schoneTitel = (v.titel || "").replace(/;/g, ",");
                 let schoneDatering = (v.datering || "").replace(/;/g, ",");
@@ -915,8 +919,8 @@
         }
 
         function openInfo(id) {
-            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            const vondst = huidigeVondsten.find(v => v.id == id);
+            const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            const vondst = presidentialVondsten.find(v => v.id == id);
             
             if (vondst) {
                 document.getElementById('info-popup-titel').innerText = `📜 Info: ${vondst.titel}`;
