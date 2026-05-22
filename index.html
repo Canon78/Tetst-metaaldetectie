@@ -150,129 +150,6 @@
             background-color: var(--card-bg);
         }
 
-        .quick-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .tag-btn {
-            background-color: #1e2533;
-            color: #94a3b8;
-            border: 1px solid #334155;
-            padding: 6px 12px;
-            font-size: 13px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: auto;
-            margin-bottom: 0;
-        }
-
-        .tag-btn:hover {
-            border-color: var(--accent-gold);
-            color: white;
-        }
-
-        button.main-btn {
-            width: 100%;
-            padding: 14px;
-            background-color: var(--accent-gold);
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        button.gps-btn {
-            background-color: #1e293b;
-            color: var(--accent-blue);
-            border: 1px solid var(--accent-blue);
-            margin-top: 6px;
-            padding: 10px;
-            font-size: 14px;
-            width: 100%;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .excel-box {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 30px;
-            border: 1px dashed rgba(46, 204, 113, 0.4);
-        }
-
-        button.excel-btn {
-            background-color: #1e293b;
-            color: var(--btn-green);
-            border: 1px solid var(--btn-green);
-            width: 100%;
-            padding: 14px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        button.danger-btn {
-            background-color: #141822;
-            color: #ff6666;
-            border: 1px solid var(--accent-red);
-            padding: 10px;
-            font-size: 13px;
-            margin-top: 20px;
-            width: 100%;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .action-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 15px;
-            border-top: 1px solid #334155;
-            padding-top: 12px;
-        }
-
-        .btn-small {
-            padding: 8px 14px;
-            font-size: 13px;
-            width: auto;
-            margin-bottom: 0;
-            border-radius: 6px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-info { background-color: var(--accent-blue); color: white; }
-        .btn-web { background-color: var(--btn-purple); color: white; text-decoration: none; display: inline-flex; align-items: center; }
-        .btn-map { background-color: #141822; color: var(--accent-gold); border: 1px solid var(--accent-gold); }
-        .btn-edit { background-color: #e67e22; color: white; }
-        .btn-delete { background-color: #334155; color: #fc8181; }
-
-        .maps-btn-inline {
-            display: block;
-            width: 100%;
-            text-align: center;
-            padding: 10px;
-            background-color: #0f131a;
-            color: var(--accent-blue);
-            border: 1px solid var(--accent-blue);
-            font-size: 13px;
-            border-radius: 6px;
-            text-decoration: none;
-            margin-top: 8px;
-            box-sizing: border-box;
-            font-weight: bold;
-        }
-
         .tabs {
             display: flex;
             overflow-x: auto;
@@ -311,7 +188,7 @@
             border-left: 4px solid #334155;
         }
 
-        /* LIJN- EN TEXTKLEUREN PER CATEGORIE */
+        /* LIJN KLEUREN PER CATEGORIE */
         .vondst-card.cat-Munten { border-left-color: #f1c40f; }
         .vondst-card.cat-Munten .vondst-cat-badge { color: #f1c40f; }
 
@@ -758,16 +635,20 @@
         }
 
         async function zoekCoordinatenVanTekst(locatieNaam) {
-            if (!locatieNaam || locatieNaam.toLowerCase() === "onbekend" || locatieNaam.toLowerCase() === "niet vastgelegd") return null;
+            if (!locatieNaam) return null;
+            // Maak de locatie extra schoon van haakjes voor de API call
+            let schoneNaam = locatieNaam.replace(/[()]/g, ' ').replace(/\s+/g, ' ').trim();
+            if (schoneNaam.toLowerCase() === "onbekend" || schoneNaam.toLowerCase() === "niet vastgelegd" || schoneNaam === "") return null;
+            
             try {
-                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locatieNaam + ', Belgium')}&limit=1`;
-                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV7' } });
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(schoneNaam + ', Belgium')}&limit=1`;
+                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV8' } });
                 const data = await response.json();
                 if (data && data.length > 0) {
                     return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
                 }
             } catch (e) {
-                console.log("Zoeken mislukt voor: " + locatieNaam);
+                console.log("Zoeken mislukt voor: " + schoneNaam);
             }
             return null;
         }
@@ -951,7 +832,7 @@
             foto2DataUrl = "";
         }
 
-        // DE 100% GECORRIGEERDE EN BEVEILIGDE KAARTFUNCTIE
+        // DE VOLLEDIG BEVEILIGDE EN VEILIGE LIVE-KAARTFUNCTIE
         async function toggleKaart(id, gpsSnaar, locatieTekst, titel) {
             const mapDiv = document.getElementById(`map-${id}`);
             if (!mapDiv) return;
@@ -987,15 +868,20 @@
                 
                 setTimeout(() => {
                     try {
-                        const m = L.map(`map-${id}`).setView([lat, lng], 15);
+                        const m = L.map(`map-${id}`).setView([lat, lng], 14);
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
                         const marker = L.marker([lat, lng]).addTo(m);
-                        marker.bindPopup(`<b>${titel}</b><br><span style="font-size:12px; color:#555;">📍 ${locatieTekst || schoneGpsSnaar}</span>`).openPopup();
+                        
+                        // Schoonmaken van tekst voor weergave in popup ballonnetje
+                        let toonTekst = (locatieTekst || schoneGpsSnaar).replace(/\\'/g, "'");
+                        let toonTitel = titel.replace(/\\'/g, "'");
+
+                        marker.bindPopup(`<b>${toonTitel}</b><br><span style="font-size:12px; color:#555;">📍 ${toonTekst}</span>`).openPopup();
                         actieveKaarten[id] = m;
                     } catch(err) {
-                        mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>⚠️ Kaart kon niet renderen. Probeer nogmaals.</div>";
+                        mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>⚠️ Kaart kon niet renderen. Klik nogmaals.</div>";
                     }
-                }, 150);
+                }, 100);
             } else {
                 mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>❌ Geen bruikbare locatie of GPS gevonden voor dit voorwerp. Pas de locatie aan via 'Bewerk'.</div>";
             }
@@ -1075,7 +961,7 @@
                 const card = document.createElement('div');
                 card.className = `vondst-card cat-${vondst.categorie}`;
                 
-                // Veilig escapen van quotes voor JavaScript-aanroepen
+                // Extra veilige string vervangingen voor Javascript triggers
                 const veiligeTitel = (vondst.titel || "").replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 const veiligeLocatie = (schoneLocatieNaam || "").replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
@@ -1156,7 +1042,7 @@
 
         function openFoto(src, caption) {
             document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox-caption').innerText = caption;
+            document.getElementById('lightbox-caption').innerHTML = caption.replace(/\\'/g, "'");
             document.getElementById('lightbox-img').style.display = 'block';
             document.getElementById('lightbox-caption').style.display = 'block';
             document.getElementById('info-popup-box').style.display = 'none';
