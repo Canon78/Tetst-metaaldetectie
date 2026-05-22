@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mijn Vondsten App</title>
+    <title>Metaaldetectievondsten</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
         :root {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
-            --text-color: #ffffff;
-            --accent-color: #d4af37; /* Goud */
+            --bg-color: #141822;       /* Diep antiek leisteen */
+            --card-bg: #1e2533;        /* Iets lichter voor de kaartjes */
+            --text-color: #e2e8f0;     /* Zacht wit/grijs */
+            --accent-gold: #d4af37;    /* Museum Goud */
             --accent-blue: #4a90e2;
-            --accent-red: #cc0000;
+            --accent-red: #e74c3c;
             --btn-green: #2ecc71;
             --btn-purple: #9b59b6;
         }
@@ -25,14 +29,30 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 15px;
-            padding-bottom: 80px; /* Ruimte voor het menu onderaan */
+            padding: 20px;
+            padding-bottom: 90px; /* Ruimte voor menu */
         }
 
-        h1, h2 {
+        /* NIEUW: Grote, indrukwekkende hoofdtitel */
+        .main-app-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            color: var(--accent-gold);
             text-align: center;
-            color: var(--accent-color);
+            letter-spacing: 2px;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--accent-gold);
             margin-top: 5px;
+            margin-bottom: 15px;
         }
 
         /* Navigatiebalk onderaan */
@@ -41,35 +61,35 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #111;
+            background-color: #0b0d13;
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
-            border-top: 2px solid var(--accent-color);
+            padding: 14px 0;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
             z-index: 999;
         }
 
         .nav-btn {
             background: none;
             border: none;
-            color: #888;
-            font-size: 15px;
-            font-weight: bold;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             width: auto;
             padding: 0;
             margin: 0;
+            transition: color 0.2s;
         }
 
         .nav-btn.active {
-            color: var(--accent-color);
+            color: var(--accent-gold);
         }
 
-        /* Schermen verbergen/tonen */
         .app-page {
             display: none;
         }
@@ -80,117 +100,138 @@
 
         .form-container {
             background-color: var(--card-bg);
-            padding: 15px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 12px;
             margin-bottom: 20px;
-            border: 1px solid #444;
+            border: 1px solid #2d3748;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #94a3b8;
         }
 
         input, select, textarea {
             width: 100%;
             padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #555;
-            background-color: #1a1a1a;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background-color: #0f131a;
             color: white;
             box-sizing: border-box;
             font-size: 16px;
             font-family: inherit;
         }
 
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
         textarea {
-            height: 80px;
+            height: 90px;
             resize: vertical;
         }
 
         .search-container {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .search-input {
-            border: 1px solid var(--accent-color);
+            border: 1px solid rgba(212, 175, 55, 0.4);
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23d4af37" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>');
             background-repeat: no-repeat;
-            background-position: 12px center;
-            padding-left: 40px;
+            background-position: 14px center;
+            padding-left: 44px;
+            border-radius: 30px;
+            background-color: var(--card-bg);
         }
 
         .quick-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 6px;
+            gap: 8px;
+            margin-top: 8px;
         }
 
         .tag-btn {
-            background-color: #444;
-            color: #ccc;
-            border: 1px solid #555;
-            padding: 6px 10px;
-            font-size: 12px;
-            border-radius: 4px;
+            background-color: #1e2533;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 6px;
             cursor: pointer;
             width: auto;
             margin-bottom: 0;
-            font-weight: normal;
         }
 
         .tag-btn:hover {
-            border-color: var(--accent-color);
+            border-color: var(--accent-gold);
             color: white;
         }
 
         button {
             width: 100%;
             padding: 14px;
-            background-color: var(--accent-color);
-            color: black;
+            background-color: var(--accent-gold);
+            color: #000;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             margin-bottom: 10px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #e5c158;
         }
 
         button.gps-btn {
-            background-color: var(--accent-blue);
-            color: white;
+            background-color: #1e293b;
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
             margin-top: 6px;
             padding: 10px;
             font-size: 14px;
         }
 
+        button.gps-btn:hover { background-color: rgba(74, 144, 226, 0.1); }
+
         button.excel-btn {
-            background-color: var(--btn-green);
-            color: white;
-            margin-top: 20px;
+            background-color: #1e293b;
+            color: var(--btn-green);
+            border: 1px solid var(--btn-green);
+            margin-top: 25px;
         }
+        button.excel-btn:hover { background-color: rgba(46, 204, 113, 0.1); }
 
         button.danger-btn {
-            background-color: #444;
+            background-color: #141822;
             color: #ff6666;
             border: 1px solid var(--accent-red);
-            padding: 8px;
-            font-size: 12px;
-            margin-top: 30px;
+            padding: 10px;
+            font-size: 13px;
+            margin-top: 20px;
         }
 
         .action-buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 12px;
+            margin-top: 15px;
+            border-top: 1px solid #334155;
+            padding-top: 12px;
         }
 
         .btn-small {
@@ -198,28 +239,28 @@
             font-size: 13px;
             width: auto;
             margin-bottom: 0;
-            border-radius: 4px;
+            border-radius: 6px;
             border: none;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .btn-map { background-color: #555; color: var(--accent-color); border: 1px solid var(--accent-color); }
-        .btn-edit { background-color: #e67e22; color: white; }
-        .btn-delete { background-color: var(--accent-red); color: white; }
         .btn-info { background-color: var(--accent-blue); color: white; }
         .btn-web { background-color: var(--btn-purple); color: white; text-decoration: none; display: inline-flex; align-items: center; }
+        .btn-map { background-color: #141822; color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+        .btn-edit { background-color: #e67e22; color: white; }
+        .btn-delete { background-color: #334155; color: #fc8181; }
 
         .maps-btn-inline {
             display: block;
             width: 100%;
             text-align: center;
-            padding: 8px;
-            background-color: #111;
+            padding: 10px;
+            background-color: #0f131a;
             color: var(--accent-blue);
             border: 1px solid var(--accent-blue);
             font-size: 13px;
-            border-radius: 4px;
+            border-radius: 6px;
             text-decoration: none;
             margin-top: 8px;
             box-sizing: border-box;
@@ -230,64 +271,74 @@
             display: flex;
             overflow-x: auto;
             gap: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             padding-bottom: 5px;
         }
 
         .tab {
             padding: 10px 18px;
             background-color: var(--card-bg);
-            border-radius: 20px;
+            border-radius: 30px;
             white-space: nowrap;
             cursor: pointer;
-            border: 1px solid #444;
+            border: 1px solid #334155;
             font-size: 14px;
+            color: #94a3b8;
         }
 
         .tab.active {
-            background-color: var(--accent-color);
-            color: black;
+            background-color: var(--accent-gold);
+            color: #000;
             font-weight: bold;
+            border-color: var(--accent-gold);
         }
 
         .vondst-card {
             background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 5px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 18px;
+            border-left: 4px solid var(--accent-gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .vondst-header {
             display: flex;
             justify-content: space-between;
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
             font-weight: bold;
-            border-bottom: 1px solid #444;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            color: white;
         }
 
         .vondst-meta {
             font-size: 14px;
-            color: #ccc;
-            margin: 5px 0;
+            color: #cbd5e1;
+            margin: 6px 0;
+        }
+
+        .vondst-meta b {
+            color: #94a3b8;
         }
 
         .foto-container {
             display: flex;
             gap: 12px;
-            margin-top: 12px;
+            margin-top: 14px;
         }
 
         .img-wrapper {
             position: relative;
-            width: 100px;
-            height: 100px;
-            border: 2px solid #555;
+            width: 110px;
+            height: 110px;
+            border: 2px solid #334155;
             border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
-            background-color: #1a1a1a;
+            background-color: #0f131a;
         }
 
         .card-img {
@@ -300,21 +351,20 @@
             position: absolute;
             bottom: 4px;
             right: 4px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: var(--accent-color);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--accent-gold);
             border-radius: 4px;
-            padding: 2px 4px;
+            padding: 2px 5px;
             font-size: 10px;
             pointer-events: none;
         }
 
-        /* DYNAMISCHE INLINE KAART MET OPENSTREETMAP */
         .inline-map {
             width: 100%;
-            height: 220px;
-            border-radius: 6px;
-            margin-top: 10px;
-            border: 1px solid var(--accent-color);
+            height: 240px;
+            border-radius: 8px;
+            margin-top: 12px;
+            border: 1px solid var(--accent-gold);
             display: none;
         }
 
@@ -329,6 +379,7 @@
             height: auto;
             border-radius: 6px;
             display: none;
+            border: 1px solid #334155;
         }
 
         .leaflet-popup-content { color: #000000 !important; }
@@ -340,7 +391,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.93);
             z-index: 9999;
             justify-content: center;
             align-items: center;
@@ -351,34 +402,35 @@
 
         .lightbox-img {
             max-width: 90%;
-            max-height: 70%;
+            max-height: 72%;
             border-radius: 8px;
-            border: 3px solid var(--accent-color);
+            border: 2px solid var(--accent-gold);
         }
 
         .info-box {
             background-color: var(--card-bg);
-            border: 2px solid var(--accent-color);
-            padding: 20px;
-            border-radius: 10px;
+            border: 1px solid var(--accent-gold);
+            padding: 22px;
+            border-radius: 12px;
             max-width: 500px;
             width: 100%;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
             color: white;
         }
 
         .info-box h3 {
+            font-family: 'Playfair Display', serif;
             margin-top: 0;
-            color: var(--accent-color);
-            border-bottom: 1px solid #444;
-            padding-bottom: 5px;
+            color: var(--accent-gold);
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
         }
 
         .lightbox-caption {
-            color: white;
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
             margin-top: 15px;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 18px;
             text-align: center;
         }
 
@@ -386,9 +438,9 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            background-color: var(--card-bg);
-            color: var(--accent-color);
-            border: 1px solid var(--accent-color);
+            background-color: #141822;
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
             padding: 8px 16px;
             border-radius: 6px;
             font-weight: bold;
@@ -398,10 +450,9 @@
 </head>
 <body>
 
-    <h1>🪙 Mijn Vondsten Log</h1>
+    <div class="main-app-title">Metaaldetectievondsten</div>
 
     <div id="page-verzameling" class="app-page active">
-        <h2>Mijn Verzameling</h2>
         
         <div class="search-container">
             <input type="text" id="app-search" class="search-input" placeholder="Zoek op naam, materiaal, datering of locatie..." oninput="filterVondstenLive()">
@@ -511,7 +562,7 @@
     <div class="bottom-nav">
         <button id="nav-verzameling" class="nav-btn active" onclick="wisselScherm('verzameling')">
             <span>🎒</span>
-            <span>Mijn Verzameling</span>
+            <span>Verzameling</span>
         </button>
         <button id="nav-invoer" class="nav-btn" onclick="wisselScherm('invoer')">
             <span>➕</span>
@@ -553,7 +604,7 @@
         }
 
         function setDatering(waarde) {
-            document.getElementById('datering').value = waarde;
+            document.getElementById('datering').value = valeur = waarde;
         }
 
         function haalGPS() {
@@ -680,7 +731,6 @@
             foto2DataUrl = "";
         }
 
-        // INLINE OPENSTREETMAP LOGICA VIA COÖRDINATEN OP DE ACHTERGROND
         function toggleKaart(id, gpsSnaar, titel) {
             const mapDiv = document.getElementById(`map-${id}`);
             if (!mapDiv) return;
@@ -790,11 +840,10 @@
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span>${vondst.titel}</span>
-                        <span style="color:var(--accent-color); font-size:12px;">${vondst.categorie}</span>
+                        <span style="color:var(--accent-gold); font-size:13px; font-family:sans-serif; font-weight:normal;">${vondst.categorie}</span>
                     </div>
                     <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal || 'Onbekend'}</div>
                     <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
-                    
                     <div class="vondst-meta">📍 <b>Locatie:</b> ${vondst.locatieNaam || 'Niet vastgelegd'}</div>
                     
                     <div class="foto-container">
@@ -816,9 +865,7 @@
                     <div class="action-buttons">
                         <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
                         ${heeftWeblink ? `<a href="${vondst.weblink.trim()}" target="_blank" class="btn-small btn-web">🌐 Link</a>` : ''}
-                        
                         ${heeftGps ? `<button class="btn-small btn-map" onclick="toggleKaart(${vondst.id}, '${schoneGps}', '${vondst.titel}'); document.getElementById('gmaps-link-${vondst.id}').style.display = (document.getElementById('gmaps-link-${vondst.id}').style.display === 'block' ? 'none' : 'block');">🗺️ Kaart</button>` : ''}
-                        
                         <button class="btn-small btn-edit" onclick="bewerkVondst(${vondst.id})">✏️ Bewerk</button>
                         <button class="btn-small btn-delete" onclick="verwijderVondst(${vondst.id})">🗑️ Wis</button>
                     </div>
@@ -827,7 +874,7 @@
             });
 
             if(lijst.innerHTML === "") {
-                lijst.innerHTML = "<p style='text-align:center; color:#888;'>Geen vondsten gevonden.</p>";
+                lijst.innerHTML = "<p style='text-align:center; color:#64748b;'>Geen vondsten gevonden.</p>";
             }
         }
 
