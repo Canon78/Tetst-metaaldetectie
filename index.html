@@ -17,6 +17,7 @@
             --accent-blue: #4a90e2;
             --accent-red: #cc0000;
             --btn-green: #2ecc71;
+            --btn-purple: #9b59b6;
         }
 
         body {
@@ -112,7 +113,6 @@
             resize: vertical;
         }
 
-        /* NIEUW: Zoekbalk styling */
         .search-container {
             margin-bottom: 15px;
         }
@@ -195,12 +195,17 @@
             font-size: 13px;
             width: auto;
             margin-bottom: 0;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         .btn-map { background-color: #555; color: var(--accent-color); border: 1px solid var(--accent-color); }
         .btn-edit { background-color: #e67e22; color: white; }
         .btn-delete { background-color: var(--accent-red); color: white; }
         .btn-info { background-color: var(--accent-blue); color: white; }
+        .btn-web { background-color: var(--btn-purple); color: white; text-decoration: none; display: inline-flex; align-items: center; }
 
         .maps-btn-inline {
             display: block;
@@ -465,6 +470,11 @@
             </div>
 
             <div class="form-group">
+                <label for="weblink">🌐 Referentie Website / Link (bijv. link naar Numista, database...)</label>
+                <input type="url" id="weblink" placeholder="https://www.example.com/munt-info">
+            </div>
+
+            <div class="form-group">
                 <label for="info">📜 Extra Informatie</label>
                 <textarea id="info" placeholder="Waarvoor diende het? Details..."></textarea>
             </div>
@@ -514,7 +524,7 @@
         let foto1DataUrl = "";
         let foto2DataUrl = "";
         let actieveKaarten = {}; 
-        let huidigeActieveCategorie = "Alles"; // Houdt de geselecteerde tab bij
+        let huidigeActieveCategorie = "Alles";
 
         function wisselScherm(schermNaam) {
             document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
@@ -525,7 +535,6 @@
             if (schermNaam === 'verzameling') {
                 document.getElementById('page-verzameling').classList.add('active');
                 document.getElementById('nav-verzameling').classList.add('active');
-                // Maak de zoekbalk leeg bij het wisselen van scherm voor een schone start
                 document.getElementById('app-search').value = "";
                 toonVondsten();
             } else if (schermNaam === 'invoer') {
@@ -596,6 +605,7 @@
             const titel = document.getElementById('titel').value;
             const datering = document.getElementById('datering').value;
             const locatie = document.getElementById('locatie').value;
+            const weblink = document.getElementById('weblink').value;
             const info = document.getElementById('info').value;
             const bewerkId = document.getElementById('bewerk-id').value;
 
@@ -608,7 +618,7 @@
                     if (vondst.id == bewerkId) {
                         return {
                             id: vondst.id,
-                            categorie, materiaal, titel, datering, locatie, info,
+                            categorie, materiaal, titel, datering, locatie, weblink, info,
                             foto1: foto1DataUrl || vondst.foto1,
                             foto2: foto2DataUrl || vondst.foto2
                         };
@@ -619,7 +629,7 @@
             } else {
                 const nieuweVondst = {
                     id: Date.now(),
-                    categorie, materiaal, titel, datering, locatie, info,
+                    categorie, materiaal, titel, datering, locatie, weblink, info,
                     foto1: foto1DataUrl,
                     foto2: foto2DataUrl
                 };
@@ -640,6 +650,7 @@
             document.getElementById('titel').value = "";
             document.getElementById('datering').value = "";
             document.getElementById('locatie').value = "";
+            document.getElementById('weblink').value = "";
             document.getElementById('info').value = "";
             document.getElementById('bewerk-id').value = "";
             document.getElementById('materiaal').value = "Onbekend";
@@ -698,6 +709,7 @@
                 document.getElementById('titel').value = vondst.titel;
                 document.getElementById('datering').value = vondst.datering || "";
                 document.getElementById('locatie').value = vondst.locatie || "";
+                document.getElementById('weblink').value = vondst.weblink || "";
                 document.getElementById('info').value = vondst.info || "";
                 document.getElementById('bewerk-id').value = vondst.id;
 
@@ -729,7 +741,6 @@
             }
         }
 
-        // GEUPGRADED: ToonVondsten ondersteunt nu ook live zoektermen
         function toonVondsten(filter = 'Alles', zoekTerm = "") {
             const lijst = document.getElementById('vondsten-lijst');
             lijst.innerHTML = "";
@@ -739,23 +750,23 @@
             const schoneZoekTerm = zoekTerm.toLowerCase().trim();
 
             huidigeVondsten.forEach(vondst => {
-                // 1. Filter op tabblad-categorie
                 if (filter !== 'Alles' && vondst.categorie !== filter) return;
 
-                // 2. Filter op zoekbalk-term
                 if (schoneZoekTerm !== "") {
                     const inTitel = (vondst.titel || "").toLowerCase().includes(schoneZoekTerm);
                     const inMateriaal = (vondst.materiaal || "").toLowerCase().includes(schoneZoekTerm);
                     const inDatering = (vondst.datering || "").toLowerCase().includes(schoneZoekTerm);
                     const inInfo = (vondst.info || "").toLowerCase().includes(schoneZoekTerm);
 
-                    // Als de zoekterm nergens in voorkomt, slaan we dit item over
                     if (!inTitel && !inMateriaal && !inDatering && !inInfo) return;
                 }
 
                 const schoneGps = (vondst.locatie || "").trim();
                 const heeftGps = schoneGps.includes(',');
                 const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoneGps)}`;
+                
+                // Controleer of er een geldige weblink is ingevuld
+                const heeftWeblink = vondst.weblink && vondst.weblink.trim().startsWith('http');
 
                 const card = document.createElement('div');
                 card.className = 'vondst-card';
@@ -787,6 +798,9 @@
 
                     <div class="action-buttons">
                         <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
+                        
+                        ${heeftWeblink ? `<a href="${vondst.weblink.trim()}" target="_blank" class="btn-small btn-web">🌐 Link</a>` : ''}
+                        
                         ${heeftGps ? `<button class="btn-small btn-map" onclick="toggleKaart(${vondst.id}, '${schoneGps}', '${vondst.titel}'); document.getElementById('gmaps-link-${vondst.id}').style.display = (document.getElementById('gmaps-link-${vondst.id}').style.display === 'block' ? 'none' : 'block');">🗺️ Kaart</button>` : ''}
                         <button class="btn-small btn-edit" onclick="bewerkVondst(${vondst.id})">✏️ Bewerk</button>
                         <button class="btn-small btn-delete" onclick="verwijderVondst(${vondst.id})">🗑️ Wis</button>
@@ -796,11 +810,10 @@
             });
 
             if(lijst.innerHTML === "") {
-                lijst.innerHTML = "<p style='text-align:center; color:#888;'>Geen vondsten gevonden die voldoen aan de zoekopdracht.</p>";
+                lijst.innerHTML = "<p style='text-align:center; color:#888;'>Geen vondsten gevonden.</p>";
             }
         }
 
-        // NIEUW: Wordt geactiveerd bij elke letter die je typt
         function filterVondstenLive() {
             const zoekTerm = document.getElementById('app-search').value;
             toonVondsten(huidigeActieveCategorie, zoekTerm);
@@ -810,8 +823,6 @@
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             event.target.classList.add('active');
             huidigeActieveCategorie = cat;
-            
-            // Behoud de ingetypte zoekterm bij het wisselen van tabblad
             const zoekTerm = document.getElementById('app-search').value;
             toonVondsten(cat, zoekTerm);
         }
@@ -821,14 +832,15 @@
             if (huidigeVondsten.length === 0) { alert("Geen data."); return; }
 
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
-            csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;GPS-Coordinaten;Extra Informatie\r\n";
+            csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
 
             huidigeVondsten.forEach(v => {
                 let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
                 let schoneTitel = (v.titel || "").replace(/;/g, ",");
                 let schoneDatering = (v.datering || "").replace(/;/g, ",");
                 let schoneLocatie = (v.locatie || "").replace(/;/g, " ");
-                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${schoneTitel};${schoneDatering};${schoneLocatie};${schoneInfo}\r\n`;
+                let schoneWeblink = (v.weblink || "").replace(/;/g, " ");
+                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${schoneTitel};${schoneDatering};${schoneLocatie};${schoneWeblink};${schoneInfo}\r\n`;
             });
 
             const encodedUri = encodeURI(csvContent);
