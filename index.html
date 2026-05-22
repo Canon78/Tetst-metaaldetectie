@@ -114,21 +114,25 @@
             color: #94a3b8;
         }
 
+        /* VERBETERD: VOLLEDIG APARTE DONKERE FORM INPUTS ZONDER WITTE STANDAARDRANDEN */
         input, select, textarea {
             width: 100%;
             padding: 12px;
             border-radius: 8px;
-            border: 1px solid #334155;
-            background-color: #0f131a;
-            color: white;
+            border: 1px solid #334155 !important;
+            background-color: #0f131a !important;
+            color: #f1f5f9 !important;
             box-sizing: border-box;
             font-size: 16px;
             font-family: inherit;
+            outline: none !important;
+            box-shadow: none !important;
+            -webkit-appearance: none; /* Verwijdert specifieke Apple/Chrome rommel */
         }
 
         input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent-gold);
+            border-color: var(--accent-gold) !important;
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.2) !important;
         }
 
         textarea {
@@ -141,13 +145,13 @@
         }
 
         .search-input {
-            border: 1px solid rgba(212, 175, 55, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.4) !important;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23d4af37" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>');
             background-repeat: no-repeat;
             background-position: 14px center;
             padding-left: 44px;
             border-radius: 30px;
-            background-color: var(--card-bg);
+            background-color: var(--card-bg) !important;
         }
 
         .tabs {
@@ -769,7 +773,7 @@
             reader.readAsText(file, "UTF-8");
         }
 
-        // DE GECORRIGEERDE OPSLAAN FUNCTIE (HOOFDLETTER-FIX LIVE)
+        // MAAK-GPS-SCHOON MET PRECIES DE KLEINE LETTERS
         function slaVondstOp() {
             const categorie = document.getElementById('categorie').value;
             const materiaal = document.getElementById('materiaal').value;
@@ -778,7 +782,6 @@
             const locatieNaam = document.getElementById('locatie-naam').value;
             
             const ruweGps = document.getElementById('locatie-gps').value;
-            // FIXED: 'ruweGps' heeft nu overal exact dezelfde kleine letters gekregen!
             const locatieGps = ruweGps === "" ? "" : maakGpsSchoon(ruweGps);
 
             const weblink = document.getElementById('weblink').value;
@@ -1061,8 +1064,8 @@
         }
 
         function openInfo(id) {
-            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            const vondst = huidigeVondsten.find(v => v.id == id);
+            const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            const vondst = presidentialVondsten.find(v => v.id == id);
             if (vondst) {
                 document.getElementById('info-popup-titel').innerText = `📜 Info: ${vondst.titel}`;
                 document.getElementById('info-popup-tekst').innerText = vondst.info || "Nog geen extra historische informatie toegevoegd.";
