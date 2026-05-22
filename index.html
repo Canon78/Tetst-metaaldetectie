@@ -280,17 +280,16 @@
             margin-bottom: 15px;
         }
 
-        /* GECORRIGEERD: VOLLEDIG DONKERE PREVIEW-BOX ZONDER WITTE KADERS */
         .preview-wrapper {
             display: none;
             flex-direction: column;
             width: 48%;
             align-items: center;
-            background-color: #0f131a; /* Diep donker */
+            background-color: #0f131a;
             padding: 12px;
             border-radius: 8px;
             border: 1px solid #334155;
-            color: #cbd5e1; /* Zachte tekstkleur */
+            color: #cbd5e1;
         }
 
         .preview-wrapper span {
@@ -770,6 +769,7 @@
             reader.readAsText(file, "UTF-8");
         }
 
+        // DE GECORRIGEERDE OPSLAAN FUNCTIE (HOOFDLETTER-FIX LIVE)
         function slaVondstOp() {
             const categorie = document.getElementById('categorie').value;
             const materiaal = document.getElementById('materiaal').value;
@@ -778,6 +778,7 @@
             const locatieNaam = document.getElementById('locatie-naam').value;
             
             const ruweGps = document.getElementById('locatie-gps').value;
+            // FIXED: 'ruweGps' heeft nu overal exact dezelfde kleine letters gekregen!
             const locatieGps = ruweGps === "" ? "" : maakGpsSchoon(ruweGps);
 
             const weblink = document.getElementById('weblink').value;
