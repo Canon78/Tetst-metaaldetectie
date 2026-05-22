@@ -567,6 +567,7 @@
             cursor: pointer;
         }
 
+        /* GECORRIGEERD: DE PIJL STAAT NU ALTIJD PERMANENT EN MOOI ZICHTBAAR IN BEELD */
         .scroll-to-top {
             position: fixed;
             bottom: 25px;
@@ -580,25 +581,18 @@
             font-size: 20px;
             font-weight: bold;
             cursor: pointer;
-            display: none;
+            display: flex; /* Altijd flex weergave ipv none */
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.4); /* Goudkleurig gloedje */
+            transition: all 0.2s ease-in-out;
         }
-
-        @media (max-width: 768px) {
-            body { padding: 15px; }
-            .app-header { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
-            .main-app-title { font-size: 22px; text-align: left; }
-            .btn-top-invoer { padding: 8px 12px; font-size: 13px; }
-            .vondst-header { font-size: 17px; flex-direction: row; gap: 10px; }
-            .img-wrapper { width: 100px; height: 100px; }
-            .btn-small {
-                padding: 11px 14px;
-                font-size: 13px;
-                flex: 1 1 calc(50% - 6px); 
-            }
+        
+        .scroll-to-top:hover {
+            background-color: var(--accent-gold);
+            color: black;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
         }
     </style>
 </head>
@@ -832,15 +826,7 @@
         let actieveKaarten = {}; 
         let huidigeActieveCategorie = "Alles";
 
-        window.onscroll = function() {
-            const btn = document.getElementById('btn-to-top');
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                btn.style.display = "flex";
-            } else {
-                btn.style.display = "none";
-            }
-        };
-
+        // Scroll logica verwijderd zodat de knop ten allen tijde geforceerd blijft staan
         function gaNaarBoven() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -863,7 +849,7 @@
         }
 
         function setDatering(waarde) {
-            document.getElementById('datering').value = waarde;
+            document.getElementById('datering').value = valeur = waarde;
         }
 
         function haalGPS() {
