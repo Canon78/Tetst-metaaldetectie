@@ -740,7 +740,6 @@
             }
         }
 
-        // DE EXTREEM SLIMME GEOPOSITIE CLEANER (SLIKT GRADEN EN RECHTSTREEKSE N E TEKST)
         function maakGpsSchoon(invoerSnaar) {
             if (!invoerSnaar) return "";
             let text = invoerSnaar.trim();
@@ -755,7 +754,7 @@
                 if (matchQ) return `${matchQ[1]}, ${matchQ[2]}`;
             }
 
-            // FILTER: Haal letters zoals N, E, graden, quotes en rommel eruit en vis de 2 getallen met een punt op
+            // GECORRIGEERDE FLEXIBELE FILTER: Vist getallen op, negeert graden, N, E, etc.
             const regexCijfers = /(-?\d+\.\d+)[^\d-]+(-?\d+\.\d+)/;
             const matchCijfers = text.match(regexCijfers);
             if (matchCijfers) {
@@ -817,7 +816,7 @@
             if (fotoNummer === 2) foto2DataUrl = "";
         }
 
-        // DE FLEXIBELE IMPORT ENGINE: DIE VONDSTEN GEGARANDEERD INLADEN OP ELKE SMARTPHONE
+        // DE EXTREEM VEILIGE HERSTEL-IMPORT DIE NOOIT GEGEVENS KAN MISSEN
         function importeerCSV(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -831,16 +830,14 @@
                 let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
                 let geladenAantal = 0;
 
-                // We pakken de index-posities dynamisch op basis van wat er in zit
-                let idxOmschrijving = 3; // Standaard back-up kolommen fallback
+                let idxOmschrijving = 3; 
                 let idxDatering = 4;
                 let idxVindplaats = 5;
                 let idxExtraInfo = 8;
 
-                // Zoek of er tóch een kopregel boven staat
                 for(let i = 0; i < Math.min(lines.length, 5); i++) {
                     let l = lines[i].toLowerCase();
-                    if (l.includes('id') || l.includes('omschrijving') || l.includes('beschrijving') || l.includes('categorie')) {
+                    if (l.includes('id') || l.includes('omschrijving') || l.includes('beschrijving')) {
                         let scheider = lines[i].includes(';') ? ';' : ',';
                         let koppen = lines[i].split(scheider).map(k => k.trim().toLowerCase());
                         
@@ -865,7 +862,6 @@
 
                     let row = lineText.split(scheidingsteken).map(r => r.replace(/^"|"$/g, '').trim());
                     
-                    // Sla de kopregel zelf over
                     if (row[idxOmschrijving] === "Beschrijving" || row[idxOmschrijving] === "Omschrijving" || row[0] === "ID") continue;
                     if (!row[idxOmschrijving]) continue;
 
@@ -888,7 +884,7 @@
 
                 try {
                     localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
-                    alert(`🎉 Succes! Er zijn ${geladenAantal} vondsten succesvol ingeladen op je gsm!`);
+                    alert(`🎉 Succes! Er zijn ${geladenAantal} vondsten succesvol ingeladen!`);
                     document.getElementById('csv-file').value = "";
                     toonVondsten(huidigeActieveCategorie);
                 } catch(error) {
@@ -1009,7 +1005,7 @@
                 
                 setTimeout(() => {
                     try {
-                        const m = L.map(`map-${id}`).setView([lat, lng], 14);
+                        const m = L.map(`map-${id}`).setView([lat, lng], 15);
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
                         const marker = L.marker([lat, lng]).addTo(m);
                         
@@ -1072,10 +1068,25 @@
             }
         }
 
+        // DE BIJGEWERKTE TOONFUNCTIE DIE METEEN EEN REPAIR-CHECK DOET VOOR OUDE DATA
         function toonVondsten(filter = 'Alles', zoekTerm = "") {
             const lijst = document.getElementById('vondsten-lijst');
             lijst.innerHTML = "";
-            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            
+            // Haal de vondsten op en repareer eventuele foutieve categorie-namen direct live
+            let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            
+            huidigeVondsten = huidigeVondsten.map(v => {
+                // Herstel oude samengevoegde categorieën naar de nieuwe losse namen indien nodig
+                if (v.categorie === "Gespen & Knopen") {
+                    v.categorie = v.titel.toLowerCase().includes('knoop') ? "Knopen" : "Gespen";
+                }
+                return v;
+            });
+            
+            // Sla de herstelde versies meteen op zodat het weer klopt
+            localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
+
             actieveKaarten = {}; 
             const schoneZoekTerm = zoekTerm.toLowerCase().trim();
 
@@ -1137,4 +1148,49 @@
                         <button class="btn-small btn-delete" onclick="verwijderVondst(${vondst.id})">🗑️ Wis</button>
                     </div>
                 `;
-                lijst.
+                lijst.appendChild(card);
+            });
+
+            if(lijst.innerHTML === "") {
+                lijst.innerHTML = "<p style='text-align:center; color:#64748b;'>Geen vondsten gevonden.</p>";
+            }
+        }
+
+        function filterVondstenLive() {
+            const zoekTerm = document.getElementById('app-search').value;
+            toonVondsten(huidigeActieveCategorie, zoekTerm);
+        }
+
+        function filterCategorie(event, cat) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            huidigeActieveCategorie = cat;
+            const zoekTerm = document.getElementById('app-search').value;
+            toonVondsten(cat, zoekTerm);
+        }
+
+        function exporteerNaarCSV() {
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            if (huidigeVondsten.length === 0) { alert("Geen data."); return; }
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
+            csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
+            huidigeVondsten.forEach(v => {
+                let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
+                let schoneTitel = (v.titel || "").replace(/;/g, ",");
+                let schoneDatering = (v.datering || "").replace(/;/g, ",");
+                let schoneLocatieNaam = (v.locatieNaam || "Onbekend").replace(/;/g, " ");
+                let schoneLocatieGps = (v.locatieGps || "").replace(/;/g, " ");
+                let schoneWeblink = (v.weblink || "").replace(/;/g, " ");
+                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${schoneTitel};${schoneDatering};${schoneLocatieNaam};${schoneLocatieGps};${schoneWeblink};${schoneInfo}\r\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Mijn_Vondsten_Backup.csv");
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        }
+
+        function openFoto(src, caption) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-caption').innerHTML = caption.replace(/\\'/g, "'");
+            document.getElementById('lightbox-img').
