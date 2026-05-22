@@ -166,6 +166,9 @@
         button.gps-btn {
             background-color: var(--accent-blue);
             color: white;
+            margin-top: 6px;
+            padding: 10px;
+            font-size: 14px;
         }
 
         button.excel-btn {
@@ -305,6 +308,7 @@
             pointer-events: none;
         }
 
+        /* DYNAMISCHE INLINE KAART MET OPENSTREETMAP */
         .inline-map {
             width: 100%;
             height: 220px;
@@ -400,7 +404,7 @@
         <h2>Mijn Verzameling</h2>
         
         <div class="search-container">
-            <input type="text" id="app-search" class="search-input" placeholder="Zoek op naam, materiaal, datering of info..." oninput="filterVondstenLive()">
+            <input type="text" id="app-search" class="search-input" placeholder="Zoek op naam, materiaal, datering of locatie..." oninput="filterVondstenLive()">
         </div>
 
         <div class="tabs">
@@ -464,13 +468,18 @@
             </div>
 
             <div class="form-group">
-                <label for="locatie">GPS Coördinaten</label>
-                <input type="text" id="locatie" placeholder="Klik op de blauwe knop of typ zelf">
-                <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige GPS Vast</button>
+                <label for="locatie-naam">📍 Stad / Dorp / Zoekveld (Zichtbare naam)</label>
+                <input type="text" id="locatie-naam" placeholder="Bijv. Stabroek - Grote Akker, Schoten...">
             </div>
 
             <div class="form-group">
-                <label for="weblink">🌐 Referentie Website / Link (bijv. link naar Numista, database...)</label>
+                <label for="locatie-gps">🌍 Exacte GPS Coördinaten (Voor de kaart op de achtergrond)</label>
+                <input type="text" id="locatie-gps" placeholder="Klik op de blauwe knop of laat leeg">
+                <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige Exacte GPS Vast</button>
+            </div>
+
+            <div class="form-group">
+                <label for="weblink">🌐 Referentie Website / Link</label>
                 <input type="url" id="weblink" placeholder="https://www.example.com/munt-info">
             </div>
 
@@ -552,7 +561,7 @@
                 const opties = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 };
                 navigator.geolocation.getCurrentPosition(
                     function(position) {
-                        document.getElementById('locatie').value = 
+                        document.getElementById('locatie-gps').value = 
                             position.coords.latitude.toFixed(6) + ", " + position.coords.longitude.toFixed(6);
                     }, 
                     function(error) { alert("GPS-signaal niet gevonden."); },
@@ -604,7 +613,8 @@
             const materiaal = document.getElementById('materiaal').value;
             const titel = document.getElementById('titel').value;
             const datering = document.getElementById('datering').value;
-            const locatie = document.getElementById('locatie').value;
+            const locatieNaam = document.getElementById('locatie-naam').value;
+            const locatieGps = document.getElementById('locatie-gps').value;
             const weblink = document.getElementById('weblink').value;
             const info = document.getElementById('info').value;
             const bewerkId = document.getElementById('bewerk-id').value;
@@ -618,7 +628,9 @@
                     if (vondst.id == bewerkId) {
                         return {
                             id: vondst.id,
-                            categorie, materiaal, titel, datering, locatie, weblink, info,
+                            categorie, materiaal, titel, datering, 
+                            locatieNaam: locatieNaam || "Onbekende locatie", 
+                            locatieGps, weblink, info,
                             foto1: foto1DataUrl || vondst.foto1,
                             foto2: foto2DataUrl || vondst.foto2
                         };
@@ -629,7 +641,9 @@
             } else {
                 const nieuweVondst = {
                     id: Date.now(),
-                    categorie, materiaal, titel, datering, locatie, weblink, info,
+                    categorie, materiaal, titel, datering, 
+                    locatieNaam: locatieNaam || "Onbekende locatie", 
+                    locatieGps, weblink, info,
                     foto1: foto1DataUrl,
                     foto2: foto2DataUrl
                 };
@@ -649,7 +663,8 @@
         function resetFormulier() {
             document.getElementById('titel').value = "";
             document.getElementById('datering').value = "";
-            document.getElementById('locatie').value = "";
+            document.getElementById('locatie-naam').value = "";
+            document.getElementById('locatie-gps').value = "";
             document.getElementById('weblink').value = "";
             document.getElementById('info').value = "";
             document.getElementById('bewerk-id').value = "";
@@ -665,7 +680,8 @@
             foto2DataUrl = "";
         }
 
-        function toggleKaart(id, locatieSnaar, titel) {
+        // INLINE OPENSTREETMAP LOGICA VIA COÖRDINATEN OP DE ACHTERGROND
+        function toggleKaart(id, gpsSnaar, titel) {
             const mapDiv = document.getElementById(`map-${id}`);
             if (!mapDiv) return;
 
@@ -676,8 +692,8 @@
 
             mapDiv.style.display = 'block';
 
-            if (!locatieSnaar || !locatieSnaar.includes(',')) return;
-            const coords = locatieSnaar.split(',');
+            if (!gpsSnaar || !gpsSnaar.includes(',')) return;
+            const coords = gpsSnaar.split(',');
             const lat = parseFloat(coords[0].trim());
             const lng = parseFloat(coords[1].trim());
 
@@ -708,7 +724,8 @@
                 document.getElementById('materiaal').value = vondst.materiaal || "Onbekend";
                 document.getElementById('titel').value = vondst.titel;
                 document.getElementById('datering').value = vondst.datering || "";
-                document.getElementById('locatie').value = vondst.locatie || "";
+                document.getElementById('locatie-naam').value = vondst.locatieNaam || "";
+                document.getElementById('locatie-gps').value = vondst.locatieGps || "";
                 document.getElementById('weblink').value = vondst.weblink || "";
                 document.getElementById('info').value = vondst.info || "";
                 document.getElementById('bewerk-id').value = vondst.id;
@@ -756,16 +773,15 @@
                     const inTitel = (vondst.titel || "").toLowerCase().includes(schoneZoekTerm);
                     const inMateriaal = (vondst.materiaal || "").toLowerCase().includes(schoneZoekTerm);
                     const inDatering = (vondst.datering || "").toLowerCase().includes(schoneZoekTerm);
+                    const inLocatie = (vondst.locatieNaam || "").toLowerCase().includes(schoneZoekTerm);
                     const inInfo = (vondst.info || "").toLowerCase().includes(schoneZoekTerm);
 
-                    if (!inTitel && !inMateriaal && !inDatering && !inInfo) return;
+                    if (!inTitel && !inMateriaal && !inDatering && !inLocatie && !inInfo) return;
                 }
 
-                const schoneGps = (vondst.locatie || "").trim();
+                const schoneGps = (vondst.locatieGps || "").trim();
                 const heeftGps = schoneGps.includes(',');
                 const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoneGps)}`;
-                
-                // Controleer of er een geldige weblink is ingevuld
                 const heeftWeblink = vondst.weblink && vondst.weblink.trim().startsWith('http');
 
                 const card = document.createElement('div');
@@ -778,7 +794,8 @@
                     </div>
                     <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal || 'Onbekend'}</div>
                     <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
-                    <div class="vondst-meta">📍 <b>GPS Coördinaten:</b> ${schoneGps || 'Niet vastgelegd'}</div>
+                    
+                    <div class="vondst-meta">📍 <b>Locatie:</b> ${vondst.locatieNaam || 'Niet vastgelegd'}</div>
                     
                     <div class="foto-container">
                         ${vondst.foto1 ? `
@@ -798,10 +815,10 @@
 
                     <div class="action-buttons">
                         <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
-                        
                         ${heeftWeblink ? `<a href="${vondst.weblink.trim()}" target="_blank" class="btn-small btn-web">🌐 Link</a>` : ''}
                         
                         ${heeftGps ? `<button class="btn-small btn-map" onclick="toggleKaart(${vondst.id}, '${schoneGps}', '${vondst.titel}'); document.getElementById('gmaps-link-${vondst.id}').style.display = (document.getElementById('gmaps-link-${vondst.id}').style.display === 'block' ? 'none' : 'block');">🗺️ Kaart</button>` : ''}
+                        
                         <button class="btn-small btn-edit" onclick="bewerkVondst(${vondst.id})">✏️ Bewerk</button>
                         <button class="btn-small btn-delete" onclick="verwijderVondst(${vondst.id})">🗑️ Wis</button>
                     </div>
@@ -832,15 +849,16 @@
             if (huidigeVondsten.length === 0) { alert("Geen data."); return; }
 
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
-            csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
+            csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
 
             huidigeVondsten.forEach(v => {
                 let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
                 let schoneTitel = (v.titel || "").replace(/;/g, ",");
                 let schoneDatering = (v.datering || "").replace(/;/g, ",");
-                let schoneLocatie = (v.locatie || "").replace(/;/g, " ");
+                let schoneLocatieNaam = (v.locatieNaam || "Onbekend").replace(/;/g, " ");
+                let schoneLocatieGps = (v.locatieGps || "").replace(/;/g, " ");
                 let schoneWeblink = (v.weblink || "").replace(/;/g, " ");
-                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${schoneTitel};${schoneDatering};${schoneLocatie};${schoneWeblink};${schoneInfo}\r\n`;
+                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${schoneTitel};${schoneDatering};${schoneLocatieNaam};${schoneLocatieGps};${schoneWeblink};${schoneInfo}\r\n`;
             });
 
             const encodedUri = encodeURI(csvContent);
