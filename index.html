@@ -374,11 +374,12 @@
             display: none;
         }
 
-        /* VERBETERDE PHOTO PREVIEW MET WISKNOP */
+        /* PHOTO PREVIEW MET FIX */
         .preview-img-container {
             display: flex;
             gap: 15px;
             margin-top: 12px;
+            margin-bottom: 15px;
         }
 
         .preview-wrapper {
@@ -404,12 +405,13 @@
             color: #fc8181;
             border: 1px solid var(--accent-red);
             font-size: 11px;
-            padding: 4px 8px;
+            padding: 6px 10px;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 6px;
+            margin-top: 8px;
             font-weight: bold;
-            width: auto;
+            width: 100%;
+            text-align: center;
         }
         .btn-delete-photo:hover { background-color: var(--accent-red); color: white; }
 
@@ -478,7 +480,6 @@
             cursor: pointer;
         }
 
-        /* NIEUW: SNELE TERUG-NAAR-BOVEN KNOP */
         .scroll-to-top {
             position: fixed;
             bottom: 25px;
@@ -592,11 +593,11 @@
             <div class="preview-img-container">
                 <div id="wrapper-preview1" class="preview-wrapper">
                     <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis foto</button>
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis foto 1</button>
                 </div>
                 <div id="wrapper-preview2" class="preview-wrapper">
                     <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis foto</button>
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis foto 2</button>
                 </div>
             </div>
 
@@ -661,7 +662,6 @@
         let actieveKaarten = {}; 
         let huidigeActieveCategorie = "Alles";
 
-        // TOONT DE SCROLL-KNOP ALS ER NAAR BENEDEN WORDT GESCKROLLD
         window.onscroll = function() {
             const btn = document.getElementById('btn-to-top');
             if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
@@ -751,11 +751,13 @@
             reader.readAsDataURL(file);
         }
 
-        // NIEUW: APART WISSEN VAN FOTO'S IN HET FORMULIER
+        // DE GECORRIGEERDE WIS-FUNCTIE DIE HET INPUTVELD COMPLEET LEEGMAAKT
         function wisSpecifiekeFoto(fotoNummer) {
-            document.getElementById(`foto${fotoNummer}`).value = ""; // Reset inputveld
+            const inputVeld = document.getElementById(`foto${fotoNummer}`);
+            if(inputVeld) inputVeld.value = ""; 
+            
             document.getElementById(`img-preview${fotoNummer}`).src = "";
-            document.getElementById(`wrapper-preview${fotoNummer}`).style.display = 'none'; // Verberg frame
+            document.getElementById(`wrapper-preview${fotoNummer}`).style.display = 'none';
             
             if (fotoNummer === 1) foto1DataUrl = "";
             if (fotoNummer === 2) foto2DataUrl = "";
@@ -855,7 +857,7 @@
                             categorie, materiaal, titel, datering, 
                             locatieNaam: locatieNaam || "Onbekende locatie", 
                             locatieGps, weblink, info,
-                            foto1: foto1DataUrl, // Slaat de up-to-date dataUrl op (of leeg als gewist)
+                            foto1: foto1DataUrl, 
                             foto2: foto2DataUrl
                         };
                     }
@@ -893,8 +895,10 @@
             document.getElementById('info').value = "";
             document.getElementById('bewerk-id').value = "";
             document.getElementById('materiaal').value = "Onbekend";
-            document.getElementById('foto1').value = "";
-            document.getElementById('foto2').value = "";
+            
+            if(document.getElementById('foto1')) document.getElementById('foto1').value = "";
+            if(document.getElementById('foto2')) document.getElementById('foto2').value = "";
+            
             document.getElementById('wrapper-preview1').style.display = 'none';
             document.getElementById('wrapper-preview2').style.display = 'none';
             document.getElementById('img-preview1').src = "";
@@ -954,19 +958,26 @@
                 document.getElementById('info').value = vondst.info || "";
                 document.getElementById('bewerk-id').value = vondst.id;
 
-                // Reset previews eerst
-                wisSpecifiekeFoto(1);
-                wisSpecifiekeFoto(2);
+                // Previews correct vullen zonder te wissen
+                document.getElementById('wrapper-preview1').style.display = 'none';
+                document.getElementById('wrapper-preview2').style.display = 'none';
+                document.getElementById('img-preview1').src = "";
+                document.getElementById('img-preview2').src = "";
 
                 if (vondst.foto1) {
                     document.getElementById('img-preview1').src = vondst.foto1;
                     document.getElementById('wrapper-preview1').style.display = 'flex';
                     foto1DataUrl = vondst.foto1;
+                } else {
+                    foto1DataUrl = "";
                 }
+                
                 if (vondst.foto2) {
                     document.getElementById('img-preview2').src = vondst.foto2;
                     document.getElementById('wrapper-preview2').style.display = 'flex';
                     foto2DataUrl = vondst.foto2;
+                } else {
+                    foto2DataUrl = "";
                 }
 
                 document.getElementById('form-titel').innerText = "✏️ Vondst Bewerken";
@@ -975,7 +986,6 @@
                 document.getElementById('page-invoer').classList.add('active');
                 document.getElementById('top-toggle-btn').innerText = "✕ Sluiten";
                 
-                // AUTOMATISCH SCROLLEN NAAR HET FORMULIER BOVENAAN
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
