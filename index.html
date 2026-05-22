@@ -324,7 +324,6 @@
 
         .leaflet-popup-content { color: #000000 !important; }
 
-        /* DE VERFIJNDE, COMPACTE DESKTOP ACTION BUTTONS */
         .action-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -337,7 +336,7 @@
         .btn-small {
             padding: 8px 14px;
             font-size: 13px;
-            width: auto; /* Geen opvulling van het scherm meer op laptop! */
+            width: auto; 
             flex: none;
             margin-bottom: 0;
             border-radius: 6px;
@@ -350,16 +349,12 @@
 
         .btn-info { color: var(--accent-blue) !important; border-color: rgba(74, 144, 226, 0.4) !important; }
         .btn-info:hover { background-color: rgba(74, 144, 226, 0.1) !important; }
-
         .btn-web { color: var(--btn-purple) !important; border-color: rgba(155, 89, 182, 0.4) !important; text-decoration: none; display: inline-flex; align-items: center; }
         .btn-web:hover { background-color: rgba(155, 89, 182, 0.1) !important; }
-
         .btn-map { color: var(--accent-gold) !important; border-color: rgba(212, 175, 55, 0.4) !important; }
         .btn-map:hover { background-color: rgba(212, 175, 55, 0.1) !important; }
-
         .btn-edit { color: #e67e22 !important; border-color: rgba(230, 126, 34, 0.4) !important; }
         .btn-edit:hover { background-color: rgba(230, 126, 34, 0.1) !important; }
-
         .btn-delete { color: #fc8181 !important; border-color: rgba(231, 76, 60, 0.4) !important; }
         .btn-delete:hover { background-color: rgba(231, 76, 60, 0.15) !important; }
 
@@ -412,7 +407,6 @@
             border-radius: 8px;
             cursor: pointer;
         }
-        button.danger-btn:hover { background-color: rgba(231, 76, 60, 0.1); }
 
         button.main-btn {
             width: 100%;
@@ -522,7 +516,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        /* MET SLIMME SMARTPHONE REGELS DIE DE DESKTOP NIET VERSTOREN */
         @media (max-width: 768px) {
             body { padding: 15px; }
             .app-header { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
@@ -533,7 +526,7 @@
             .btn-small {
                 padding: 11px 14px;
                 font-size: 13px;
-                flex: 1 1 calc(50% - 6px); /* Twee knoppen strak naast elkaar op gsm */
+                flex: 1 1 calc(50% - 6px); 
             }
         }
     </style>
@@ -747,6 +740,7 @@
             }
         }
 
+        // DE EXTREEM SLIMME GEOPOSITIE CLEANER (SLIKT GRADEN EN RECHTSTREEKSE N E TEKST)
         function maakGpsSchoon(invoerSnaar) {
             if (!invoerSnaar) return "";
             let text = invoerSnaar.trim();
@@ -761,6 +755,7 @@
                 if (matchQ) return `${matchQ[1]}, ${matchQ[2]}`;
             }
 
+            // FILTER: Haal letters zoals N, E, graden, quotes en rommel eruit en vis de 2 getallen met een punt op
             const regexCijfers = /(-?\d+\.\d+)[^\d-]+(-?\d+\.\d+)/;
             const matchCijfers = text.match(regexCijfers);
             if (matchCijfers) {
@@ -777,7 +772,7 @@
             
             try {
                 const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(schoneNaam + ', Belgium')}&limit=1`;
-                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV8' } });
+                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV9' } });
                 const data = await response.json();
                 if (data && data.length > 0) {
                     return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
@@ -822,6 +817,7 @@
             if (fotoNummer === 2) foto2DataUrl = "";
         }
 
+        // DE FLEXIBELE IMPORT ENGINE: DIE VONDSTEN GEGARANDEERD INLADEN OP ELKE SMARTPHONE
         function importeerCSV(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -834,44 +830,55 @@
                 const lines = text.split(/\r?\n/);
                 let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
                 let geladenAantal = 0;
-                let koppenIndex = -1;
 
-                for(let i = 0; i < lines.length; i++) {
-                    if (lines[i].toLowerCase().includes('omschrijving') && (lines[i].toLowerCase().includes('dating') || lines[i].toLowerCase().includes('datering'))) {
-                        koppenIndex = i;
+                // We pakken de index-posities dynamisch op basis van wat er in zit
+                let idxOmschrijving = 3; // Standaard back-up kolommen fallback
+                let idxDatering = 4;
+                let idxVindplaats = 5;
+                let idxExtraInfo = 8;
+
+                // Zoek of er tóch een kopregel boven staat
+                for(let i = 0; i < Math.min(lines.length, 5); i++) {
+                    let l = lines[i].toLowerCase();
+                    if (l.includes('id') || l.includes('omschrijving') || l.includes('beschrijving') || l.includes('categorie')) {
+                        let scheider = lines[i].includes(';') ? ';' : ',';
+                        let koppen = lines[i].split(scheider).map(k => k.trim().toLowerCase());
+                        
+                        let o = koppen.findIndex(k => k.includes('omschrijving') || k.includes('beschrijving') || k.includes('titel'));
+                        let d = koppen.findIndex(k => k.includes('datering') || k.includes('dating') || k.includes('periode'));
+                        let v = koppen.findIndex(k => k.includes('locatienaam') || k.includes('vindplaats') || k.includes('locatie'));
+                        let ex = koppen.findIndex(k => k.includes('informatie') || k.includes('info') || k.includes('opmerking'));
+
+                        if (o !== -1) idxOmschrijving = o;
+                        if (d !== -1) idxDatering = d;
+                        if (v !== -1) idxVindplaats = v;
+                        if (ex !== -1) idxExtraInfo = ex;
                         break;
                     }
                 }
 
-                if(koppenIndex === -1) {
-                    alert("⚠️ Kon de kolom 'Omschrijving' of 'Datering' niet vinden.");
-                    return;
-                }
+                let scheidingsteken = text.includes(';') ? ';' : ',';
 
-                let scheidingsteken = lines[koppenIndex].includes(';') ? ';' : ',';
-                let koppen = lines[koppenIndex].split(scheidingsteken).map(k => k.trim().toLowerCase());
+                for(let i = 0; i < lines.length; i++) {
+                    let lineText = lines[i].trim();
+                    if(!lineText) continue;
 
-                const idxOmschrijving = koppen.findIndex(k => k.includes('omschrijving'));
-                const idxDatering = koppen.findIndex(k => k.includes('datering') || k === 'dating');
-                const idxVindplaats = koppen.findIndex(k => k.includes('vindplaats') || k.includes('locatie'));
-                const idxExtraInfo = koppen.findIndex(k => k.includes('extra info') || k.includes('opmerking'));
-
-                for(let i = koppenIndex + 1; i < lines.length; i++) {
-                    if(!lines[i].trim()) continue;
-
-                    let row = lines[i].split(scheidingsteken).map(r => r.replace(/^"|"$/g, '').trim());
-                    if(row.length < 2 || !row[idxOmschrijving]) continue;
+                    let row = lineText.split(scheidingsteken).map(r => r.replace(/^"|"$/g, '').trim());
+                    
+                    // Sla de kopregel zelf over
+                    if (row[idxOmschrijving] === "Beschrijving" || row[idxOmschrijving] === "Omschrijving" || row[0] === "ID") continue;
+                    if (!row[idxOmschrijving]) continue;
 
                     const nieuweVondst = {
                         id: Date.now() + i, 
                         categorie: geselecteerdeCategorie,
                         materiaal: "Onbekend",
                         titel: row[idxOmschrijving],
-                        datering: idxDatering !== -1 ? row[idxDatering] : "Onbekend",
-                        locatieNaam: idxVindplaats !== -1 ? row[idxVindplaats] : "Onbekend",
+                        datering: row[idxDatering] || "Onbekend",
+                        locatieNaam: row[idxVindplaats] || "Onbekend",
                         locatieGps: "", 
                         weblink: "",
-                        info: idxExtraInfo !== -1 ? row[idxExtraInfo] : "",
+                        info: row[idxExtraInfo] || "",
                         foto1: "", foto2: ""
                     };
 
@@ -881,7 +888,7 @@
 
                 try {
                     localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
-                    alert(`🎉 Succes! Er zijn ${geladenAantal} vondsten succesvol ingeladen!`);
+                    alert(`🎉 Succes! Er zijn ${geladenAantal} vondsten succesvol ingeladen op je gsm!`);
                     document.getElementById('csv-file').value = "";
                     toonVondsten(huidigeActieveCategorie);
                 } catch(error) {
@@ -1002,7 +1009,7 @@
                 
                 setTimeout(() => {
                     try {
-                        const m = L.map(`map-${id}`).setView([lat, lng], 15);
+                        const m = L.map(`map-${id}`).setView([lat, lng], 14);
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
                         const marker = L.marker([lat, lng]).addTo(m);
                         
@@ -1130,87 +1137,4 @@
                         <button class="btn-small btn-delete" onclick="verwijderVondst(${vondst.id})">🗑️ Wis</button>
                     </div>
                 `;
-                lijst.appendChild(card);
-            });
-
-            if(lijst.innerHTML === "") {
-                lijst.innerHTML = "<p style='text-align:center; color:#64748b;'>Geen vondsten gevonden.</p>";
-            }
-        }
-
-        function filterVondstenLive() {
-            const zoekTerm = document.getElementById('app-search').value;
-            toonVondsten(huidigeActieveCategorie, zoekTerm);
-        }
-
-        function filterCategorie(event, cat) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-            huidigeActieveCategorie = cat;
-            const zoekTerm = document.getElementById('app-search').value;
-            toonVondsten(cat, zoekTerm);
-        }
-
-        function exporteerNaarCSV() {
-            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            if (huidigeVondsten.length === 0) { alert("Geen data."); return; }
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
-            csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
-            huidigeVondsten.forEach(v => {
-                let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
-                let schoneTitel = (v.titel || "").replace(/;/g, ",");
-                let schoneDatering = (v.datering || "").replace(/;/g, ",");
-                let schoneLocatieNaam = (v.locatieNaam || "Onbekend").replace(/;/g, " ");
-                let schoneLocatieGps = (v.locatieGps || "").replace(/;/g, " ");
-                let schoneWeblink = (v.weblink || "").replace(/;/g, " ");
-                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${schoneTitel};${schoneDatering};${schoneLocatieNaam};${schoneLocatieGps};${schoneWeblink};${schoneInfo}\r\n`;
-            });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Mijn_Vondsten_Backup.csv");
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        }
-
-        function openFoto(src, caption) {
-            document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox-caption').innerHTML = caption.replace(/\\'/g, "'");
-            document.getElementById('lightbox-img').style.display = 'block';
-            document.getElementById('lightbox-caption').style.display = 'block';
-            document.getElementById('info-popup-box').style.display = 'none';
-            document.getElementById('lightbox').style.display = 'flex';
-        }
-
-        function openInfo(id) {
-            const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            const vondst = presidentialVondsten.find(v => v.id == id);
-            if (vondst) {
-                document.getElementById('info-popup-titel').innerText = `📜 Info: ${vondst.titel}`;
-                document.getElementById('info-popup-tekst').innerText = vondst.info || "Nog geen extra historische informatie toegevoegd.";
-                document.getElementById('lightbox-img').style.display = 'none';
-                document.getElementById('lightbox-caption').style.display = 'none';
-                document.getElementById('info-popup-box').style.display = 'block';
-                document.getElementById('lightbox').style.display = 'flex';
-            }
-        }
-
-        function sluitPopups(event) {
-            if (event.target.id === 'lightbox' || event.target.className === 'lightbox-close' || event.target.tagName === 'BUTTON') {
-                document.getElementById('lightbox').style.display = 'none';
-            }
-        }
-
-        function wisAlles() {
-            if(confirm("Weet je zeker dat je ALLES wilt wissen?")) {
-                localStorage.removeItem('detectorVondsten');
-                sluitInvoerFormulier();
-                document.getElementById('app-search').value = "";
-                toonVondsten();
-                alert("Geheugen gewist!");
-            }
-        }
-
-        window.onload = function() { toonVondsten(); };
-    </script>
-</body>
-</html>
+                lijst.
