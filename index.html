@@ -32,7 +32,6 @@
             padding: 20px;
         }
 
-        /* Gecorrigeerd: Kopgedeelte met perfect gecentreerde titel */
         .app-header {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
@@ -196,16 +195,24 @@
             cursor: pointer;
         }
 
+        .excel-box {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border: 1px dashed rgba(46, 204, 113, 0.4);
+        }
+
         button.excel-btn {
             background-color: #1e293b;
             color: var(--btn-green);
             border: 1px solid var(--btn-green);
-            margin-top: 25px;
             width: 100%;
             padding: 14px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
+            margin-bottom: 10px;
         }
 
         button.danger-btn {
@@ -446,7 +453,8 @@
 <body>
 
     <div class="app-header">
-        <div></div> <h1 class="main-app-title">Metaaldetectievondsten</h1>
+        <div></div>
+        <h1 class="main-app-title">Metaaldetectievondsten</h1>
         <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuwe Vondst</button>
     </div>
 
@@ -502,7 +510,7 @@
 
             <div class="form-group">
                 <label for="locatie-gps">🌍 Exacte GPS Coördinaten (Achtergrond)</label>
-                <input type="text" id="locatie-gps" placeholder="Klik op de blauwe knop of laat leeg">
+                <input type="text" id="locatie-gps" placeholder="Bijv. 51.331234, 4.365432">
                 <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige Exacte GPS Vast</button>
             </div>
 
@@ -538,7 +546,7 @@
 
     <div id="page-verzameling">
         <div class="search-container">
-            <input type="text" id="app-search" class="search-input" placeholder="Zoek op naam, materiaal, datering of locatie..." oninput="filterVondstenLive()">
+            <input type="text" id="app-search" class="search-input" placeholder="Zoek op omschrijving, datering, locatie of info..." oninput="filterVondstenLive()">
         </div>
 
         <div class="tabs">
@@ -552,7 +560,25 @@
 
         <div id="vondsten-lijst"></div>
         
-        <button class="excel-btn" onclick="exporteerNaarCSV()">📥 Exporteer naar Excel (CSV)</button>
+        <div class="excel-box">
+            <h2>📥 Oude Vondsten uit Excel laden</h2>
+            <div class="form-group">
+                <label for="import-cat">Stap 1: Kies in welk mapje de Excel-rijen moeten komen</label>
+                <select id="import-cat">
+                    <option value="Munten">🪙 Munten</option>
+                    <option value="Gespen">🔍 Gespen & Knopen</option>
+                    <option value="Militaria">🛡️ Militaria</option>
+                    <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
+                    <option value="Overig">🏺 Overig / Varia / Loodjes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="csv-file">Stap 2: Selecteer het bewaarde .csv-bestand</label>
+                <input type="file" id="csv-file" accept=".csv" onchange="importeerCSV(event)">
+            </div>
+        </div>
+
+        <button class="excel-btn" onclick="exporteerNaarCSV()">📥 Back-up maken: Exporteer heel de App naar Excel (CSV)</button>
         <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Volledig Wissen</button>
     </div>
 
@@ -645,6 +671,82 @@
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
+        }
+
+        // INTELLIGENTE CSV IMPORT FUNCTIONALITEIT
+        function importeerCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const geselecteerdeCategorie = document.getElementById('import-cat').value;
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split(/\r?\n/);
+                let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+                let geladenAantal = 0;
+                let koppenIndex = -1;
+
+                // Zoek naar de rij waar de koppen in staan (NR., Omschrijving, enz.)
+                for(let i = 0; i < lines.length; i++) {
+                    if (lines[i].toLowerCase().includes('omschrijving') && lines[i].toLowerCase().includes('dating') || lines[i].toLowerCase().includes('datering')) {
+                        koppenIndex = i;
+                        break;
+                    }
+                }
+
+                if(koppenIndex === -1) {
+                    alert("⚠️ Kon de kolom 'Omschrijving' of 'Datering' niet vinden. Controleer of het bestand juist is opgeslagen.");
+                    return;
+                }
+
+                // Haal de koppen uit elkaar (rekening houdend met puntkomma of komma)
+                let scheidingsteken = lines[koppenIndex].includes(';') ? ';' : ',';
+                let koppen = lines[koppenIndex].split(scheidingsteken).map(k => k.trim().toLowerCase());
+
+                const idxOmschrijving = koppen.findIndex(k => k.includes('omschrijving'));
+                const idxDatering = koppen.findIndex(k => k.includes('datering') || k === 'dating');
+                const idxVindplaats = koppen.findIndex(k => k.includes('vindplaats'));
+                const idxExtraInfo = koppen.findIndex(k => k.includes('extra info') || k.includes('opmerking'));
+
+                // Loop door alle rijen onder de koppen
+                for(let i = koppenIndex + 1; i < lines.length; i++) {
+                    if(!lines[i].trim()) continue;
+
+                    // Slim splitsen (rekening houdend met eventuele aanhalingstekens)
+                    let row = lines[i].split(scheidingsteken).map(r => r.replace(/^"|"$/g, '').trim());
+                    if(row.length < 2 || !row[idxOmschrijving]) continue;
+
+                    const nieuweVondst = {
+                        id: Date.now() + i, // Unieke ID garanderen
+                        categorie: geselecteerdeCategorie,
+                        materiaal: "Onbekend",
+                        titel: row[idxOmschrijving],
+                        datering: idxDatering !== -1 ? row[idxDatering] : "Onbekend",
+                        locatieNaam: idxVindplaats !== -1 ? row[idxVindplaats] : "Onbekend",
+                        locatieGps: "",
+                        weblink: "",
+                        info: idxExtraInfo !== -1 ? row[idxExtraInfo] : "",
+                        foto1: "",
+                        foto2: ""
+                    };
+
+                    huidigeVondsten.push(nieuweVondst);
+                    geladenAantal++;
+                }
+
+                try {
+                    localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
+                    alert(`🎉 Succes! Er zijn ${geladenAantal} vondsten succesvol ingeladen in het mapje!`);
+                    document.getElementById('csv-file').value = ""; // reset knop
+                    toonVondsten(huidigeActieveCategorie);
+                } catch(error) {
+                    alert("⚠️ Het browsergeheugen zit vol. Importeer minder rijen tegelijk.");
+                }
+            };
+
+            reader.readAsText(file, "UTF-8");
         }
 
         function slaVondstOp() {
@@ -787,10 +889,6 @@
             }
         }
 
-        function onClick(id) {
-            console.log(id);
-        }
-
         function verwijderVondst(id) {
             if (confirm("Weet je zeker dat je deze specifieke vondst wilt verwijderen?")) {
                 let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
@@ -884,13 +982,13 @@
         }
 
         function exporteerNaarCSV() {
-            const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            if (presidentialVondsten.length === 0) { alert("Geen data."); return; }
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            if (huidigeVondsten.length === 0) { alert("Geen data."); return; }
 
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
             csvContent += "ID;Categorie;Materiaal;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
 
-            presidentialVondsten.forEach(v => {
+            huidigeVondsten.forEach(v => {
                 let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
                 let schoneTitel = (v.titel || "").replace(/;/g, ",");
                 let schoneDatering = (v.datering || "").replace(/;/g, ",");
@@ -919,8 +1017,8 @@
         }
 
         function openInfo(id) {
-            const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            const vondst = presidentialVondsten.find(v => v.id == id);
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            const vondst = huidigeVondsten.find(v => v.id == id);
             
             if (vondst) {
                 document.getElementById('info-popup-titel').innerText = `📜 Info: ${vondst.titel}`;
