@@ -30,21 +30,45 @@
             color: var(--text-color);
             margin: 0;
             padding: 20px;
-            padding-bottom: 90px; /* Ruimte voor menu */
         }
 
-        /* NIEUW: Grote, indrukwekkende hoofdtitel */
-        .main-app-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 38px;
-            color: var(--accent-gold);
-            text-align: center;
-            letter-spacing: 2px;
-            margin-top: 10px;
-            margin-bottom: 25px;
-            text-transform: uppercase;
+        /* Kopgedeelte met Titel en Subtiele Knop */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 2px solid rgba(212, 175, 55, 0.2);
             padding-bottom: 15px;
+            margin-bottom: 25px;
+            margin-top: 10px;
+        }
+
+        .main-app-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--accent-gold);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        /* NIEUW: Subtiele knop bovenaan */
+        .btn-top-invoer {
+            background-color: transparent;
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            padding: 8px 14px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            width: auto;
+            margin: 0;
+            transition: all 0.2s;
+        }
+
+        .btn-top-invoer:hover {
+            background-color: rgba(212, 175, 55, 0.1);
         }
 
         h2 {
@@ -55,41 +79,7 @@
             margin-bottom: 15px;
         }
 
-        /* Navigatiebalk onderaan */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: #0b0d13;
-            display: flex;
-            justify-content: space-around;
-            padding: 14px 0;
-            border-top: 1px solid rgba(212, 175, 55, 0.3);
-            z-index: 999;
-        }
-
-        .nav-btn {
-            background: none;
-            border: none;
-            color: #64748b;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            width: auto;
-            padding: 0;
-            margin: 0;
-            transition: color 0.2s;
-        }
-
-        .nav-btn.active {
-            color: var(--accent-gold);
-        }
-
+        /* Schermen verbergen/tonen via overlay/in-page */
         .app-page {
             display: none;
         }
@@ -102,7 +92,7 @@
             background-color: var(--card-bg);
             padding: 20px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             border: 1px solid #2d3748;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
@@ -179,7 +169,7 @@
             color: white;
         }
 
-        button {
+        button.main-btn {
             width: 100%;
             padding: 14px;
             background-color: var(--accent-gold);
@@ -190,11 +180,6 @@
             font-weight: bold;
             cursor: pointer;
             margin-bottom: 10px;
-            transition: background 0.2s;
-        }
-
-        button:hover {
-            background-color: #e5c158;
         }
 
         button.gps-btn {
@@ -204,17 +189,22 @@
             margin-top: 6px;
             padding: 10px;
             font-size: 14px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
         }
-
-        button.gps-btn:hover { background-color: rgba(74, 144, 226, 0.1); }
 
         button.excel-btn {
             background-color: #1e293b;
             color: var(--btn-green);
             border: 1px solid var(--btn-green);
             margin-top: 25px;
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
         }
-        button.excel-btn:hover { background-color: rgba(46, 204, 113, 0.1); }
 
         button.danger-btn {
             background-color: #141822;
@@ -223,6 +213,9 @@
             padding: 10px;
             font-size: 13px;
             margin-top: 20px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
         }
 
         .action-buttons {
@@ -450,27 +443,9 @@
 </head>
 <body>
 
-    <div class="main-app-title">Metaaldetectievondsten</div>
-
-    <div id="page-verzameling" class="app-page active">
-        
-        <div class="search-container">
-            <input type="text" id="app-search" class="search-input" placeholder="Zoek op naam, materiaal, datering of locatie..." oninput="filterVondstenLive()">
-        </div>
-
-        <div class="tabs">
-            <div class="tab active" onclick="filterCategorie(event, 'Alles')">Alles</div>
-            <div class="tab" onclick="filterCategorie(event, 'Munten')">🪙 Munten</div>
-            <div class="tab" onclick="filterCategorie(event, 'Gespen')">🔍 Gespen</div>
-            <div class="tab" onclick="filterCategorie(event, 'Militaria')">🛡️ Militaria</div>
-            <div class="tab" onclick="filterCategorie(event, 'Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
-            <div class="tab" onclick="filterCategorie(event, 'Overig')">🏺 Overig</div>
-        </div>
-
-        <div id="vondsten-lijst"></div>
-        
-        <button class="excel-btn" onclick="exporteerNaarCSV()">📥 Exporteer naar Excel (CSV)</button>
-        <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Volledig Wissen</button>
+    <div class="app-header">
+        <h1 class="main-app-title">Metaaldetectievondsten</h1>
+        <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuwe Vondst</button>
     </div>
 
     <div id="page-invoer" class="app-page">
@@ -524,7 +499,7 @@
             </div>
 
             <div class="form-group">
-                <label for="locatie-gps">🌍 Exacte GPS Coördinaten (Voor de kaart op de achtergrond)</label>
+                <label for="locatie-gps">🌍 Exacte GPS Coördinaten (Achtergrond)</label>
                 <input type="text" id="locatie-gps" placeholder="Klik op de blauwe knop of laat leeg">
                 <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige Exacte GPS Vast</button>
             </div>
@@ -554,20 +529,29 @@
                 <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
             </div>
 
-            <button id="opslaan-btn" onclick="slaVondstOp()">Vondst Opslaan</button>
-            <button id="annuleer-btn" style="display:none; background-color:#555; color:white;" onclick="resetFormulier()">Annuleer Bewerken</button>
+            <button class="main-btn" id="opslaan-btn" onclick="slaVondstOp()">Vondst Opslaan</button>
+            <button class="main-btn" id="annuleer-btn" style="background-color:#334155; color:white;" onclick="sluitInvoerFormulier()">Annuleren</button>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <button id="nav-verzameling" class="nav-btn active" onclick="wisselScherm('verzameling')">
-            <span>🎒</span>
-            <span>Verzameling</span>
-        </button>
-        <button id="nav-invoer" class="nav-btn" onclick="wisselScherm('invoer')">
-            <span>➕</span>
-            <span>Nieuwe Vondst</span>
-        </button>
+    <div id="page-verzameling">
+        <div class="search-container">
+            <input type="text" id="app-search" class="search-input" placeholder="Zoek op naam, materiaal, datering of locatie..." oninput="filterVondstenLive()">
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="filterCategorie(event, 'Alles')">Alles</div>
+            <div class="tab" onclick="filterCategorie(event, 'Munten')">🪙 Munten</div>
+            <div class="tab" onclick="filterCategorie(event, 'Gespen')">🔍 Gespen</div>
+            <div class="tab" onclick="filterCategorie(event, 'Militaria')">🛡️ Militaria</div>
+            <div class="tab" onclick="filterCategorie(event, 'Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
+            <div class="tab" onclick="filterCategorie(event, 'Overig')">🏺 Overig</div>
+        </div>
+
+        <div id="vondsten-lijst"></div>
+        
+        <button class="excel-btn" onclick="exporteerNaarCSV()">📥 Exporteer naar Excel (CSV)</button>
+        <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Volledig Wissen</button>
     </div>
 
     <div id="lightbox" class="lightbox" onclick="sluitPopups(event)">
@@ -586,25 +570,28 @@
         let actieveKaarten = {}; 
         let huidigeActieveCategorie = "Alles";
 
-        function wisselScherm(schermNaam) {
-            document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-
-            window.scrollTo(0, 0);
-
-            if (schermNaam === 'verzameling') {
-                document.getElementById('page-verzameling').classList.add('active');
-                document.getElementById('nav-verzameling').classList.add('active');
-                document.getElementById('app-search').value = "";
-                toonVondsten();
-            } else if (schermNaam === 'invoer') {
-                document.getElementById('page-invoer').classList.add('active');
-                document.getElementById('nav-invoer').classList.add('active');
+        // INTUÏTIEVE TOGGLE FUNCTIE VOOR HET FORMULIER
+        function toggleInvoerFormulier() {
+            const formPage = document.getElementById('page-invoer');
+            const btn = document.getElementById('top-toggle-btn');
+            
+            if(formPage.classList.contains('active')) {
+                sluitInvoerFormulier();
+            } else {
+                formPage.classList.add('active');
+                btn.innerText = "✕ Sluiten";
+                window.scrollTo(0, 0);
             }
         }
 
+        function sluitInvoerFormulier() {
+            document.getElementById('page-invoer').classList.remove('active');
+            document.getElementById('top-toggle-btn').innerText = "➕ Nieuwe Vondst";
+            resetFormulier();
+        }
+
         function setDatering(waarde) {
-            document.getElementById('datering').value = valeur = waarde;
+            document.getElementById('datering').value = waarde;
         }
 
         function haalGPS() {
@@ -704,8 +691,8 @@
 
             try {
                 localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
-                resetFormulier();
-                wisselScherm('verzameling'); 
+                sluitInvoerFormulier();
+                toonVondsten(huidigeActieveCategorie); 
             } catch (e) {
                 alert("⚠️ Geheugen vol.");
             }
@@ -726,7 +713,6 @@
             document.getElementById('img-preview2').style.display = 'none';
             document.getElementById('form-titel').innerText = "Nieuwe Vondst";
             document.getElementById('opslaan-btn').innerText = "Vondst Opslaan";
-            document.getElementById('annuleer-btn').style.display = 'none';
             foto1DataUrl = "";
             foto2DataUrl = "";
         }
@@ -793,9 +779,11 @@
 
                 document.getElementById('form-titel').innerText = "✏️ Vondst Bewerken";
                 document.getElementById('opslaan-btn').innerText = "Wijzigingen Opslaan";
-                document.getElementById('annuleer-btn').style.display = 'block';
-
-                wisselScherm('invoer');
+                
+                // Klap het invoerscherm open voor het bewerken
+                document.getElementById('page-invoer').classElement = document.getElementById('page-invoer').classList.add('active');
+                document.getElementById('top-toggle-btn').innerText = "✕ Sluiten";
+                window.scrollTo(0, 0);
             }
         }
 
@@ -949,7 +937,7 @@
         function wisAlles() {
             if(confirm("Weet je zeker dat je ALLES wilt wissen?")) {
                 localStorage.removeItem('detectorVondsten');
-                resetFormulier();
+                sluitInvoerFormulier();
                 document.getElementById('app-search').value = "";
                 toonVondsten();
                 alert("Geheugen gewist!");
