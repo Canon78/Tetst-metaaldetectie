@@ -24,6 +24,10 @@
             --btn-purple: #9b59b6;
         }
 
+        html {
+            scroll-behavior: smooth;   /* Zorgt voor soepel scrollen */
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
@@ -370,19 +374,44 @@
             display: none;
         }
 
+        /* VERBETERDE PHOTO PREVIEW MET WISKNOP */
         .preview-img-container {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 15px;
+            margin-top: 12px;
+        }
+
+        .preview-wrapper {
+            display: none;
+            flex-direction: column;
+            width: 48%;
+            align-items: center;
+            background-color: #0f131a;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #334155;
         }
 
         .preview-img {
-            max-width: 48%;
-            height: auto;
+            max-width: 100%;
+            max-height: 140px;
             border-radius: 6px;
-            display: none;
-            border: 1px solid #334155;
+            object-fit: contain;
         }
+
+        .btn-delete-photo {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #fc8181;
+            border: 1px solid var(--accent-red);
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 6px;
+            font-weight: bold;
+            width: auto;
+        }
+        .btn-delete-photo:hover { background-color: var(--accent-red); color: white; }
 
         .leaflet-popup-content { color: #000000 !important; }
 
@@ -447,6 +476,32 @@
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
+        }
+
+        /* NIEUW: SNELE TERUG-NAAR-BOVEN KNOP */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: var(--card-bg);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.2s;
+        }
+        .scroll-to-top:hover {
+            background-color: var(--accent-gold);
+            color: black;
         }
     </style>
 </head>
@@ -526,17 +581,23 @@
 
             <div class="form-group">
                 <label for="foto1">📸 Foto 1 (Voorkant)</label>
-                <input type="file" id="foto1" accept="image/*" onchange="verwerkFoto(event, 'img-preview1', 1)">
+                <input type="file" id="foto1" accept="image/*" onchange="verwerkFoto(event, 1)">
             </div>
 
             <div class="form-group">
                 <label for="foto2">📸 Foto 2 (Achterkant)</label>
-                <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 'img-preview2', 2)">
+                <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 2)">
             </div>
 
             <div class="preview-img-container">
-                <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
-                <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
+                <div id="wrapper-preview1" class="preview-wrapper">
+                    <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis foto</button>
+                </div>
+                <div id="wrapper-preview2" class="preview-wrapper">
+                    <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis foto</button>
+                </div>
             </div>
 
             <button class="main-btn" id="opslaan-btn" onclick="slaVondstOp()">Vondst Opslaan</button>
@@ -592,11 +653,27 @@
         </div>
     </div>
 
+    <button id="btn-to-top" class="scroll-to-top" onclick="gaNaarBoven()">↑</button>
+
     <script>
         let foto1DataUrl = "";
         let foto2DataUrl = "";
         let actieveKaarten = {}; 
         let huidigeActieveCategorie = "Alles";
+
+        // TOONT DE SCROLL-KNOP ALS ER NAAR BENEDEN WORDT GESCKROLLD
+        window.onscroll = function() {
+            const btn = document.getElementById('btn-to-top');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.style.display = "flex";
+            } else {
+                btn.style.display = "none";
+            }
+        };
+
+        function gaNaarBoven() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         function toggleInvoerFormulier() {
             const formPage = document.getElementById('page-invoer');
@@ -607,7 +684,7 @@
             } else {
                 formPage.classList.add('active');
                 btn.innerText = "✕ Sluiten";
-                window.scrollTo(0, 0);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
@@ -635,7 +712,7 @@
             }
         }
 
-        function verwerkFoto(event, previewId, fotoNummer) {
+        function verwerkFoto(event, fotoNummer) {
             const file = event.target.files[0];
             if (!file) return;
 
@@ -661,9 +738,10 @@
 
                     const gecomprimeerdeDataUrl = canvas.toDataURL('image/jpeg', 0.7);
                     
-                    const preview = document.getElementById(previewId);
+                    const wrapper = document.getElementById(`wrapper-preview${fotoNummer}`);
+                    const preview = document.getElementById(`img-preview${fotoNummer}`);
                     preview.src = gecomprimeerdeDataUrl;
-                    preview.style.display = 'block';
+                    wrapper.style.display = 'flex';
 
                     if (fotoNummer === 1) foto1DataUrl = gecomprimeerdeDataUrl;
                     if (fotoNummer === 2) foto2DataUrl = gecomprimeerdeDataUrl;
@@ -673,7 +751,16 @@
             reader.readAsDataURL(file);
         }
 
-        // INTELLIGENTE CSV IMPORT FUNCTIONALITEIT
+        // NIEUW: APART WISSEN VAN FOTO'S IN HET FORMULIER
+        function wisSpecifiekeFoto(fotoNummer) {
+            document.getElementById(`foto${fotoNummer}`).value = ""; // Reset inputveld
+            document.getElementById(`img-preview${fotoNummer}`).src = "";
+            document.getElementById(`wrapper-preview${fotoNummer}`).style.display = 'none'; // Verberg frame
+            
+            if (fotoNummer === 1) foto1DataUrl = "";
+            if (fotoNummer === 2) foto2DataUrl = "";
+        }
+
         function importeerCSV(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -688,7 +775,6 @@
                 let geladenAantal = 0;
                 let koppenIndex = -1;
 
-                // Zoek naar de rij waar de koppen in staan (NR., Omschrijving, enz.)
                 for(let i = 0; i < lines.length; i++) {
                     if (lines[i].toLowerCase().includes('omschrijving') && lines[i].toLowerCase().includes('dating') || lines[i].toLowerCase().includes('datering')) {
                         koppenIndex = i;
@@ -701,7 +787,6 @@
                     return;
                 }
 
-                // Haal de koppen uit elkaar (rekening houdend met puntkomma of komma)
                 let scheidingsteken = lines[koppenIndex].includes(';') ? ';' : ',';
                 let koppen = lines[koppenIndex].split(scheidingsteken).map(k => k.trim().toLowerCase());
 
@@ -710,16 +795,14 @@
                 const idxVindplaats = koppen.findIndex(k => k.includes('vindplaats'));
                 const idxExtraInfo = koppen.findIndex(k => k.includes('extra info') || k.includes('opmerking'));
 
-                // Loop door alle rijen onder de koppen
                 for(let i = koppenIndex + 1; i < lines.length; i++) {
                     if(!lines[i].trim()) continue;
 
-                    // Slim splitsen (rekening houdend met eventuele aanhalingstekens)
                     let row = lines[i].split(scheidingsteken).map(r => r.replace(/^"|"$/g, '').trim());
                     if(row.length < 2 || !row[idxOmschrijving]) continue;
 
                     const nieuweVondst = {
-                        id: Date.now() + i, // Unieke ID garanderen
+                        id: Date.now() + i, 
                         categorie: geselecteerdeCategorie,
                         materiaal: "Onbekend",
                         titel: row[idxOmschrijving],
@@ -739,10 +822,10 @@
                 try {
                     localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
                     alert(`🎉 Succes! Er zijn ${geladenAantal} vondsten succesvol ingeladen in het mapje!`);
-                    document.getElementById('csv-file').value = ""; // reset knop
+                    document.getElementById('csv-file').value = "";
                     toonVondsten(huidigeActieveCategorie);
                 } catch(error) {
-                    alert("⚠️ Het browsergeheugen zit vol. Importeer minder rijen tegelijk.");
+                    alert("⚠️ Het browsergeheugen zit vol.");
                 }
             };
 
@@ -772,8 +855,8 @@
                             categorie, materiaal, titel, datering, 
                             locatieNaam: locatieNaam || "Onbekende locatie", 
                             locatieGps, weblink, info,
-                            foto1: foto1DataUrl || vondst.foto1,
-                            foto2: foto2DataUrl || vondst.foto2
+                            foto1: foto1DataUrl, // Slaat de up-to-date dataUrl op (of leeg als gewist)
+                            foto2: foto2DataUrl
                         };
                     }
                     return vondst;
@@ -812,8 +895,10 @@
             document.getElementById('materiaal').value = "Onbekend";
             document.getElementById('foto1').value = "";
             document.getElementById('foto2').value = "";
-            document.getElementById('img-preview1').style.display = 'none';
-            document.getElementById('img-preview2').style.display = 'none';
+            document.getElementById('wrapper-preview1').style.display = 'none';
+            document.getElementById('wrapper-preview2').style.display = 'none';
+            document.getElementById('img-preview1').src = "";
+            document.getElementById('img-preview2').src = "";
             document.getElementById('form-titel').innerText = "Nieuwe Vondst";
             document.getElementById('opslaan-btn').innerText = "Vondst Opslaan";
             foto1DataUrl = "";
@@ -869,14 +954,18 @@
                 document.getElementById('info').value = vondst.info || "";
                 document.getElementById('bewerk-id').value = vondst.id;
 
+                // Reset previews eerst
+                wisSpecifiekeFoto(1);
+                wisSpecifiekeFoto(2);
+
                 if (vondst.foto1) {
                     document.getElementById('img-preview1').src = vondst.foto1;
-                    document.getElementById('img-preview1').style.display = 'block';
+                    document.getElementById('wrapper-preview1').style.display = 'flex';
                     foto1DataUrl = vondst.foto1;
                 }
                 if (vondst.foto2) {
                     document.getElementById('img-preview2').src = vondst.foto2;
-                    document.getElementById('img-preview2').style.display = 'block';
+                    document.getElementById('wrapper-preview2').style.display = 'flex';
                     foto2DataUrl = vondst.foto2;
                 }
 
@@ -885,7 +974,9 @@
                 
                 document.getElementById('page-invoer').classList.add('active');
                 document.getElementById('top-toggle-btn').innerText = "✕ Sluiten";
-                window.scrollTo(0, 0);
+                
+                // AUTOMATISCH SCROLLEN NAAR HET FORMULIER BOVENAAN
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
