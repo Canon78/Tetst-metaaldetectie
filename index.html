@@ -273,6 +273,7 @@
             font-weight: bold;
         }
 
+        /* UNIEKE STYLING PER TABBLAD (CATEGORIE) BIJ ACTIVE-STATE */
         .tabs {
             display: flex;
             overflow-x: auto;
@@ -290,23 +291,41 @@
             border: 1px solid #334155;
             font-size: 14px;
             color: #94a3b8;
+            transition: all 0.2s;
         }
 
-        .tab.active {
-            background-color: var(--accent-gold);
-            color: #000;
-            font-weight: bold;
-            border-color: var(--accent-gold);
-        }
+        .tab.cat-Alles.active { background-color: #d4af37; border-color: #d4af37; color: #000; font-weight: bold; }
+        .tab.cat-Munten.active { background-color: #f1c40f; border-color: #f1c40f; color: #000; font-weight: bold; }
+        .tab.cat-Gespen.active { background-color: #3498db; border-color: #3498db; color: #000; font-weight: bold; }
+        .tab.cat-Militaria.active { background-color: #e74c3c; border-color: #e74c3c; color: #fff; font-weight: bold; }
+        .tab.cat-Gebruiksvoorwerpen.active { background-color: #2ecc71; border-color: #2ecc71; color: #000; font-weight: bold; }
+        .tab.cat-Overig.active { background-color: #9b59b6; border-color: #9b59b6; color: #fff; font-weight: bold; }
 
         .vondst-card {
             background-color: var(--card-bg);
             border-radius: 12px;
             padding: 18px;
             margin-bottom: 18px;
-            border-left: 4px solid var(--accent-gold);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-left: 4px solid #334155; /* Standaardkleur */
         }
+
+        /* UNIEKE LIJN- & TEKSTKLEUREN PER KAART-CATEGORIE */
+        .vondst-card.cat-Munten { border-left-color: #f1c40f; }
+        .vondst-card.cat-Munten .vondst-cat-badge { color: #f1c40f; }
+
+        .vondst-card.cat-Gespen { border-left-color: #3498db; }
+        .vondst-card.cat-Gespen .vondst-cat-badge { color: #3498db; }
+
+        .vondst-card.cat-Militaria { border-left-color: #e74c3c; }
+        .vondst-card.cat-Militaria .vondst-cat-badge { color: #e74c3c; }
+
+        .vondst-card.cat-Gebruiksvoorwerpen { border-left-color: #2ecc71; }
+        .vondst-card.cat-Gebruiksvoorwerpen .vondst-cat-badge { color: #2ecc71; }
+
+        .vondst-card.cat-Overig { border-left-color: #9b59b6; }
+        .vondst-card.cat-Overig .vondst-cat-badge { color: #9b59b6; }
+
 
         .vondst-header {
             display: flex;
@@ -564,7 +583,7 @@
             </div>
 
             <div class="form-group">
-                <label for="locatie-gps">🌍 Exacte GPS Coördinaten of Google Maps Link (Plakken mag!)</label>
+                <label for="locatie-gps">🌍 Exacte GPS Coördinaten of Google Maps Link</label>
                 <input type="text" id="locatie-gps" placeholder="Plak hier coördinaten of de complete Google Maps link">
                 <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige Exacte GPS Vast</button>
             </div>
@@ -611,12 +630,12 @@
         </div>
 
         <div class="tabs">
-            <div class="tab active" onclick="filterCategorie(event, 'Alles')">Alles</div>
-            <div class="tab" onclick="filterCategorie(event, 'Munten')">🪙 Munten</div>
-            <div class="tab" onclick="filterCategorie(event, 'Gespen')">🔍 Gespen</div>
-            <div class="tab" onclick="filterCategorie(event, 'Militaria')">🛡️ Militaria</div>
-            <div class="tab" onclick="filterCategorie(event, 'Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
-            <div class="tab" onclick="filterCategorie(event, 'Overig')">🏺 Overig</div>
+            <div class="tab active cat-Alles" onclick="filterCategorie(event, 'Alles')">Alles</div>
+            <div class="tab cat-Munten" onclick="filterCategorie(event, 'Munten')">🪙 Munten</div>
+            <div class="tab cat-Gespen" onclick="filterCategorie(event, 'Gespen')">🔍 Gespen</div>
+            <div class="tab cat-Militaria" onclick="filterCategorie(event, 'Militaria')">🛡️ Militaria</div>
+            <div class="tab cat-Gebruiksvoorwerpen" onclick="filterCategorie(event, 'Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
+            <div class="tab cat-Overig" onclick="filterCategorie(event, 'Overig')">🏺 Overig</div>
         </div>
 
         <div id="vondsten-lijst"></div>
@@ -693,7 +712,7 @@
         }
 
         function setDatering(waarde) {
-            document.getElementById('datering').value = waarde;
+            document.getElementById('datering').value = valeur = waarde;
         }
 
         function haalGPS() {
@@ -709,40 +728,34 @@
             }
         }
 
-        // DE INTUÏTIEVE GOOGLE MAPS OPSCHONER (EXTRACTIE-ENGINE)
         function maakGpsSchoon(invoerSnaar) {
             if (!invoerSnaar) return "";
             let text = invoerSnaar.trim();
 
-            // Scenario 1: Er is een complete Google Maps internetlink geplakt!
             if (text.includes("google.com/maps") || text.includes("goo.gl/maps")) {
-                // Zoek naar het @-teken in de link (daar staan de coördinaten achter in Maps)
                 const regexAt = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
                 const matchAt = text.match(regexAt);
                 if (matchAt) return `${matchAt[1]}, ${matchAt[2]}`;
 
-                // Zoek naar query coördinaten (?q=51.23,4.56)
                 const regexQ = /[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/;
                 const matchQ = text.match(regexQ);
                 if (matchQ) return `${matchQ[1]}, ${matchQ[2]}`;
             }
 
-            // Scenario 2: Er staan letters, graden of rommel rondom de cijfers
-            // We vissen gewoon de twee reële cijferreeksen met een punt eruit
             const regexCijfers = /(-?\d+\.\d+)[^\d-]+(-?\d+\.\d+)/;
             const matchCijfers = text.match(regexCijfers);
             if (matchCijfers) {
                 return `${matchCijfers[1]}, ${matchCijfers[2]}`;
             }
 
-            return text; // Als het al schoon was, sturen we het gewoon terug
+            return text;
         }
 
         async function zoekCoordinatenVanTekst(locatieNaam) {
             if (!locatieNaam || locatieNaam.toLowerCase() === "onbekend") return null;
             try {
                 const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locatieNaam + ', Belgium')}&limit=1`;
-                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV4' } });
+                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV5' } });
                 const data = await response.json();
                 if (data && data.length > 0) {
                     return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
@@ -864,9 +877,8 @@
             const datering = document.getElementById('datering').value;
             const locatieNaam = document.getElementById('locatie-naam').value;
             
-            // HIER WORDT DE SCHOONMAAKFILTER TOEGEPAST BIJ HET OPSLAAN!
             const ruweGps = document.getElementById('locatie-gps').value;
-            const locatieGps = maakGpsSchoon(ruweGps);
+            const locatieGps = RuweGps = "" ? "" : maakGpsSchoon(ruweGps);
 
             const weblink = document.getElementById('weblink').value;
             const info = document.getElementById('info').value;
@@ -948,7 +960,6 @@
             let lat = null;
             let lng = null;
 
-            // Maak de GPS snaar voor de zekerheid nogmaals schoon
             const schoneGpsSnaar = maakGpsSchoon(gpsSnaar);
 
             if (schoneGpsSnaar && schoneGpsSnaar.includes(',')) {
@@ -975,7 +986,7 @@
                     actieveKaarten[id] = m;
                 }, 100);
             } else {
-                mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>❌ Kon deze locatie niet op de kaart laden. Controleer de coördinaten of het adres.</div>";
+                mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>❌ Kon deze locatie niet op de kaart laden. Pas het adres aan via 'Bewerk'.</div>";
             }
         }
 
@@ -1051,12 +1062,13 @@
                 const heeftWeblink = vondst.weblink && vondst.weblink.trim().startsWith('http');
 
                 const card = document.createElement('div');
-                card.className = 'vondst-card';
+                // GEBRUIK DE RECHTSTREEKSE CATEGORIE ALS CSS KLASSE VOOR DE KLEUREN
+                card.className = `vondst-card cat-${vondst.categorie}`;
                 
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span>${vondst.titel}</span>
-                        <span style="color:var(--accent-gold); font-size:13px; font-family:sans-serif; font-weight:normal;">${vondst.categorie}</span>
+                        <span class="vondst-cat-badge" style="font-size:13px; font-family:sans-serif; font-weight:bold;">${vondst.categorie}</span>
                     </div>
                     <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal || 'Onbekend'}</div>
                     <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
