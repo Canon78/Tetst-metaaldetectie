@@ -33,39 +33,43 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 15px;
+            padding: 20px;
         }
 
         .app-header {
             display: grid;
-            grid-template-columns: 1fr auto;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
             border-bottom: 2px solid rgba(212, 175, 55, 0.2);
             padding-bottom: 15px;
-            margin-bottom: 20px;
-            margin-top: 5px;
-            gap: 10px;
+            margin-bottom: 25px;
+            margin-top: 10px;
         }
 
         .main-app-title {
+            grid-column: 2;
             font-family: 'Playfair Display', serif;
-            font-size: 22px;
+            font-size: 28px;
             color: var(--accent-gold);
             letter-spacing: 1px;
             text-transform: uppercase;
             margin: 0;
+            text-align: center;
         }
 
         .btn-top-invoer {
+            grid-column: 3;
+            justify-self: end;
             background-color: transparent;
             color: var(--accent-gold);
             border: 1px solid var(--accent-gold);
-            padding: 8px 12px;
-            font-size: 13px;
+            padding: 8px 14px;
+            font-size: 14px;
             font-weight: 600;
             border-radius: 6px;
             cursor: pointer;
-            white-space: nowrap;
+            width: auto;
+            margin: 0;
             transition: all 0.2s;
         }
 
@@ -75,7 +79,7 @@
 
         h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 22px;
+            font-size: 24px;
             color: var(--accent-gold);
             margin-top: 5px;
             margin-bottom: 15px;
@@ -91,7 +95,7 @@
 
         .form-container {
             background-color: var(--card-bg);
-            padding: 15px;
+            padding: 20px;
             border-radius: 12px;
             margin-bottom: 25px;
             border: 1px solid #2d3748;
@@ -99,14 +103,14 @@
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
             margin-bottom: 6px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
             color: #94a3b8;
         }
 
@@ -135,7 +139,7 @@
         }
 
         .search-container {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .search-input {
@@ -148,31 +152,23 @@
             background-color: var(--card-bg) !important;
         }
 
-        /* VERBETERDE MOBIELE TABS (SCROLLBAAR MET DE DUIM) */
         .tabs {
             display: flex;
             overflow-x: auto;
             gap: 8px;
             margin-bottom: 20px;
-            padding-bottom: 8px;
+            padding-bottom: 5px;
             -webkit-overflow-scrolling: touch;
-        }
-        .tabs::-webkit-scrollbar {
-            height: 4px;
-        }
-        .tabs::-webkit-scrollbar-thumb {
-            background-color: rgba(212, 175, 55, 0.2);
-            border-radius: 4px;
         }
 
         .tab {
-            padding: 8px 16px;
+            padding: 10px 18px;
             background-color: var(--card-bg);
             border-radius: 30px;
             white-space: nowrap;
             cursor: pointer;
             border: 1px solid #334155;
-            font-size: 13px;
+            font-size: 14px;
             color: #94a3b8;
             transition: all 0.2s;
         }
@@ -189,8 +185,8 @@
         .vondst-card {
             background-color: var(--card-bg);
             border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 18px;
+            margin-bottom: 18px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             border-left: 4px solid #334155;
         }
@@ -212,26 +208,19 @@
         .vondst-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             font-family: 'Playfair Display', serif;
-            font-size: 17px;
+            font-size: 18px;
             font-weight: bold;
             border-bottom: 1px solid #334155;
             padding-bottom: 8px;
             margin-bottom: 12px;
             color: white;
-            gap: 10px;
-        }
-
-        .vondst-header span:first-child {
-            word-break: break-word; /* Voorkomt dat lange titels uit het scherm lopen op mobiel */
         }
 
         .vondst-meta {
             font-size: 14px;
             color: #cbd5e1;
             margin: 6px 0;
-            word-break: break-word;
         }
 
         .vondst-meta b {
@@ -240,16 +229,15 @@
 
         .foto-container {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-top: 14px;
-            flex-wrap: wrap;
         }
 
         .img-wrapper {
             position: relative;
-            width: 100px;
-            height: 100px;
-            border: 1px solid #334155 !important;
+            width: 110px;
+            height: 110px;
+            border: 2px solid #334155 !important;
             border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
@@ -276,7 +264,7 @@
 
         .inline-map {
             width: 100%;
-            height: 220px;
+            height: 240px;
             border-radius: 8px;
             margin-top: 12px;
             border: 1px solid var(--accent-gold);
@@ -285,7 +273,7 @@
 
         .preview-img-container {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             margin-top: 12px;
             margin-bottom: 15px;
         }
@@ -296,14 +284,14 @@
             width: 48%;
             align-items: center;
             background-color: #0f131a;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             border: 1px solid #334155;
             color: #cbd5e1;
         }
 
         .preview-wrapper span {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--accent-gold);
             margin-bottom: 6px;
             font-weight: 600;
@@ -311,7 +299,7 @@
 
         .preview-img {
             max-width: 100%;
-            max-height: 120px;
+            max-height: 140px;
             border-radius: 6px;
             object-fit: contain;
             border: 1px solid #2d3748;
@@ -330,50 +318,56 @@
             font-weight: bold;
             width: 100%;
             text-align: center;
+            transition: all 0.2s;
         }
+        .btn-delete-photo:hover { background-color: var(--accent-red); color: white; }
 
-        /* FLEXIBELE RESPONSIVE ACTION BUTTONS VOOR MOBIEL */
+        .leaflet-popup-content { color: #000000 !important; }
+
+        /* DE VERFIJNDE, COMPACTE DESKTOP ACTION BUTTONS */
         .action-buttons {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
             margin-top: 15px;
             border-top: 1px solid #334155;
             padding-top: 12px;
         }
 
         .btn-small {
-            padding: 10px 14px; /* Iets groter voor makkelijk tikken met dikke vingers */
+            padding: 8px 14px;
             font-size: 13px;
-            flex: 1 1 calc(33.33% - 6px); /* Past zich automatisch aan op mobiel */
-            min-width: 75px;
-            text-align: center;
+            width: auto; /* Geen opvulling van het scherm meer op laptop! */
+            flex: none;
+            margin-bottom: 0;
             border-radius: 6px;
             border: 1px solid transparent !important;
             font-weight: bold;
             cursor: pointer;
             background-color: #0f131a !important;
             transition: all 0.2s;
-            box-sizing: border-box;
-        }
-
-        @media (max-width: 480px) {
-            .btn-small {
-                flex: 1 1 calc(50% - 6px); /* Twee knoppen netjes naast elkaar op smalle schermen */
-            }
         }
 
         .btn-info { color: var(--accent-blue) !important; border-color: rgba(74, 144, 226, 0.4) !important; }
-        .btn-web { color: var(--btn-purple) !important; border-color: rgba(155, 89, 182, 0.4) !important; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-info:hover { background-color: rgba(74, 144, 226, 0.1) !important; }
+
+        .btn-web { color: var(--btn-purple) !important; border-color: rgba(155, 89, 182, 0.4) !important; text-decoration: none; display: inline-flex; align-items: center; }
+        .btn-web:hover { background-color: rgba(155, 89, 182, 0.1) !important; }
+
         .btn-map { color: var(--accent-gold) !important; border-color: rgba(212, 175, 55, 0.4) !important; }
+        .btn-map:hover { background-color: rgba(212, 175, 55, 0.1) !important; }
+
         .btn-edit { color: #e67e22 !important; border-color: rgba(230, 126, 34, 0.4) !important; }
+        .btn-edit:hover { background-color: rgba(230, 126, 34, 0.1) !important; }
+
         .btn-delete { color: #fc8181 !important; border-color: rgba(231, 76, 60, 0.4) !important; }
+        .btn-delete:hover { background-color: rgba(231, 76, 60, 0.15) !important; }
 
         .maps-btn-inline {
             display: block;
             width: 100%;
             text-align: center;
-            padding: 12px;
+            padding: 10px;
             background-color: #0f131a !important;
             color: var(--accent-blue) !important;
             border: 1px solid rgba(74, 144, 226, 0.4) !important;
@@ -384,12 +378,13 @@
             box-sizing: border-box;
             font-weight: bold;
         }
+        .maps-btn-inline:hover { background-color: rgba(74, 144, 226, 0.1) !important; }
 
         .excel-box {
             background-color: var(--card-bg);
-            padding: 15px;
+            padding: 20px;
             border-radius: 12px;
-            margin-top: 25px;
+            margin-top: 30px;
             border: 1px dashed rgba(46, 204, 113, 0.3);
         }
 
@@ -403,20 +398,21 @@
             font-weight: bold;
             cursor: pointer;
             margin-bottom: 10px;
-            font-size: 14px;
         }
+        button.excel-btn:hover { background-color: rgba(46, 204, 113, 0.1); }
 
         button.danger-btn {
             background-color: #141822;
             color: #ff6666;
             border: 1px solid rgba(231, 76, 60, 0.4);
-            padding: 12px;
+            padding: 10px;
             font-size: 13px;
-            margin-top: 15px;
+            margin-top: 20px;
             width: 100%;
             border-radius: 8px;
             cursor: pointer;
         }
+        button.danger-btn:hover { background-color: rgba(231, 76, 60, 0.1); }
 
         button.main-btn {
             width: 100%;
@@ -436,7 +432,7 @@
             color: var(--accent-blue);
             border: 1px solid rgba(74, 144, 226, 0.4);
             margin-top: 6px;
-            padding: 12px;
+            padding: 10px;
             font-size: 14px;
             width: 100%;
             border-radius: 8px;
@@ -455,28 +451,26 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            padding: 15px;
+            padding: 20px;
             box-sizing: border-box;
         }
 
         .lightbox-img {
-            max-width: 100%;
-            max-height: 65%;
+            max-width: 90%;
+            max-height: 72%;
             border-radius: 8px;
-            border: 1px solid var(--accent-gold);
-            object-fit: contain;
+            border: 2px solid var(--accent-gold);
         }
 
         .info-box {
             background-color: var(--card-bg);
             border: 1px solid var(--accent-gold);
-            padding: 20px;
+            padding: 22px;
             border-radius: 12px;
-            max-width: 90%;
+            max-width: 500px;
             width: 100%;
             box-shadow: 0 0 30px rgba(0,0,0,0.6);
             color: white;
-            box-sizing: border-box;
         }
 
         .info-box h3 {
@@ -485,42 +479,40 @@
             color: var(--accent-gold);
             border-bottom: 1px solid #334155;
             padding-bottom: 8px;
-            font-size: 18px;
         }
 
         .lightbox-caption {
             font-family: 'Playfair Display', serif;
             color: var(--accent-gold);
             margin-top: 15px;
-            font-size: 16px;
+            font-size: 18px;
             text-align: center;
         }
 
         .lightbox-close {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
             background-color: #141822;
             color: var(--accent-gold);
             border: 1px solid var(--accent-gold);
-            padding: 8px 14px;
+            padding: 8px 16px;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 13px;
         }
 
         .scroll-to-top {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 25px;
+            right: 25px;
             background-color: var(--card-bg);
             color: var(--accent-gold);
             border: 1px solid var(--accent-gold);
-            width: 42px;
-            height: 42px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             cursor: pointer;
             display: none;
@@ -529,13 +521,29 @@
             z-index: 9999;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
+
+        /* MET SLIMME SMARTPHONE REGELS DIE DE DESKTOP NIET VERSTOREN */
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            .app-header { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+            .main-app-title { font-size: 22px; text-align: left; }
+            .btn-top-invoer { padding: 8px 12px; font-size: 13px; }
+            .vondst-header { font-size: 17px; flex-direction: row; gap: 10px; }
+            .img-wrapper { width: 100px; height: 100px; }
+            .btn-small {
+                padding: 11px 14px;
+                font-size: 13px;
+                flex: 1 1 calc(50% - 6px); /* Twee knoppen strak naast elkaar op gsm */
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="app-header">
-        <h1 class="main-app-title">Vondsten</h1>
-        <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuw</button>
+        <div></div>
+        <h1 class="main-app-title">Metaaldetectievondsten</h1>
+        <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuwe Vondst</button>
     </div>
 
     <div id="page-invoer" class="app-page">
@@ -570,13 +578,13 @@
 
             <div class="form-group">
                 <label for="titel">Beschrijving / Naam</label>
-                <input type="text" id="titel" placeholder="Bijv. Romeinse denarius...">
+                <input type="text" id="titel" placeholder="Bijv. Romeinse denarius, koperen knoop...">
             </div>
 
             <div class="form-group">
                 <label for="datering">Vermoedelijke Periode</label>
-                <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr...">
-                <div class="quick-tags" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+                <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr., Middeleeuws...">
+                <div class="quick-tags">
                     <button type="button" class="tag-btn" onclick="setDatering('Romeins')">Romeins</button>
                     <button type="button" class="tag-btn" onclick="setDatering('Middeleeuws')">Middeleeuws</button>
                     <button type="button" class="tag-btn" onclick="setDatering('16e-18e eeuw')">16e-18e eeuw</button>
@@ -585,24 +593,24 @@
             </div>
 
             <div class="form-group">
-                <label for="locatie-naam">📍 Stad / Dorp / Zoekveld</label>
-                <input type="text" id="locatie-naam" placeholder="Bijv. Stabroek, Westerlo...">
+                <label for="locatie-naam">📍 Stad / Dorp / Zoekveld (Zichtbare naam)</label>
+                <input type="text" id="locatie-naam" placeholder="Bijv. Stabroek, Westerlo, Hoogstraten...">
             </div>
 
             <div class="form-group">
-                <label for="locatie-gps">🌍 Exacte GPS of Google Maps Link</label>
-                <input type="text" id="locatie-gps" placeholder="Plak coördinaten of Maps link">
+                <label for="locatie-gps">🌍 Exacte GPS Coördinaten of Google Maps Link</label>
+                <input type="text" id="locatie-gps" placeholder="Plak hier coördinaten of de complete Google Maps link">
                 <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige Exacte GPS Vast</button>
             </div>
 
             <div class="form-group">
                 <label for="weblink">🌐 Referentie Website / Link</label>
-                <input type="url" id="weblink" placeholder="https://www.example.com">
+                <input type="url" id="weblink" placeholder="https://www.example.com/munt-info">
             </div>
 
             <div class="form-group">
                 <label for="info">📜 Extra Informatie</label>
-                <textarea id="info" placeholder="Details..."></textarea>
+                <textarea id="info" placeholder="Waarvoor diende het? Details..."></textarea>
             </div>
 
             <div class="form-group">
@@ -617,14 +625,14 @@
 
             <div class="preview-img-container">
                 <div id="wrapper-preview1" class="preview-wrapper">
-                    <span>Voorkant</span>
-                    <img id="img-preview1" class="preview-img" alt="Voorbeeld">
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis</button>
+                    <span>Voorkant voorbeeld</span>
+                    <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis foto 1</button>
                 </div>
                 <div id="wrapper-preview2" class="preview-wrapper">
-                    <span>Achterkant</span>
-                    <img id="img-preview2" class="preview-img" alt="Voorbeeld">
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis</button>
+                    <span>Achterkant voorbeeld</span>
+                    <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis foto 2</button>
                 </div>
             </div>
 
@@ -635,7 +643,7 @@
 
     <div id="page-verzameling">
         <div class="search-container">
-            <input type="text" id="app-search" class="search-input" placeholder="Zoek op omschrijving, locatie..." oninput="filterVondstenLive()">
+            <input type="text" id="app-search" class="search-input" placeholder="Zoek op omschrijving, datering, locatie..." oninput="filterVondstenLive()">
         </div>
 
         <div class="tabs">
@@ -653,24 +661,24 @@
         <div class="excel-box">
             <h2>📥 Oude Vondsten uit Excel laden</h2>
             <div class="form-group">
-                <label for="import-cat">Kies mapje</label>
+                <label for="import-cat">Stap 1: Kies in welk mapje de Excel-rijen moeten komen</label>
                 <select id="import-cat">
                     <option value="Munten">🪙 Munten</option>
                     <option value="Gespen">🔍 Gespen</option>
                     <option value="Knopen">🧷 Knopen</option>
                     <option value="Militaria">🛡️ Militaria</option>
                     <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
-                    <option value="Overig">🏺 Overig / Loodjes</option>
+                    <option value="Overig">🏺 Overig / Varia / Loodjes</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="csv-file">Selecteer .csv-bestand</label>
+                <label for="csv-file">Stap 2: Selecteer het bewaarde .csv-bestand</label>
                 <input type="file" id="csv-file" accept=".csv" onchange="importeerCSV(event)">
             </div>
         </div>
 
-        <button class="excel-btn" onclick="exporteerNaarCSV()">📥 Back-up maken naar Excel (CSV)</button>
-        <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Wissen</button>
+        <button class="excel-btn" onclick="exporteerNaarCSV()">📥 Back-up maken: Exporteer heel de App naar Excel (CSV)</button>
+        <button class="danger-btn" onclick="wisAlles()">⚠️ App Geheugen Volledig Wissen</button>
     </div>
 
     <div id="lightbox" class="lightbox" onclick="sluitPopups(event)">
@@ -718,7 +726,7 @@
 
         function sluitInvoerFormulier() {
             document.getElementById('page-invoer').classList.remove('active');
-            document.getElementById('top-toggle-btn').innerText = "➕ Nieuw";
+            document.getElementById('top-toggle-btn').innerText = "➕ Nieuwe Vondst";
             resetFormulier();
         }
 
@@ -873,11 +881,11 @@
 
                 try {
                     localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
-                    alert(`🎉 Succes! Er zijn ${geladenAantal} vondsten ingeladen!`);
+                    alert(`🎉 Succes! Er zijn ${geladenAantal} vondsten succesvol ingeladen!`);
                     document.getElementById('csv-file').value = "";
                     toonVondsten(huidigeActieveCategorie);
                 } catch(error) {
-                    alert("⚠️ Geheugen vol.");
+                    alert("⚠️ Het browsergeheugen zit vol.");
                 }
             };
 
@@ -915,7 +923,7 @@
                     }
                     return vondst;
                 });
-                alert("Vondst bijgewerkt!");
+                alert("Vondst succesvol bijgewerkt!");
             } else {
                 const nieuweVondst = {
                     id: Date.now(),
@@ -926,7 +934,7 @@
                     foto2: foto2DataUrl
                 };
                 huidigeVondsten.push(nieuweVondst);
-                alert("Vondst opgeslagen!");
+                alert("Vondst succesvol opgeslagen!");
             }
 
             try {
@@ -969,10 +977,11 @@
             }
 
             mapDiv.style.display = 'block';
-            mapDiv.innerHTML = "<div style='color:var(--accent-gold); padding:20px; text-align:center; font-weight:bold;'>⏳ Live locatie zoeken...</div>";
+            mapDiv.innerHTML = "<div style='color:var(--accent-gold); padding:20px; text-align:center; font-weight:bold;'>⏳ Live locatie zoeken op kaart...</div>";
 
             let lat = null;
             let lng = null;
+
             const schoneGpsSnaar = maakGpsSchoon(gpsSnaar);
 
             if (schoneGpsSnaar && schoneGpsSnaar.includes(',')) {
@@ -993,7 +1002,7 @@
                 
                 setTimeout(() => {
                     try {
-                        const m = L.map(`map-${id}`).setView([lat, lng], 14);
+                        const m = L.map(`map-${id}`).setView([lat, lng], 15);
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
                         const marker = L.marker([lat, lng]).addTo(m);
                         
@@ -1003,11 +1012,11 @@
                         marker.bindPopup(`<b>${toonTitel}</b><br><span style="font-size:12px; color:#555;">📍 ${toonTekst}</span>`).openPopup();
                         actieveKaarten[id] = m;
                     } catch(err) {
-                        mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>⚠️ Fout bij laden kaart.</div>";
+                        mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>⚠️ Kaart kon niet renderen. Klik nogmaals.</div>";
                     }
                 }, 100);
             } else {
-                mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>❌ Geen geldige kaartlocatie gevonden.</div>";
+                mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>❌ Geen bruikbare locatie of GPS gevonden voor dit voorwerp. Pas de locatie aan via 'Bewerk'.</div>";
             }
         }
 
@@ -1048,7 +1057,7 @@
         }
 
         function verwijderVondst(id) {
-            if (confirm("Vondst permanent verwijderen?")) {
+            if (confirm("Weet je zeker dat je deze specifieke vondst wilt verwijderen?")) {
                 let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
                 huidigeVondsten = huidigeVondsten.filter(v => v.id != id);
                 localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
@@ -1091,7 +1100,7 @@
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span>${vondst.titel}</span>
-                        <span class="vondst-cat-badge" style="font-size:12px; font-family:sans-serif; font-weight:bold;">${vondst.categorie}</span>
+                        <span class="vondst-cat-badge" style="font-size:13px; font-family:sans-serif; font-weight:bold;">${vondst.categorie}</span>
                     </div>
                     <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal || 'Onbekend'}</div>
                     <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
