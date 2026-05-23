@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Metaaldetectievondsten - Museum Editie</title>
+    <title>Metaaldetectievondsten - Museum Editie V2</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
     <style>
         :root {
             --bg-color: #141822;       /* Diep antiek leisteen */
-            --card-bg: #1e2533;        /* Iets lichter voor de kaartjes */
+            --card-bg: #1e2533;        /* Standaard donkerblauwe kaart */
             --text-color: #e2e8f0;     /* Zacht wit/grijs */
             --accent-gold: #d4af37;    /* Museum Goud */
             --accent-blue: #4a90e2;
@@ -148,10 +148,12 @@
         .form-row {
             display: flex;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .form-row .form-group {
             flex: 1;
+            min-width: 150px;
         }
 
         .form-group {
@@ -254,27 +256,54 @@
         .tab.cat-Overig.active { background-color: #9b59b6; border-color: #9b59b6; color: #fff; font-weight: bold; }
 
         .vondst-card {
-            background-color: var(--card-bg);
             border-radius: 12px;
             padding: 18px;
             margin-bottom: 18px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             border-left: 4px solid #334155;
+            transition: transform 0.2s;
+        }
+        .vondst-card:hover {
+            transform: translateY(-2px);
         }
 
-        /* LIJN KLEUREN PER CATEGORIE */
-        .vondst-card.cat-Munten { border-left-color: #f1c40f; }
+        /* 👑 UPGRADE 4: MUSEUMVITRINES (SUBTIELE GLOED PER CATEGORIE) */
+        .vondst-card.cat-Munten { 
+            border-left-color: #f1c40f; 
+            background: linear-gradient(135deg, #1e2533 0%, rgba(241, 196, 15, 0.04) 100%);
+        }
         .vondst-card.cat-Munten .vondst-cat-badge { color: #f1c40f; }
-        .vondst-card.cat-Gespen { border-left-color: #3498db; }
+
+        .vondst-card.cat-Gespen { 
+            border-left-color: #3498db; 
+            background: linear-gradient(135deg, #1e2533 0%, rgba(52, 152, 219, 0.05) 100%);
+        }
         .vondst-card.cat-Gespen .vondst-cat-badge { color: #3498db; }
-        .vondst-card.cat-Knopen { border-left-color: #1abc9c; }
+
+        .vondst-card.cat-Knopen { 
+            border-left-color: #1abc9c; 
+            background: linear-gradient(135deg, #1e2533 0%, rgba(26, 188, 156, 0.04) 100%);
+        }
         .vondst-card.cat-Knopen .vondst-cat-badge { color: #1abc9c; }
-        .vondst-card.cat-Militaria { border-left-color: #e74c3c; }
+
+        .vondst-card.cat-Militaria { 
+            border-left-color: #e74c3c; 
+            background: linear-gradient(135deg, #1e2533 0%, rgba(231, 76, 60, 0.05) 100%);
+        }
         .vondst-card.cat-Militaria .vondst-cat-badge { color: #e74c3c; }
-        .vondst-card.cat-Gebruiksvoorwerpen { border-left-color: #2ecc71; }
+
+        .vondst-card.cat-Gebruiksvoorwerpen { 
+            border-left-color: #2ecc71; 
+            background: linear-gradient(135deg, #1e2533 0%, rgba(46, 204, 113, 0.04) 100%);
+        }
         .vondst-card.cat-Gebruiksvoorwerpen .vondst-cat-badge { color: #2ecc71; }
-        .vondst-card.cat-Overig { border-left-color: #9b59b6; }
+
+        .vondst-card.cat-Overig { 
+            border-left-color: #9b59b6; 
+            background: linear-gradient(135deg, #1e2533 0%, rgba(155, 89, 182, 0.05) 100%);
+        }
         .vondst-card.cat-Overig .vondst-cat-badge { color: #9b59b6; }
+
 
         .vondst-header {
             display: flex;
@@ -341,7 +370,7 @@
 
         .inline-map {
             width: 100%;
-            height: 350px; /* Kaart iets groter gemaakt om velden beter te overzien */
+            height: 350px; 
             border-radius: 8px;
             margin-top: 12px;
             border: 1px solid var(--accent-gold);
@@ -577,13 +606,13 @@
             border-radius: 50%;
             font-size: 24px;
             font-weight: bold;
-            cursor: pointer;
-            display: flex !important;
+            cursor: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.5);
             transition: all 0.2s ease-in-out;
+            display: none;
         }
         
         .scroll-to-top:hover {
@@ -668,6 +697,25 @@
                         <option value="Signaal (Metaaldetector)">🌟 Signaal (Metaaldetector)</option>
                         <option value="Oogvondst (Zonder detector)">👀 Oogvondst (Zonder detector)</option>
                     </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="veldconditie">🚜 Akker / Veldconditie</label>
+                    <select id="veldconditie">
+                        <option value="Onbekend">❓ Onbekend / Niet genoteerd</option>
+                        <option value="Vers geploegd">🚜 Vers geploegd</option>
+                        <option value="Gecultiveerd / Gëebd">🌾 Gecultiveerd / Geëgd</option>
+                        <option value="Stoppelveld">🌾 Stoppelveld</option>
+                        <option value="Opgekomen gewas">🌱 Opgekomen gewas</option>
+                        <option value="Grasland / Weide">🌿 Grasland / Weide</option>
+                        <option value="Bos">🌳 Bos</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="zoekduur">⏳ Zoekduur op dit veld (Uren)</label>
+                    <input type="number" id="zoekduur" step="0.5" placeholder="Bijv. 2.5 of 4">
                 </div>
             </div>
 
@@ -766,7 +814,7 @@
 
     <div id="page-verzameling">
         <div class="search-container">
-            <input type="text" id="app-search" class="search-input" placeholder="COMBINATIE FILTER: Selecteer een tab én typ hier: periode, locatie, materiaal, staat of 'oogvondst'..." oninput="filterVondstenLive()">
+            <input type="text" id="app-search" class="search-input" placeholder="COMBINATIE FILTER: Typ hier: periode, locatie, materiaal, veldconditie (bijv. stoppelveld, geploegd) of zoekduur...">
         </div>
 
         <div class="tabs">
@@ -821,6 +869,19 @@
         let foto2DataUrl = "";
         let actieveKaarten = {}; 
         let huidigeActieveCategorie = "Alles";
+
+        // Scroll functionaliteit
+        window.onscroll = function() {
+            const btn = document.getElementById("btn-to-top");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.style.display = "flex";
+            } else {
+                btn.style.display = "none";
+            }
+        };
+
+        // Koppel live-zoekbalk filter
+        document.getElementById('app-search').addEventListener('input', filterVondstenLive);
 
         function gaNaarBoven() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -913,7 +974,7 @@
             
             try {
                 const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(schoneNaam + ', Belgium')}&limit=1`;
-                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV10' } });
+                const response = await fetch(url, { headers: { 'User-Agent': 'MetaaldetectieLiveMapV12' } });
                 const data = await response.json();
                 if (data && data.length > 0) {
                     return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
@@ -1020,6 +1081,8 @@
                         locatieGps: "", 
                         weblink: "",
                         info: row[idxExtraInfo] || "",
+                        veldconditie: "Onbekend", // Fallback bij import
+                        zoekduur: "",
                         foto1: "", foto2: ""
                     };
 
@@ -1056,6 +1119,10 @@
             const info = document.getElementById('info').value;
             const bewerkId = document.getElementById('bewerk-id').value;
 
+            // 👑 UPGRADE 2 ACCESSOIRS
+            const veldconditie = document.getElementById('veldconditie').value;
+            const zoekduur = document.getElementById('zoekduur').value;
+
             if(!titel) { alert("Vul tenminste een beschrijving in."); return; }
 
             let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
@@ -1067,7 +1134,7 @@
                             id: vondst.id,
                             categorie, materiaal, vondstType, staat, diameter, gewicht, titel, datering, 
                             locatieNaam: locatieNaam || "Onbekende locatie", 
-                            locatieGps, weblink, info,
+                            locatieGps, weblink, info, veldconditie, zoekduur,
                             foto1: foto1DataUrl, foto2: foto2DataUrl
                         };
                     }
@@ -1079,7 +1146,7 @@
                     id: Date.now(),
                     categorie, materiaal, vondstType, staat, diameter, gewicht, titel, datering, 
                     locatieNaam: locatieNaam || "Onbekende locatie", 
-                    locatieGps, weblink, info,
+                    locatieGps, weblink, info, veldconditie, zoekduur,
                     foto1: foto1DataUrl,
                     foto2: foto2DataUrl
                 };
@@ -1109,6 +1176,8 @@
             document.getElementById('staat').value = "Bodemvondst (Topeffect)";
             document.getElementById('diameter').value = "";
             document.getElementById('gewicht').value = "";
+            document.getElementById('veldconditie').value = "Onbekend";
+            document.getElementById('zoekduur').value = "";
             if(document.getElementById('foto1')) document.getElementById('foto1').value = "";
             if(document.getElementById('foto2')) document.getElementById('foto2').value = "";
             document.getElementById('wrapper-preview1').style.display = 'none';
@@ -1121,7 +1190,6 @@
             foto2DataUrl = "";
         }
 
-        /* GECORRIGEERD: DE BINNENSTE LIVE KAART GEBRUIKT NU SOLIDE ES SATELLIETBEELDEN */
         async function toggleKaart(id, gpsSnaar, locatieTekst, titel) {
             const mapDiv = document.getElementById(`map-${id}`);
             if (!mapDiv) return;
@@ -1156,18 +1224,17 @@
                 
                 setTimeout(() => {
                     try {
-                        // Maak de hoofdkaart aan
-                        const m = L.map(`map-${id}`).setView([lat, lng], 16); // Iets dieper ingezoomd voor akkers (level 16)
+                        const m = L.map(`map-${id}`).setView([lat, lng], 16); 
                         
-                        // 1. Esri World Imagery (De pure satelliet luchtfoto)
+                        // Esri World Imagery (Satellietbeelden)
                         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                            attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
                             maxZoom: 19
                         }).addTo(m);
 
-                        // 2. Transparante Wegen- en labellaag (zodat je straten over de akkers heen ziet liggen)
+                        // Transparante Carto/OSM Labellaag
                         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{y}/{x}{r}.png', {
-                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
                             subdomains: 'abcd',
                             maxZoom: 20
                         }).addTo(m);
@@ -1204,6 +1271,11 @@
                 document.getElementById('locatie-gps').value = vondst.locatieGps || "";
                 if (document.getElementById('weblink')) document.getElementById('weblink').value = vondst.weblink || "";
                 document.getElementById('info').value = vondst.info || "";
+                
+                // Vullingen upgrade 2
+                document.getElementById('veldconditie').value = vondst.veldconditie || "Onbekend";
+                document.getElementById('zoekduur').value = vondst.zoekduur || "";
+                
                 document.getElementById('bewerk-id').value = vondst.id;
 
                 document.getElementById('wrapper-preview1').style.display = 'none';
@@ -1267,7 +1339,11 @@
                     const inStaat = (vondst.staat || "").toLowerCase().includes(schoneZoekTerm);
                     const inType = (vondst.vondstType || "").toLowerCase().includes(schoneZoekTerm);
                     
-                    if (!inTitel && !inMateriaal && !inDatering && !inLocatie && !inInfo && !inStaat && !inType) return;
+                    // Extra filters voor upgrade 2 (veldconditie & uren)
+                    const inVeld = (vondst.veldconditie || "").toLowerCase().includes(schoneZoekTerm);
+                    const inUren = (vondst.zoekduur || "").toLowerCase().includes(schoneZoekTerm);
+                    
+                    if (!inTitel && !inMateriaal && !inDatering && !inLocatie && !inInfo && !inStaat && !inType && !inVeld && !inUren) return;
                 }
 
                 const schoneGps = (vondst.locatieGps || "").trim();
@@ -1291,6 +1367,15 @@
                     extraTagsLijn = `<div class="vondst-meta">${dm}${scheider}${gw}</div>`;
                 }
 
+                // 👑 UPGRADE 2: VELDDATA UITVOEREN OP KAARTJE
+                let veldInfoLijn = "";
+                if((vondst.veldconditie && vondst.veldconditie !== "Onbekend") || vondst.zoekduur) {
+                    let vc = vondst.veldconditie && vondst.veldconditie !== "Onbekend" ? `🚜 <b>Veld:</b> ${vondst.veldconditie}` : "";
+                    let zd = vondst.zoekduur ? `⏳ <b>Zoekduur:</b> ${vondst.zoekduur} uur` : "";
+                    let scheider2 = (vc && zd) ? " | " : "";
+                    veldInfoLijn = `<div class="vondst-meta" style="color: #94a3b8; font-size: 13px; margin-top:2px;">${vc}${scheider2}${zd}</div>`;
+                }
+
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span>${vondst.titel}</span>
@@ -1306,6 +1391,7 @@
                     </div>
                     
                     ${extraTagsLijn}
+                    ${veldInfoLijn}
                     
                     <div class="foto-container">
                         ${vondst.foto1 ? `
@@ -1321,7 +1407,7 @@
                     </div>
 
                     <div id="map-${vondst.id}" class="inline-map"></div>
-                    ${heeftKaartLocatie ? `<a href="${googleMapsUrl}" target="_blank" id="gmaps-link-${vondst.id}" class="maps-btn-inline" style="display:none;">🗺️ Route & Satelliet openen in Google Maps-app</a>` : ''}
+                    ${heeftKaartLocatie ? `<a href="${googleMapsUrl}" target="_blank" id="gmaps-link-${vondst.id}" class="maps-btn-inline" style="display:none;">🗺️ Openen in Google Maps-app (Route & Satelliet)</a>` : ''}
 
                     <div class="action-buttons">
                         <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
@@ -1356,7 +1442,7 @@
             const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
             if (presidentialVondsten.length === 0) { alert("Geen data."); return; }
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
-            csvContent += "ID;Categorie;Materiaal;VondstType;Staat;Diameter_mm;Gewicht_gr;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Extra Informatie\r\n";
+            csvContent += "ID;Categorie;Materiaal;VondstType;Staat;Diameter_mm;Gewicht_gr;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Veldconditie;Zoekduur_Uur;Extra Informatie\r\n";
             presidentialVondsten.forEach(v => {
                 let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
                 let schoneTitel = (v.titel || "").replace(/;/g, ",");
@@ -1364,12 +1450,14 @@
                 let schoneLocatieNaam = (v.locatieNaam || "Onbekend").replace(/;/g, " ");
                 let schoneLocatieGps = (v.locatieGps || "").replace(/;/g, " ");
                 let schoneWeblink = (v.weblink || "").replace(/;/g, " ");
-                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${v.vondstType || 'Detector'};${v.staat || 'Bodemvondst'};${v.diameter || ''};${v.gewicht || ''};${schoneTitel};${schoneDatering};${schoneLocatieNaam};${schoneLocatieGps};${schoneWeblink};${schoneInfo}\r\n`;
+                let schoneVeld = (v.veldconditie || "Onbekend");
+                let schoneUren = (v.zoekduur || "");
+                csvContent += `${v.id};${v.categorie};${v.materiaal || 'Onbekend'};${v.vondstType || 'Detector'};${v.staat || 'Bodemvondst'};${v.diameter || ''};${v.gewicht || ''};${schoneTitel};${schoneDatering};${schoneLocatieNaam};${schoneLocatieGps};${schoneWeblink};${schoneVeld};${schoneUren};${schoneInfo}\r\n`;
             });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Mijn_Vondsten_Museum_Backup.csv");
+            link.setAttribute("download", "Mijn_Vondsten_Museum_Logboek_Backup.csv");
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
