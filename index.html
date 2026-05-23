@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Metaaldetectievondsten - Museum Editie V2</title>
+    <title>Metaaldetectievondsten - Museum Editie V3</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -267,43 +267,24 @@
             transform: translateY(-2px);
         }
 
-        /* 👑 UPGRADE 4: MUSEUMVITRINES (SUBTIELE GLOED PER CATEGORIE) */
-        .vondst-card.cat-Munten { 
-            border-left-color: #f1c40f; 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(241, 196, 15, 0.04) 100%);
-        }
+        /* GECORRIGEERDE VITRINEWEERGAVE PER MAPJE */
+        .vondst-card.cat-Munten { border-left-color: #f1c40f; background: linear-gradient(135deg, #1e2533 0%, rgba(241, 196, 15, 0.04) 100%); }
         .vondst-card.cat-Munten .vondst-cat-badge { color: #f1c40f; }
 
-        .vondst-card.cat-Gespen { 
-            border-left-color: #3498db; 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(52, 152, 219, 0.05) 100%);
-        }
+        .vondst-card.cat-Gespen { border-left-color: #3498db; background: linear-gradient(135deg, #1e2533 0%, rgba(52, 152, 219, 0.05) 100%); }
         .vondst-card.cat-Gespen .vondst-cat-badge { color: #3498db; }
 
-        .vondst-card.cat-Knopen { 
-            border-left-color: #1abc9c; 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(26, 188, 156, 0.04) 100%);
-        }
+        .vondst-card.cat-Knopen { border-left-color: #1abc9c; background: linear-gradient(135deg, #1e2533 0%, rgba(26, 188, 156, 0.04) 100%); }
         .vondst-card.cat-Knopen .vondst-cat-badge { color: #1abc9c; }
 
-        .vondst-card.cat-Militaria { 
-            border-left-color: #e74c3c; 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(231, 76, 60, 0.05) 100%);
-        }
+        .vondst-card.cat-Militaria { border-left-color: #e74c3c; background: linear-gradient(135deg, #1e2533 0%, rgba(231, 76, 60, 0.05) 100%); }
         .vondst-card.cat-Militaria .vondst-cat-badge { color: #e74c3c; }
 
-        .vondst-card.cat-Gebruiksvoorwerpen { 
-            border-left-color: #2ecc71; 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(46, 204, 113, 0.04) 100%);
-        }
+        .vondst-card.cat-Gebruiksvoorwerpen { border-left-color: #2ecc71; background: linear-gradient(135deg, #1e2533 0%, rgba(46, 204, 113, 0.04) 100%); }
         .vondst-card.cat-Gebruiksvoorwerpen .vondst-cat-badge { color: #2ecc71; }
 
-        .vondst-card.cat-Overig { 
-            border-left-color: #9b59b6; 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(155, 89, 182, 0.05) 100%);
-        }
+        .vondst-card.cat-Overig { border-left-color: #9b59b6; background: linear-gradient(135deg, #1e2533 0%, rgba(155, 89, 182, 0.05) 100%); }
         .vondst-card.cat-Overig .vondst-cat-badge { color: #9b59b6; }
-
 
         .vondst-header {
             display: flex;
@@ -531,69 +512,6 @@
             cursor: pointer;
         }
 
-        .lightbox {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.93);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .lightbox-img {
-            max-width: 90%;
-            max-height: 72%;
-            border-radius: 8px;
-            border: 2px solid var(--accent-gold);
-        }
-
-        .info-box {
-            background-color: var(--card-bg);
-            border: 1px solid var(--accent-gold);
-            padding: 22px;
-            border-radius: 12px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 0 30px rgba(0,0,0,0.6);
-            color: white;
-        }
-
-        .info-box h3 {
-            font-family: 'Playfair Display', serif;
-            margin-top: 0;
-            color: var(--accent-gold);
-            border-bottom: 1px solid #334155;
-            padding-bottom: 8px;
-        }
-
-        .lightbox-caption {
-            font-family: 'Playfair Display', serif;
-            color: var(--accent-gold);
-            margin-top: 15px;
-            font-size: 18px;
-            text-align: center;
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #141822;
-            color: var(--accent-gold);
-            border: 1px solid var(--accent-gold);
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
         .scroll-to-top {
             position: fixed;
             bottom: 30px;
@@ -606,13 +524,13 @@
             border-radius: 50%;
             font-size: 24px;
             font-weight: bold;
-            cursor: flex;
+            cursor: pointer;
+            display: flex !important;
             align-items: center;
             justify-content: center;
             z-index: 9999;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.5);
             transition: all 0.2s ease-in-out;
-            display: none;
         }
         
         .scroll-to-top:hover {
@@ -656,7 +574,7 @@
         </div>
         <div class="stat-item">
             <div class="stat-val" id="stat-overig">0</div>
-            <div class="stat-lbl">🏺 Overig</div>
+            <div class="stat-lbl">🏺 Keramiek/Glas</div>
         </div>
     </div>
 
@@ -673,21 +591,26 @@
                         <option value="Gespen">🔍 Gespen</option>
                         <option value="Knopen">🧷 Knopen</option>
                         <option value="Militaria">🛡️ Militaria</option>
-                        <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
-                        <option value="Overig">🏺 Overig / Keramiek</option>
+                        <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen (Metalen objecten)</option>
+                        <option value="Overig">🏺 Keramiek, Glas & Varia (Niet-metaal)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="materiaal">Metaal / Materiaal</label>
                     <select id="materiaal">
-                        <option value="Onbekend">❓ Onbekend</option>
+                        <option value="Onbekend">❓ Onbekend / Niet vastgelegd</option>
                         <option value="Goud">🪙 Goud</option>
                         <option value="Zilver">🥈 Zilver</option>
-                        <option value="Brons / Koper">🥉 Brons / Koper</option>
-                        <option value="Lood / Tin">🛡️ Lood / Tin</option>
+                        <option value="Koper">🥉 Koper</option>
+                        <option value="Brons">🥉 Brons</option>
+                        <option value="Messing / Latten">🥉 Messing / Latten</option>
+                        <option value="Lood">🛡️ Lood</option>
+                        <option value="Tin">🛡️ Tin</option>
                         <option value="IJzer">⚙️ IJzer</option>
-                        <option value="Glas / Keramiek">🏺 Glas / Keramiek</option>
+                        <option value="Aardewerk / Keramiek">🏺 Aardewerk / Keramiek</option>
+                        <option value="Glas">🧪 Glas</option>
+                        <option value="Been / Gewei">🦴 Been / Gewei</option>
                     </select>
                 </div>
 
@@ -706,7 +629,7 @@
                     <select id="veldconditie">
                         <option value="Onbekend">❓ Onbekend / Niet genoteerd</option>
                         <option value="Vers geploegd">🚜 Vers geploegd</option>
-                        <option value="Gecultiveerd / Gëebd">🌾 Gecultiveerd / Geëgd</option>
+                        <option value="Gecultiveerd / Geëgd">🌾 Gecultiveerd / Geëgd</option>
                         <option value="Stoppelveld">🌾 Stoppelveld</option>
                         <option value="Opgekomen gewas">🌱 Opgekomen gewas</option>
                         <option value="Grasland / Weide">🌿 Grasland / Weide</option>
@@ -814,7 +737,7 @@
 
     <div id="page-verzameling">
         <div class="search-container">
-            <input type="text" id="app-search" class="search-input" placeholder="COMBINATIE FILTER: Typ hier: periode, locatie, materiaal, veldconditie (bijv. stoppelveld, geploegd) of zoekduur...">
+            <input type="text" id="app-search" class="search-input" placeholder="COMBINATIE FILTER: Typ hier materiaal (brons, koper, messing, glas, aardewerk), periode, veldtype...">
         </div>
 
         <div class="tabs">
@@ -824,7 +747,7 @@
             <div class="tab cat-Knopen" onclick="filterCategorie(event, 'Knopen')">🧷 Knopen</div>
             <div class="tab cat-Militaria" onclick="filterCategorie(event, 'Militaria')">🛡️ Militaria</div>
             <div class="tab cat-Gebruiksvoorwerpen" onclick="filterCategorie(event, 'Gebruiksvoorwerpen')">🗝️ Voorwerpen</div>
-            <div class="tab cat-Overig" onclick="filterCategorie(event, 'Overig')">🏺 Overig</div>
+            <div class="tab cat-Overig" onclick="filterCategorie(event, 'Overig')">🏺 Keramiek/Glas</div>
         </div>
 
         <div id="vondsten-lijst"></div>
@@ -839,7 +762,7 @@
                     <option value="Knopen">🧷 Knopen</option>
                     <option value="Militaria">🛡️ Militaria</option>
                     <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
-                    <option value="Overig">🏺 Overig</option>
+                    <option value="Overig">🏺 Keramiek, Glas & Varia</option>
                 </select>
             </div>
             <div class="form-group">
@@ -1081,7 +1004,7 @@
                         locatieGps: "", 
                         weblink: "",
                         info: row[idxExtraInfo] || "",
-                        veldconditie: "Onbekend", // Fallback bij import
+                        veldconditie: "Onbekend", 
                         zoekduur: "",
                         foto1: "", foto2: ""
                     };
@@ -1118,8 +1041,6 @@
             const weblink = document.getElementById('weblink').value;
             const info = document.getElementById('info').value;
             const bewerkId = document.getElementById('bewerk-id').value;
-
-            // 👑 UPGRADE 2 ACCESSOIRS
             const veldconditie = document.getElementById('veldconditie').value;
             const zoekduur = document.getElementById('zoekduur').value;
 
@@ -1226,13 +1147,13 @@
                     try {
                         const m = L.map(`map-${id}`).setView([lat, lng], 16); 
                         
-                        // Esri World Imagery (Satellietbeelden)
+                        // Esri World Imagery
                         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                             attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
                             maxZoom: 19
                         }).addTo(m);
 
-                        // Transparante Carto/OSM Labellaag
+                        // Transparante labels
                         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{y}/{x}{r}.png', {
                             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
                             subdomains: 'abcd',
@@ -1244,7 +1165,7 @@
                         let toonTekst = (locatieTekst || schoneGpsSnaar).replace(/\\'/g, "'");
                         let toonTitel = titel.replace(/\\'/g, "'");
 
-                        marker.bindPopup(`<b>${toonTitel}</b><br><span style="font-size:12px; color:#555;">📍 ${toonTekst}</span>`).openPopup();
+                        m.bindPopup(`<b>${toonTitel}</b><br><span style="font-size:12px; color:#555;">📍 ${toonTekst}</span>`).openPopup();
                         actieveKaarten[id] = m;
                     } catch(err) {
                         mapDiv.innerHTML = "<div style='color:#ff6666; padding:20px; text-align:center;'>⚠️ Kaart kon niet renderen. Klik nogmaals.</div>";
@@ -1271,11 +1192,8 @@
                 document.getElementById('locatie-gps').value = vondst.locatieGps || "";
                 if (document.getElementById('weblink')) document.getElementById('weblink').value = vondst.weblink || "";
                 document.getElementById('info').value = vondst.info || "";
-                
-                // Vullingen upgrade 2
                 document.getElementById('veldconditie').value = vondst.veldconditie || "Onbekend";
                 document.getElementById('zoekduur').value = vondst.zoekduur || "";
-                
                 document.getElementById('bewerk-id').value = vondst.id;
 
                 document.getElementById('wrapper-preview1').style.display = 'none';
@@ -1338,12 +1256,9 @@
                     const inInfo = (vondst.info || "").toLowerCase().includes(schoneZoekTerm);
                     const inStaat = (vondst.staat || "").toLowerCase().includes(schoneZoekTerm);
                     const inType = (vondst.vondstType || "").toLowerCase().includes(schoneZoekTerm);
-                    
-                    // Extra filters voor upgrade 2 (veldconditie & uren)
                     const inVeld = (vondst.veldconditie || "").toLowerCase().includes(schoneZoekTerm);
-                    const inUren = (vondst.zoekduur || "").toLowerCase().includes(schoneZoekTerm);
                     
-                    if (!inTitel && !inMateriaal && !inDatering && !inLocatie && !inInfo && !inStaat && !inType && !inVeld && !inUren) return;
+                    if (!inTitel && !inMateriaal && !inDatering && !inLocatie && !inInfo && !inStaat && !inType && !inVeld) return;
                 }
 
                 const schoneGps = (vondst.locatieGps || "").trim();
@@ -1367,7 +1282,6 @@
                     extraTagsLijn = `<div class="vondst-meta">${dm}${scheider}${gw}</div>`;
                 }
 
-                // 👑 UPGRADE 2: VELDDATA UITVOEREN OP KAARTJE
                 let veldInfoLijn = "";
                 if((vondst.veldconditie && vondst.veldconditie !== "Onbekend") || vondst.zoekduur) {
                     let vc = vondst.veldconditie && vondst.veldconditie !== "Onbekend" ? `🚜 <b>Veld:</b> ${vondst.veldconditie}` : "";
@@ -1407,7 +1321,7 @@
                     </div>
 
                     <div id="map-${vondst.id}" class="inline-map"></div>
-                    ${heeftKaartLocatie ? `<a href="${googleMapsUrl}" target="_blank" id="gmaps-link-${vondst.id}" class="maps-btn-inline" style="display:none;">🗺️ Openen in Google Maps-app (Route & Satelliet)</a>` : ''}
+                    ${heeftKaartLocatie ? `<a href="${googleMapsUrl}" target="_blank" id="gmaps-link-${vondst.id}" class="maps-btn-inline" style="display:none;">🗺️ Openen in Google Maps (Route & Satelliet)</a>` : ''}
 
                     <div class="action-buttons">
                         <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
@@ -1439,11 +1353,11 @@
         }
 
         function exporteerNaarCSV() {
-            const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            if (presidentialVondsten.length === 0) { alert("Geen data."); return; }
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            if (huidigeVondsten.length === 0) { alert("Geen data."); return; }
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
             csvContent += "ID;Categorie;Materiaal;VondstType;Staat;Diameter_mm;Gewicht_gr;Beschrijving;Datering;Locatienaam;GPS-Coordinaten;Referentielink;Veldconditie;Zoekduur_Uur;Extra Informatie\r\n";
-            presidentialVondsten.forEach(v => {
+            huidigeVondsten.forEach(v => {
                 let schoneInfo = (v.info || "").replace(/;/g, ",").replace(/\r?\n|\r/g, " ");
                 let schoneTitel = (v.titel || "").replace(/;/g, ",");
                 let schoneDatering = (v.datering || "").replace(/;/g, ",");
@@ -1477,8 +1391,8 @@
         });
 
         function openInfo(id) {
-            const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            const vondst = presidentialVondsten.find(v => v.id == id);
+            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            const vondst = huidigeVondsten.find(v => v.id == id);
             if (vondst) {
                 document.getElementById('info-popup-titel').innerText = `📜 Info: ${vondst.titel}`;
                 document.getElementById('info-popup-tekst').innerText = vondst.info || "Nog geen extra historische informatie toegevoegd.";
