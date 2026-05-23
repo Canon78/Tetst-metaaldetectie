@@ -341,7 +341,7 @@
 
         .inline-map {
             width: 100%;
-            height: 240px;
+            height: 350px; /* Kaart iets groter gemaakt om velden beter te overzien */
             border-radius: 8px;
             margin-top: 12px;
             border: 1px solid var(--accent-gold);
@@ -565,30 +565,29 @@
             cursor: pointer;
         }
 
-        /* GECORRIGEERD: DE PIJL STAAT NU GECENTREERD, PERMANENT ÉN DUIDELIJK VOL-GOUD */
         .scroll-to-top {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background-color: var(--accent-gold) !important; /* Volledig goud gevuld */
-            color: #000000 !important;                      /* Zwarte pijl voor maximaal contrast */
+            background-color: var(--accent-gold) !important;
+            color: #000000 !important;
             border: 2px solid #ffffff;
-            width: 52px;                                    /* Iets groter en kloeker */
+            width: 52px;
             height: 52px;
             border-radius: 50%;
             font-size: 24px;
             font-weight: bold;
             cursor: pointer;
-            display: flex !important;                       /* Geforceerd permanent in beeld */
+            display: flex !important;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.5); /* Zware diepe schaduw + gloed */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.5);
             transition: all 0.2s ease-in-out;
         }
         
         .scroll-to-top:hover {
-            transform: translateY(-4px);                    /* Wipt chique omhoog bij aanwijzen */
+            transform: translateY(-4px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.9);
         }
     </style>
@@ -1122,6 +1121,7 @@
             foto2DataUrl = "";
         }
 
+        /* GECORRIGEERD: DE BINNENSTE LIVE KAART GEBRUIKT NU SOLIDE ES SATELLIETBEELDEN */
         async function toggleKaart(id, gpsSnaar, locatieTekst, titel) {
             const mapDiv = document.getElementById(`map-${id}`);
             if (!mapDiv) return;
@@ -1132,7 +1132,7 @@
             }
 
             mapDiv.style.display = 'block';
-            mapDiv.innerHTML = "<div style='color:var(--accent-gold); padding:20px; text-align:center; font-weight:bold;'>⏳ Live locatie zoeken op kaart...</div>";
+            mapDiv.innerHTML = "<div style='color:var(--accent-gold); padding:20px; text-align:center; font-weight:bold;'>⏳ Satellietbeelden laden...</div>";
 
             let lat = null;
             let lng = null;
@@ -1156,8 +1156,22 @@
                 
                 setTimeout(() => {
                     try {
-                        const m = L.map(`map-${id}`).setView([lat, lng], 15);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
+                        // Maak de hoofdkaart aan
+                        const m = L.map(`map-${id}`).setView([lat, lng], 16); // Iets dieper ingezoomd voor akkers (level 16)
+                        
+                        // 1. Esri World Imagery (De pure satelliet luchtfoto)
+                        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                            maxZoom: 19
+                        }).addTo(m);
+
+                        // 2. Transparante Wegen- en labellaag (zodat je straten over de akkers heen ziet liggen)
+                        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{y}/{x}{r}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                            subdomains: 'abcd',
+                            maxZoom: 20
+                        }).addTo(m);
+                        
                         const marker = L.marker([lat, lng]).addTo(m);
                         
                         let toonTekst = (locatieTekst || schoneGpsSnaar).replace(/\\'/g, "'");
@@ -1307,7 +1321,7 @@
                     </div>
 
                     <div id="map-${vondst.id}" class="inline-map"></div>
-                    ${heeftKaartLocatie ? `<a href="${googleMapsUrl}" target="_blank" id="gmaps-link-${vondst.id}" class="maps-btn-inline" style="display:none;">🗺️ Route openen in Google Maps</a>` : ''}
+                    ${heeftKaartLocatie ? `<a href="${googleMapsUrl}" target="_blank" id="gmaps-link-${vondst.id}" class="maps-btn-inline" style="display:none;">🗺️ Route & Satelliet openen in Google Maps-app</a>` : ''}
 
                     <div class="action-buttons">
                         <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
@@ -1375,8 +1389,8 @@
         });
 
         function openInfo(id) {
-            const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            const vondst = huidigeVondsten.find(v => v.id == id);
+            const presidentialVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            const vondst = presidentialVondsten.find(v => v.id == id);
             if (vondst) {
                 document.getElementById('info-popup-titel').innerText = `📜 Info: ${vondst.titel}`;
                 document.getElementById('info-popup-tekst').innerText = vondst.info || "Nog geen extra historische informatie toegevoegd.";
