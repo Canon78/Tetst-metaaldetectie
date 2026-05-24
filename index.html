@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,600;1,400&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -815,11 +815,18 @@
         </div>
     </div>
 
+    <button id="btn-to-top" class="scroll-to-top" onclick="gaNaarBoven()">↑</button>
+
     <script>
         let foto1DataUrl = "";
         let foto2DataUrl = "";
         let actieveKaarten = {}; 
         let huidigeActieveCategorie = "Alles";
+
+        // PIJL FUNCTIE REPARATIE
+        function gaNaarBoven() { 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        }
 
         window.onscroll = function() {
             const btn = document.getElementById("btn-to-top");
@@ -1097,6 +1104,15 @@
             const lijst = document.getElementById('vondsten-lijst'); lijst.innerHTML = "";
             let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
             
+            // AUTOMATISCHE REPARATIEMOTOR
+            huidigeVondsten = huidigeVondsten.map(v => {
+                if (!v.categorie || v.categorie === "Gespen & Knopen" || v.categorie.includes('&')) { v.categorie = (v.titel || "").toLowerCase().includes('knoop') ? "Knopen" : "Gespen"; }
+                if (!v.materiaal) v.materiaal = "Onbekend";
+                if (!v.vondstType) v.vondstType = "Signaal (Metaaldetector)";
+                if (!v.staat) v.staat = "Bodemvondst";
+                return v;
+            });
+
             updateDashboard(huidigeVondsten);
             const schoneZoekTerm = zoekTerm.toLowerCase().trim();
 
@@ -1110,9 +1126,6 @@
                     const inLocatie = (vondst.locatieNaam || "").toLowerCase().includes(schoneZoekTerm);
                     if (!inTitel && !inMateriaal && !inDatering && !inLocatie) return;
                 }
-
-                const schoneGps = (vondst.locatieGps || "").trim();
-                const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoneGps || vondst.locatieNaam)}`;
 
                 const card = document.createElement('div');
                 card.className = `vondst-card cat-${vondst.categorie}`;
@@ -1141,7 +1154,7 @@
                         <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
                         <button class="btn-small btn-map" onclick="toggleKaart(${vondst.id}, '${vondst.locatieGps || ''}', '${vondst.locatieNaam || ''}', '${veiligeTitel}')">🗺️ Kaart</button>
                         <button class="btn-small btn-edit" onclick="bewerkVondst(${vondst.id})">✏️ Bewerk</button>
-                        <button class="btn-small btn-delete" onclick="ev = event; ev.stopPropagation(); if(confirm('Wissen?')) { let v = JSON.parse(localStorage.getItem('detectorVondsten')).filter(x => x.id != ${vondst.id}); localStorage.setItem('detectorVondsten', JSON.stringify(v)); toonVondsten(huidigeActieveCategorie); }">🗑️ Wis</button>
+                        <button class="btn-small btn-delete" onclick="event.stopPropagation(); if(confirm('Wissen?')) { let v = JSON.parse(localStorage.getItem('detectorVondsten')).filter(x => x.id != ${vondst.id}); localStorage.setItem('detectorVondsten', JSON.stringify(v)); toonVondsten(huidigeActieveCategorie); }">🗑️ Wis</button>
                     </div>
                 `;
                 lijst.appendChild(card);
@@ -1168,9 +1181,9 @@
             const link = document.createElement("a"); link.setAttribute("href", encodeURI(csv)); link.setAttribute("download", "Mijn_Vondsten_Backup.csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
+        document.addEventListener('keydown', function(e) { if(e.key === 'Escape') { document.getElementById('lightbox').style.display='none'; } });
+
         window.onload = function() { toonVondsten(); };
     </script>
-    
-    <button id="btn-to-top" class="scroll-to-top" onclick="gaNaarBoven()">↑</button>
 </body>
 </html>
