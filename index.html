@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Metaaldetectievondsten - Museum Editie Definitief</title>
+    <title>Metaaldetectievondsten - Museum Editie</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2 family=Playfair+Display:ital,wght@0,600;1,400&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -27,23 +27,18 @@
         html { scroll-behavior: smooth; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; }
 
-        .app-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 2px solid rgba(212, 175, 55, 0.2); padding-bottom: 15px; margin-bottom: 15px; }
+        .app-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 2px solid rgba(212, 175, 55, 0.2); padding-bottom: 15px; margin-bottom: 15px; margin-top: 10px; }
         .main-app-title { grid-column: 2; font-family: 'Playfair Display', serif; font-size: 28px; color: var(--accent-gold); letter-spacing: 1px; text-transform: uppercase; margin: 0; text-align: center; }
-        .btn-top-invoer { grid-column: 3; justify-self: end; background-color: transparent; color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 8px 14px; font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer; }
+        .btn-top-invoer { grid-column: 3; justify-self: end; background-color: transparent; color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 8px 14px; font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
         .btn-top-invoer:hover { background-color: rgba(212, 175, 55, 0.1); }
 
         /* DASHBOARD */
-        .stats-dashboard { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; background: linear-gradient(135deg, #1e2533 0%, #151a24 100%); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 10px; padding: 15px; }
+        .stats-dashboard { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; background: linear-gradient(135deg, #1e2533 0%, #151a24 100%); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 10px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .stat-item { flex: 1; min-width: 110px; text-align: center; padding: 8px; background-color: rgba(15, 19, 26, 0.5); border-radius: 6px; border: 1px solid #2d3748; }
         .stat-item.total { border-color: var(--accent-gold); background-color: rgba(212, 175, 55, 0.05); }
         .stat-val { font-size: 20px; font-weight: bold; color: white; margin-bottom: 2px; }
         .stat-item.total .stat-val { color: var(--accent-gold); }
-        .stat-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
-
-        /* HOOFDKAART KNOP EN CONTAINER */
-        .main-map-toggle-btn { width: 100%; padding: 10px; background-color: rgba(212, 175, 55, 0.1); color: var(--accent-gold); border: 1px solid var(--accent-gold); border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 20px; transition: all 0.2s; }
-        .main-map-toggle-btn:hover { background-color: rgba(212, 175, 55, 0.2); }
-        #main-heatmap-container { width: 100%; height: 450px; border-radius: 12px; border: 2px solid var(--accent-gold); margin-bottom: 25px; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+        .stat-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .form-container { background-color: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #2d3748; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         .form-row { display: flex; gap: 15px; flex-wrap: wrap; }
@@ -51,7 +46,7 @@
         .form-group { margin-bottom: 18px; }
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; color: #94a3b8; }
         
-        input, select, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155 !important; background-color: #0f131a !important; color: #f1f5f9 !important; box-sizing: border-box; font-size: 16px; font-family: inherit; }
+        input, select, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155 !important; background-color: #0f131a !important; color: #f1f5f9 !important; box-sizing: border-box; font-size: 16px; font-family: inherit; outline: none !important; }
         input:focus, select:focus, textarea:focus { border-color: var(--accent-gold) !important; }
         textarea { height: 90px; resize: vertical; }
 
@@ -63,7 +58,7 @@
         .search-input { border: 1px solid rgba(212, 175, 55, 0.4) !important; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23d4af37" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>'); background-repeat: no-repeat; background-position: 14px center; padding-left: 44px; border-radius: 30px; background-color: var(--card-bg) !important; }
 
         .tabs { display: flex; overflow-x: auto; gap: 8px; margin-bottom: 20px; padding-bottom: 5px; }
-        .tab { padding: 10px 18px; background-color: var(--card-bg); border-radius: 30px; white-space: nowrap; cursor: pointer; border: 1px solid #334155; font-size: 14px; color: #94a3b8; }
+        .tab { padding: 10px 18px; background-color: var(--card-bg); border-radius: 30px; white-space: nowrap; cursor: pointer; border: 1px solid #334155; font-size: 14px; color: #94a3b8; transition: all 0.2s; }
         .tab.cat-Alles.active { background-color: #d4af37; border-color: #d4af37; color: #000; font-weight: bold; }
         .tab.cat-Munten.active { background-color: #f1c40f; border-color: #f1c40f; color: #000; font-weight: bold; }
         .tab.cat-Gespen.active { background-color: #3498db; border-color: #3498db; color: #fff; font-weight: bold; }
@@ -72,7 +67,9 @@
         .tab.cat-Gebruiksvoorwerpen.active { background-color: #2ecc71; border-color: #2ecc71; color: #000; font-weight: bold; }
         .tab.cat-Overig.active { background-color: #9b59b6; border-color: #9b59b6; color: #fff; font-weight: bold; }
 
-        .vondst-card { border-radius: 12px; padding: 18px; margin-bottom: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-left: 4px solid #334155; transition: all 0.2s; }
+        .vondst-card { border-radius: 12px; padding: 18px; margin-bottom: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-left: 4px solid #334155; transition: transform 0.2s; }
+        .vondst-card:hover { transform: translateY(-2px); }
+        
         .vondst-card.cat-Munten { border-left-color: #f1c40f; background: linear-gradient(135deg, #1e2533 0%, rgba(241, 196, 15, 0.04) 100%); }
         .vondst-card.cat-Munten .vondst-cat-badge { color: #f1c40f; }
         .vondst-card.cat-Gespen { border-left-color: #3498db; background: linear-gradient(135deg, #1e2533 0%, rgba(52, 152, 219, 0.05) 100%); }
@@ -85,8 +82,6 @@
         .vondst-card.cat-Gebruiksvoorwerpen .vondst-cat-badge { color: #2ecc71; }
         .vondst-card.cat-Overig { border-left-color: #9b59b6; background: linear-gradient(135deg, #1e2533 0%, rgba(155, 89, 182, 0.05) 100%); }
         .vondst-card.cat-Overig .vondst-cat-badge { color: #9b59b6; }
-
-        .vondst-card.status-zoeken { border-left-color: #a855f7 !important; background: linear-gradient(135deg, #241d3a 0%, #1e2533 100%) !important; box-shadow: 0 0 15px rgba(168, 85, 247, 0.25); }
 
         .vondst-header { display: flex; justify-content: space-between; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 12px; color: white; }
         .vondst-grid-meta { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px 15px; margin-bottom: 10px; }
@@ -101,7 +96,6 @@
         .inline-map { width: 100%; height: 350px; border-radius: 8px; margin-top: 12px; border: 1px solid var(--accent-gold); display: none; }
         .preview-img-container { display: flex; gap: 15px; margin-top: 12px; margin-bottom: 15px; flex-wrap: wrap; }
         .preview-wrapper { display: none; flex-direction: column; width: 31%; min-width: 140px; align-items: center; background-color: #0f131a; padding: 12px; border-radius: 8px; border: 1px solid #334155; }
-        
         .preview-wrapper span { font-size: 12px; color: var(--accent-gold); margin-bottom: 6px; font-weight: 600; text-align: center; }
         .preview-img { max-width: 100%; max-height: 140px; border-radius: 6px; object-fit: contain; border: 1px solid #2d3748; background-color: #141822; }
         .btn-delete-photo { background-color: rgba(231, 76, 60, 0.15); color: #fc8181; border: 1px solid var(--accent-red); font-size: 11px; padding: 6px 10px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-weight: bold; width: 100%; text-align: center; }
@@ -121,6 +115,7 @@
         button.gps-btn { background-color: #0f131a; color: var(--accent-blue); border: 1px solid rgba(74, 144, 226, 0.4); margin-top: 6px; padding: 10px; border-radius: 8px; }
 
         .scroll-to-top { position: fixed; bottom: 30px; right: 30px; background-color: var(--accent-gold) !important; color: #000000 !important; border: 2px solid #ffffff; width: 52px; height: 52px; border-radius: 50%; font-size: 24px; font-weight: bold; cursor: pointer; display: flex !important; align-items: center; justify-content: center; z-index: 9999; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.5); transition: all 0.2s ease-in-out; }
+        .scroll-to-top:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.9); }
         
         #munt-afmetingen-row { display: none; background-color: rgba(15, 19, 26, 0.4); padding: 15px; border-radius: 8px; border: 1px dashed rgba(212, 175, 55, 0.3); margin-bottom: 15px; }
 
@@ -172,9 +167,6 @@
             <div class="stat-lbl">🏺 Keramiek/Glas</div>
         </div>
     </div>
-
-    <button class="main-map-toggle-btn" onclick="toggleGroteKaart()">🗺️ Open Grote Vondstenkaart (Luchtfoto Overzicht)</button>
-    <div id="main-heatmap-container"></div>
 
     <div id="page-invoer" class="app-page" style="display: none;">
         <div class="form-container">
@@ -267,10 +259,6 @@
             </div>
 
             <div class="form-group">
-                <label style="color:#a855f7; font-weight:bold;"><input type="checkbox" id="status-determinatie" style="width:auto; margin-right:8px;"> 🔍 Determinatie gezocht / Nog in onderzoek</label>
-            </div>
-
-            <div class="form-group">
                 <label for="titel">Beschrijving / Naam</label>
                 <input type="text" id="titel" placeholder="Bijv. Romeinse denarius, koperen knoop...">
             </div>
@@ -351,7 +339,7 @@
 
     <div id="page-verzameling">
         <div class="search-container">
-            <input type="text" id="app-search" class="search-input" placeholder="COMBINATIE FILTER: Typ hier materiaal, periode, veldtype of typ 'onderzoek'...">
+            <input type="text" id="app-search" class="search-input" placeholder="COMBINATIE FILTER: Typ hier materiaal, periode, veldtype of gewicht...">
         </div>
 
         <div class="tabs">
@@ -406,7 +394,6 @@
         let foto2DataUrl = "";
         let foto3DataUrl = "";
         let actieveKaarten = {}; 
-        let groteKaartObject = null;
         let huidigeActieveCategorie = "Alles";
 
         document.getElementById('app-search').addEventListener('input', filterVondstenLive);
@@ -419,72 +406,6 @@
             if (muntBox) {
                 muntBox.style.display = (cat === "Munten") ? "block" : "none";
             }
-        }
-
-        function toggleGroteKaart() {
-            const mapContainer = document.getElementById('main-heatmap-container');
-            const btn = document.querySelector('.main-map-toggle-btn');
-            
-            if (mapContainer.style.display === 'block') {
-                mapContainer.style.display = 'none';
-                btn.innerText = "🗺️ Open Grote Vondstenkaart (Luchtfoto Overzicht)";
-                if (groteKaartObject) { groteKaartObject.remove(); groteKaartObject = null; }
-            } else {
-                mapContainer.style.display = 'block';
-                btn.innerText = "✕ Sluit Grote Vondstenkaart";
-                bouwGroteKaart();
-            }
-        }
-
-        function bouwGroteKaart() {
-            let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            let locatiesGevonden = [];
-
-            huidigeVondsten.forEach(v => {
-                let schoneGps = v.locatieGps ? v.locatieGps.trim() : "";
-                if (schoneGps && schoneGps.includes(',')) {
-                    let parts = schoneGps.split(',');
-                    let lat = parseFloat(parts[0]);
-                    let lng = parseFloat(parts[1]);
-                    if (!isNaN(lat) && !isNaN(lng)) {
-                        locatiesGevonden.push({ lat, lng, titel: v.titel, cat: v.categorie, foto: v.foto1, status: (v.inOnderzoek === true || v.inOnderzoek === "true") });
-                    }
-                }
-            });
-
-            let startLat = 51.3323;
-            let startLng = 4.3688;
-            if (locatiesGevonden.length > 0) {
-                startLat = locatiesGevonden[0].lat;
-                startLng = locatiesGevonden[0].lng;
-            }
-
-            groteKaartObject = L.map('main-heatmap-container').setView([startLat, startLng], 14);
-
-            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(groteKaartObject);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{y}/{x}{r}.png', { maxZoom: 20 }).addTo(groteKaartObject);
-
-            const kleurenTabel = {
-                "Munten": "#f1c40f", "Gespen": "#3498db", "Knopen": "#1abc9c", "Militaria": "#e74c3c", "Gebruiksvoorwerpen": "#2ecc71", "Overig": "#9b59b6"
-            };
-
-            locatiesGevonden.forEach(loc => {
-                let markerKleur = kleurenTabel[loc.cat] || "#ffffff";
-                if (loc.status === true) markerKleur = "#a855f7"; 
-
-                let customMarker = L.circleMarker([loc.lat, loc.lng], {
-                    radius: 8, fillColor: markerKleur, color: "#ffffff", weight: 2, opacity: 1, fillOpacity: 0.9
-                }).addTo(groteKaartObject);
-
-                let popupContent = `
-                    <div style="color:#111; font-family:sans-serif; text-align:center;">
-                        <b style="font-size:14px; display:block; margin-bottom:4px;">${loc.titel}</b>
-                        <span style="font-size:11px; text-transform:uppercase; color:#777; font-weight:bold; display:block; margin-bottom:6px;">📁 ${loc.cat}</span>
-                        ${loc.foto ? `<img src="${loc.foto}" style="width:90px; height:90px; object-fit:contain; border-radius:4px; border:1px solid #ccc; display:block; margin:0 auto;">` : ''}
-                    </div>
-                `;
-                customMarker.bindPopup(popupContent);
-            });
         }
 
         function toggleInvoerFormulier() {
@@ -572,7 +493,7 @@
                     huidigeVondsten.push({
                         id: Date.now() + i, categorie: geselecteerdeCategorie, materiaal: "Onbekend", vondstType: "Signaal (Metaaldetector)",
                         staat: "Bodemvondst (Topeffect)", diameter: "", gewicht: "", titel: row[idxOmschrijving],
-                        datering: row[idxDatering] || "Onbekend", locatieNaam: row[idxVindplaats] || "Onbekend", locatieGps: "", weblink: "", info: row[idxExtraInfo] || "", veldconditie: "Onbekend", zoekduur: "", inOnderzoek: false, foto1: "", foto2: "", foto3: ""
+                        datering: row[idxDatering] || "Onbekend", locatieNaam: row[idxVindplaats] || "Onbekend", locatieGps: "", weblink: "", info: row[idxExtraInfo] || "", veldconditie: "Onbekend", zoekduur: "", foto1: "", foto2: "", foto3: ""
                     });
                     geladenAantal++;
                 }
@@ -600,22 +521,20 @@
             const bewerkId = document.getElementById('bewerk-id').value;
             const veldconditie = document.getElementById('veldconditie').value;
             const zoekduur = document.getElementById('zoekduur').value;
-            const inOnderzoek = document.getElementById('status-determinatie').checked;
 
             if(!titel) { alert("Vul tenminste een beschrijving in."); return; }
             let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
 
             if (bewerkId) {
                 huidigeVondsten = huidigeVondsten.map(v => {
-                    if (v.id == bewerkId) { return { id: v.id, categorie, materiaal, vondstType, staat, diameter, gewicht, titel, datering, locatieNaam: locatieNaam || "Onbekende locatie", locatieGps, weblink, info, veldconditie, zoekduur, inOnderzoek, foto1: foto1DataUrl || v.foto1, foto2: foto2DataUrl || v.foto2, foto3: foto3DataUrl || v.foto3 }; }
+                    if (v.id == bewerkId) { return { id: v.id, categorie, materiaal, vondstType, staat, diameter, gewicht, titel, datering, locatieNaam: locatieNaam || "Onbekende locatie", locatieGps, weblink, info, veldconditie, zoekduur, foto1: foto1DataUrl || v.foto1, foto2: foto2DataUrl || v.foto2, foto3: foto3DataUrl || v.foto3 }; }
                     return v;
                 });
             } else {
-                huidigeVondsten.push({ id: Date.now(), categorie, materiaal, vondstType, staat, diameter, gewicht, titel, datering, locatieNaam: locatieNaam || "Onbekende locatie", locatieGps, weblink, info, veldconditie, zoekduur, inOnderzoek, foto1: foto1DataUrl, foto2: foto2DataUrl, foto3: foto3DataUrl });
+                huidigeVondsten.push({ id: Date.now(), categorie, materiaal, vondstType, staat, diameter, gewicht, titel, datering, locatieNaam: locatieNaam || "Onbekende locatie", locatieGps, weblink, info, veldconditie, zoekduur, foto1: foto1DataUrl, foto2: foto2DataUrl, foto3: foto3DataUrl });
             }
             localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
             sluitInvoerFormulier();
-            if (document.getElementById('main-heatmap-container').style.display === 'block') { bouwGroteKaart(); }
             toonVondsten(huidigeActieveCategorie);
         }
 
@@ -625,7 +544,6 @@
             document.getElementById('info').value = ""; document.getElementById('bewerk-id').value = ""; document.getElementById('materiaal').value = "Onbekend";
             document.getElementById('vondstType').value = "Signaal (Metaaldetector)"; document.getElementById('staat').value = "Bodemvondst (Topeffect)";
             document.getElementById('diameter').value = ""; document.getElementById('gewicht').value = ""; document.getElementById('veldconditie').value = "Onbekend"; document.getElementById('zoekduur').value = "";
-            document.getElementById('status-determinatie').checked = false;
             document.getElementById('wrapper-preview1').style.display = "none"; document.getElementById('wrapper-preview2').style.display = "none"; document.getElementById('wrapper-preview3').style.display = "none";
             foto1DataUrl = ""; foto2DataUrl = ""; foto3DataUrl = "";
             document.getElementById('munt-afmetingen-row').style.display = "none";
@@ -676,8 +594,6 @@
                 document.getElementById('bewerk-id').value = vondst.id;
                 if (document.getElementById('weblink')) document.getElementById('weblink').value = vondst.weblink || "";
                 
-                document.getElementById('status-determinatie').checked = (vondst.inOnderzoek === true || vondst.inOnderzoek === "true");
-                
                 if(vondst.foto1) { document.getElementById('img-preview1').src = vondst.foto1; document.getElementById('wrapper-preview1').style.display='flex'; foto1DataUrl=vondst.foto1; }
                 if(vondst.foto2) { document.getElementById('img-preview2').src = vondst.foto2; document.getElementById('wrapper-preview2').style.display='flex'; foto2DataUrl=vondst.foto2; }
                 if(vondst.foto3) { document.getElementById('img-preview3').src = vondst.foto3; document.getElementById('wrapper-preview3').style.display='flex'; foto3DataUrl=vondst.foto3; }
@@ -694,32 +610,20 @@
             }
         }
 
-        // DE UNIVERSELE EN REPARERENDE TOONFUNCTIE (MET ULTRA-VEILIGE FALLBACKS)
+        // DE UNIVERSELE EN SUPER-TOLERANTE TOONFUNCTIE (REPAREERT OUDE GEGEVENS LIVE)
         function toonVondsten(filter = 'Alles', zoekTerm = "") {
             const lijst = document.getElementById('vondsten-lijst'); lijst.innerHTML = "";
-            let huidigeVondsten = [];
+            let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
             
-            try {
-                huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
-            } catch(e) {
-                lijst.innerHTML = "<p style='text-align:center; color:#e74c3c;'>Fout bij het lezen van het geheugen. Gebruik de NOOD_BACKUP knop.</p>";
-                return;
-            }
-            
-            // AUTOMATISCHE CRASH-PREVENTIE
-            let herstelNodig = false;
+            // ULTRA-VEILIGE CONVERSIEMOTOR
             huidigeVondsten = huidigeVondsten.map(v => {
-                let aangepast = false;
-                if (!v.categorie || v.categorie === "Gespen & Knopen" || v.categorie.includes('&')) { v.categorie = (v.titel || "").toLowerCase().includes('knoop') ? "Knopen" : "Gespen"; aangepast = true; }
-                if (!v.materiaal) { v.materiaal = "Onbekend"; aangepast = true; }
-                if (!v.vondstType) { v.vondstType = "Signaal (Metaaldetector)"; aangepast = true; }
-                if (!v.staat) { v.staat = "Bodemvondst"; aangepast = true; }
-                if (!v.veldconditie) { v.veldconditie = "Onbekend"; aangepast = true; }
-                if (v.inOnderzoek === undefined) { v.inOnderzoek = false; aangepast = true; }
-                if (aangepast) herstelNodig = true;
+                if (!v.categorie || v.categorie === "Gespen & Knopen" || v.categorie.includes('&')) { v.categorie = (v.titel || "").toLowerCase().includes('knoop') ? "Knopen" : "Gespen"; }
+                if (!v.materiaal) v.materiaal = "Onbekend";
+                if (!v.vondstType) v.vondstType = "Signaal (Metaaldetector)";
+                if (!v.staat) v.staat = "Bodemvondst";
+                if (!v.veldconditie) v.veldconditie = "Onbekend";
                 return v;
             });
-            if (herstelNodig) { localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten)); }
 
             updateDashboard(huidigeVondsten);
             const schoneZoekTerm = zoekTerm.toLowerCase().trim();
@@ -727,9 +631,7 @@
             huidigeVondsten.forEach(vondst => {
                 if (filter !== 'Alles' && vondst.categorie !== filter) return;
                 
-                let matchStatusOnderzoek = (schoneZoekTerm === "onderzoek" || schoneZoekTerm === "determinatie") && (vondst.inOnderzoek === true || vondst.inOnderzoek === "true");
-
-                if (schoneZoekTerm !== "" && !matchStatusOnderzoek) {
+                if (schoneZoekTerm !== "") {
                     const inTitel = (vondst.titel || "").toLowerCase().includes(schoneZoekTerm);
                     const inMateriaal = (vondst.materiaal || "").toLowerCase().includes(schoneZoekTerm);
                     const inDatering = (vondst.datering || "").toLowerCase().includes(schoneZoekTerm);
@@ -739,11 +641,8 @@
                     if (!inTitel && !inMateriaal && !inDatering && !inLocatie && !inVeld && !inGewicht) return;
                 }
 
-                const isVondstInOnderzoek = (vondst.inOnderzoek === true || vondst.inOnderzoek === "true");
-                const extraCardKlasse = isVondstInOnderzoek ? " status-zoeken" : "";
-
                 const card = document.createElement('div');
-                card.className = `vondst-card cat-${vondst.categorie}${extraCardKlasse}`;
+                card.className = `vondst-card cat-${vondst.categorie}`;
                 let veiligeTitel = (vondst.titel || "").replace(/'/g, "\\'");
                 
                 let afmetingenLijn = "";
@@ -756,10 +655,8 @@
                     veldLijn = `<div class="vondst-meta" style="color: #94a3b8; font-size: 13px; margin-top:2px;">🚜 <b>Veld:</b> ${vondst.veldconditie} | ⏳ <b>Duur:</b> ${vondst.zoekduur || '?'} u</div>`;
                 }
 
-                let onderzoekBadge = isVondstInOnderzoek ? `<span style="background-color:#a855f7; color:white; font-size:11px; padding:2px 6px; border-radius:4px; font-weight:bold; font-family:sans-serif; margin-left:10px;">🔍 ONDERZOEK</span>` : "";
-
                 card.innerHTML = `
-                    <div class="vondst-header"><span>${vondst.titel} ${onderzoekBadge}</span><span class="vondst-cat-badge">${vondst.categorie}</span></div>
+                    <div class="vondst-header"><span>${vondst.titel}</span><span class="vondst-cat-badge">${vondst.categorie}</span></div>
                     <div class="vondst-grid-meta">
                         <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal}</div>
                         <div class="vondst-meta">✨ <b>Staat:</b> ${vondst.staat}</div>
@@ -805,7 +702,7 @@
             const huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || []; if (huidigeVondsten.length === 0) return;
             let csv = "data:text/csv;charset=utf-8,\uFEFFID;Categorie;Materiaal;VondstType;Staat;Diameter;Gewicht;Titel;Datering;Locatie;GPS;Veld;Duur;Info\r\n";
             huidigeVondsten.forEach(v => { csv += `${v.id};${v.categorie};${v.materiaal};${v.vondstType};${v.staat};${v.diameter};${v.gewicht};${v.titel};${v.datering};${v.locatieNaam};${v.locatieGps};${v.veldconditie};${v.zoekduur};${(v.info||"").replace(/;/g,',')}\r\n`; });
-            const link = document.createElement("a"); link.setAttribute("href", encodeURI(csv)); link.setAttribute("download", "Mijn_Vondsten_Museum_Heatmap_Backup.csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            const link = document.createElement("a"); link.setAttribute("href", encodeURI(csv)); link.setAttribute("download", "Mijn_Vondsten_Archief_Hersteld.csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
         document.addEventListener('keydown', function(e) { if(e.key === 'Escape') { document.getElementById('lightbox').classList.remove('active'); } });
