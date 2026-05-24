@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Metaaldetectievondsten - Museum Editie V5</title>
+    <title>Metaaldetectievondsten - Museum Editie V5.1</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,7 @@
         :root {
             --bg-color: #141822;       /* Diep antiek leisteen */
             --card-bg: #1e2533;        /* Standaard donkerblauwe kaart */
-            --text-color: #e2e8f0;     /* Zacht wit/gevlamd grijs */
+            --text-color: #e2e8f0;     /* Zacht wit/grijs */
             --accent-gold: #d4af37;    /* Museum Goud */
             --accent-blue: #4a90e2;
             --accent-red: #e74c3c;
@@ -103,7 +103,6 @@
         .btn-edit { color: #e67e22 !important; border-color: rgba(230, 126, 34, 0.4) !important; }
         .btn-delete { color: #fc8181 !important; border-color: rgba(231, 76, 60, 0.4) !important; }
         
-        /* 🪙 CHIQUE PERSOONLIJKE CATALOGUS KNOP */
         .btn-catalogus { color: #ffbc42 !important; border-color: rgba(255, 188, 66, 0.4) !important; text-decoration: none; display: inline-flex; align-items: center; }
         .btn-catalogus:hover { background-color: rgba(255, 188, 66, 0.1) !important; }
 
@@ -118,7 +117,6 @@
         
         #munt-afmetingen-row { display: none; background-color: rgba(15, 19, 26, 0.4); padding: 15px; border-radius: 8px; border: 1px dashed rgba(212, 175, 55, 0.3); margin-bottom: 15px; }
 
-        /* 📜 SPIEKBRIEFJE STYLING */
         .munt-spiekbriefje { margin-top: 15px; background-color: #0f131a; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 6px; padding: 12px; }
         .spiek-titel { font-family: 'Playfair Display', serif; color: var(--accent-gold); font-size: 14px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px dashed rgba(212, 175, 55, 0.2); padding-bottom: 4px; }
         .spiek-grid { display: grid; grid-template-columns: 1fr auto auto; gap: 4px 15px; font-size: 12px; color: #cbd5e1; }
@@ -407,10 +405,6 @@
             const cat = document.getElementById('categorie').value;
             const muntBox = document.getElementById('munt-afmetingen-row');
             muntBox.style.display = (cat === "Munten") ? "block" : "none";
-            if(cat !== "Munten") {
-                document.getElementById('diameter').value = "";
-                document.getElementById('gewicht').value = "";
-            }
         }
 
         function toggleInvoerFormulier() {
@@ -574,7 +568,7 @@
 
             if (bewerkId) {
                 huidigeVondsten = huidigeVondsten.map(v => {
-                    if (v.id == bewerkId) { return { id: v.id, categorie, materiaal, vondstType, staat, diameter, gewicht, titel, datering, locatieNaam: locatieNaam || "Onbekende locatie", locatieGps, weblink, info, veldconditie, zoekduur, foto1: foto1DataUrl, foto2: foto2DataUrl }; }
+                    if (v.id == bewerkId) { return { id: v.id, categorie, materiaal: materiaal || v.materiaal || "Onbekend", vondstType: vondstType || v.vondstType || "Signaal (Metaaldetector)", staat: staat || v.staat || "Bodemvondst", diameter, gewicht, titel, datering, locatieNaam: locatieNaam || "Onbekende locatie", locatieGps, weblink, info, veldconditie, zoekduur, foto1: foto1DataUrl || v.foto1, foto2: foto2DataUrl || v.foto2 }; }
                     return v;
                 });
             } else {
@@ -650,9 +644,24 @@
             }
         }
 
+        // DE ULTIEME UNIVERSELE EN REPARERENDE TOONFUNCTIE
         function toonVondsten(filter = 'Alles', zoekTerm = "") {
             const lijst = document.getElementById('vondsten-lijst'); lijst.innerHTML = "";
             let huidigeVondsten = JSON.parse(localStorage.getItem('detectorVondsten')) || [];
+            
+            // AUTOMATISCHE REPARATIE: Zorgt live dat ELK oud object alle nieuwe velden krijgt (nooit meer onzichtbaar!)
+            huidigeVondsten = huidigeVondsten.map(v => {
+                if (!v.categorie || v.categorie === "Gespen & Knopen" || v.categorie.includes('&')) { 
+                    v.categorie = (v.titel || "").toLowerCase().includes('knoop') ? "Knopen" : "Gespen"; 
+                }
+                if (!v.materiaal) v.materiaal = "Onbekend";
+                if (!v.vondstType) v.vondstType = "Signaal (Metaaldetector)";
+                if (!v.staat) v.staat = "Bodemvondst";
+                if (!v.veldconditie) v.veldconditie = "Onbekend";
+                return v;
+            });
+            localStorage.setItem('detectorVondsten', JSON.stringify(huidigeVondsten));
+
             updateDashboard(huidigeVondsten);
             const schoneZoekTerm = zoekTerm.toLowerCase().trim();
 
@@ -678,11 +687,10 @@
                 }
 
                 let veldLijn = "";
-                if(vondst.veldconditie !== "Onbekend" || vondst.zoekduur) {
+                if((vondst.veldconditie && vondst.veldconditie !== "Onbekend") || vondst.zoekduur) {
                     veldLijn = `<div class="vondst-meta" style="color: #94a3b8; font-size: 13px; margin-top:2px;">🚜 <b>Veld:</b> ${vondst.veldconditie} | ⏳ <b>Duur:</b> ${vondst.zoekduur || '?'} u</div>`;
                 }
 
-                // 🌐 NUMISTA LIVE DIRECTE ZOEK-LINK GENEREREN
                 const numistaZoekUrl = `https://en.numista.com/catalogue/index.php?r=${encodeURIComponent(vondst.titel)}`;
 
                 card.innerHTML = `
@@ -690,8 +698,8 @@
                     <div class="vondst-grid-meta">
                         <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal}</div>
                         <div class="vondst-meta">✨ <b>Staat:</b> ${vondst.staat}</div>
-                        <div class="vondst-meta">📅 <b>Periode:</b> ${vondst.datering}</div>
-                        <div class="vondst-meta">📍 <b>Locatie:</b> ${vondst.locatieNaam}</div>
+                        <div class="vondst-meta">📅 <b>Periode:</b> ${vondst.datering || 'Onbekend'}</div>
+                        <div class="vondst-meta">📍 <b>Locatie:</b> ${vondst.locatieNaam || 'Onbekend'}</div>
                     </div>
                     ${afmetingenLijn} ${veldLijn}
                     <div class="foto-container">
@@ -702,13 +710,17 @@
                     <div class="action-buttons">
                         <button class="btn-small btn-info" onclick="openInfo(${vondst.id})">ℹ️ Info</button>
                         ${vondst.categorie === 'Munten' ? `<a href="${numistaZoekUrl}" target="_blank" class="btn-small btn-catalogus">🌐 Catalogus</a>` : ''}
-                        <button class="btn-small btn-map" onclick="toggleKaart(${vondst.id}, '${vondst.locatieGps}', '${vondst.locatieNaam}', '${veiligeTitel}')">🗺️ Kaart</button>
+                        <button class="btn-small btn-map" onclick="toggleKaart(${vondst.id}, '${vondst.locatieGps || ''}', '${vondst.locatieNaam || ''}', '${veiligeTitel}')">🗺️ Kaart</button>
                         <button class="btn-small btn-edit" onclick="bewerkVondst(${vondst.id})">✏️ Bewerk</button>
                         <button class="btn-small btn-delete" onclick="verwijderVondst(${vondst.id})">🗑️ Wis</button>
                     </div>
                 `;
                 lijst.appendChild(card);
             });
+            
+            if(lijst.innerHTML === "") {
+                lijst.innerHTML = "<p style='text-align:center; color:#64748b;'>Geen vondsten gevonden binnen deze selectie.</p>";
+            }
         }
 
         function filterVondstenLive() { toonVondsten(huidigeActieveCategorie, document.getElementById('app-search').value); }
