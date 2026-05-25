@@ -96,7 +96,7 @@
             background-color: rgba(212, 175, 55, 0.1);
         }
 
-        /* 👑 REPARATIE & STYLING: CHIQUE, ZACHTE GLOED VOOR DE TELLERS */
+        /* CHIQUE, ZACHTE GLOED VOOR DE TELLERS BOVENAAN */
         .stats-dashboard {
             display: flex;
             flex-wrap: wrap;
@@ -113,41 +113,32 @@
             border-radius: 8px;
             border: 1px solid #2d3748;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
+            transition: transform 0.2s, border-color 0.2s;
         }
         .stat-item:hover {
             transform: translateY(-2px);
         }
 
-        /* Subtiele, gedimde museum-kleurverlopen (nooit schreeuwerig fel) */
-        .stat-item.total { 
-            border-color: rgba(212, 175, 55, 0.5); 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(212, 175, 55, 0.12) 100%); 
-        }
-        .stat-item.munt { 
-            border-color: rgba(241, 196, 15, 0.4); 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(241, 196, 15, 0.08) 100%); 
-        }
-        .stat-item.gesp { 
-            border-color: rgba(52, 152, 219, 0.4); 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(52, 152, 219, 0.08) 100%); 
-        }
-        .stat-item.knoop { 
-            border-color: rgba(26, 188, 156, 0.4); 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(26, 188, 156, 0.08) 100%); 
-        }
-        .stat-item.mili { 
-            border-color: rgba(231, 76, 60, 0.4); 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(231, 76, 60, 0.08) 100%); 
-        }
-        .stat-item.voorw { 
-            border-color: rgba(46, 204, 113, 0.4); 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(46, 204, 113, 0.08) 100%); 
-        }
-        .stat-item.over { 
-            border-color: rgba(155, 89, 182, 0.4); 
-            background: linear-gradient(135deg, #1e2533 0%, rgba(155, 89, 182, 0.08) 100%); 
-        }
+        .stat-item.total { border-color: rgba(212, 175, 55, 0.3); background: linear-gradient(135deg, #1e2533 0%, rgba(212, 175, 55, 0.12) 100%); }
+        .stat-item.total:hover { border-color: rgba(212, 175, 55, 0.7); }
+        
+        .stat-item.munt { border-color: rgba(241, 196, 15, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(241, 196, 15, 0.08) 100%); }
+        .stat-item.munt:hover { border-color: rgba(241, 196, 15, 0.6); }
+        
+        .stat-item.gesp { border-color: rgba(52, 152, 219, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(52, 152, 219, 0.08) 100%); }
+        .stat-item.gesp:hover { border-color: rgba(52, 152, 219, 0.6); }
+        
+        .stat-item.knoop { border-color: rgba(26, 188, 156, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(26, 188, 156, 0.08) 100%); }
+        .stat-item.knoop:hover { border-color: rgba(26, 188, 156, 0.6); }
+        
+        .stat-item.mili { border-color: rgba(231, 76, 60, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(231, 76, 60, 0.08) 100%); }
+        .stat-item.mili:hover { border-color: rgba(231, 76, 60, 0.6); }
+        
+        .stat-item.voorw { border-color: rgba(46, 204, 113, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(46, 204, 113, 0.08) 100%); }
+        .stat-item.voorw:hover { border-color: rgba(46, 204, 113, 0.6); }
+        
+        .stat-item.over { border-color: rgba(155, 89, 182, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(155, 89, 182, 0.08) 100%); }
+        .stat-item.over:hover { border-color: rgba(155, 89, 182, 0.6); }
 
         .stat-val {
             font-size: 22px;
@@ -271,6 +262,7 @@
             background-color: var(--card-bg) !important;
         }
 
+        /* BEWEGENDE FILTERTABBLADEN ONDERAAN */
         .tabs {
             display: flex;
             overflow-x: auto;
@@ -288,17 +280,25 @@
             border: 1px solid #334155;
             font-size: 14px;
             color: #94a3b8;
-            transition: all 0.2s;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
         }
 
-        /* TABBLAD KLEUREN */
-        .tab.cat-Alles.active { background-color: #d4af37; border-color: #d4af37; color: #000; font-weight: bold; }
-        .tab.cat-Munten.active { background-color: #f1c40f; border-color: #f1c40f; color: #000; font-weight: bold; }
-        .tab.cat-Gespen.active { background-color: #3498db; border-color: #3498db; color: #fff; font-weight: bold; }
-        .tab.cat-Knopen.active { background-color: #1abc9c; border-color: #1abc9c; color: #000; font-weight: bold; }
-        .tab.cat-Militaria.active { background-color: #e74c3c; border-color: #e74c3c; color: #fff; font-weight: bold; }
-        .tab.cat-Gebruiksvoorwerpen.active { background-color: #2ecc71; border-color: #2ecc71; color: #000; font-weight: bold; }
-        .tab.cat-Overig.active { background-color: #9b59b6; border-color: #9b59b6; color: #fff; font-weight: bold; }
+        .tab.cat-Alles:hover { transform: translateY(-2px); border-color: rgba(212, 175, 55, 0.6); color: white; }
+        .tab.cat-Munten:hover { transform: translateY(-2px); border-color: rgba(241, 196, 15, 0.6); color: white; }
+        .tab.cat-Gespen:hover { transform: translateY(-2px); border-color: rgba(52, 152, 219, 0.6); color: white; }
+        .tab.cat-Knopen:hover { transform: translateY(-2px); border-color: rgba(26, 188, 156, 0.6); color: white; }
+        .tab.cat-Militaria:hover { transform: translateY(-2px); border-color: rgba(231, 76, 60, 0.6); color: white; }
+        .tab.cat-Gebruiksvoorwerpen:hover { transform: translateY(-2px); border-color: rgba(46, 204, 113, 0.6); color: white; }
+        .tab.cat-Overig:hover { transform: translateY(-2px); border-color: rgba(155, 89, 182, 0.6); color: white; }
+
+        .tab.cat-Alles.active { background-color: #d4af37; border-color: #d4af37; color: #000; font-weight: bold; transform: none; }
+        .tab.cat-Munten.active { background-color: #f1c40f; border-color: #f1c40f; color: #000; font-weight: bold; transform: none; }
+        .tab.cat-Gespen.active { background-color: #3498db; border-color: #3498db; color: #fff; font-weight: bold; transform: none; }
+        .tab.cat-Knopen.active { background-color: #1abc9c; border-color: #1abc9c; color: #000; font-weight: bold; transform: none; }
+        .tab.cat-Militaria.active { background-color: #e74c3c; border-color: #e74c3c; color: #fff; font-weight: bold; transform: none; }
+        .tab.cat-Gebruiksvoorwerpen.active { background-color: #2ecc71; border-color: #2ecc71; color: #000; font-weight: bold; transform: none; }
+        .tab.cat-Overig.active { background-color: #9b59b6; border-color: #9b59b6; color: #fff; font-weight: bold; transform: none; }
 
         .vondst-card {
             background-color: var(--card-bg);
@@ -323,16 +323,33 @@
         .vondst-card.cat-Overig { border-left-color: #9b59b6; }
         .vondst-card.cat-Overig .vondst-cat-badge { color: #9b59b6; }
 
+        /* 👑 UPGRADE: STRENG EN DUIDELIJK TITELKADER VOOR MAXIMALE LEESBAARHEID */
         .vondst-header {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-family: 'Playfair Display', serif;
-            font-size: 18px;
+            font-size: 20px;          /* Iets groter voor de impact */
             font-weight: bold;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-            color: white;
+            background-color: rgba(15, 19, 26, 0.6); /* Donker contrast-kader */
+            padding: 10px 14px;       /* Ruimte binnen het kadertje */
+            border-radius: 6px;       /* Strakke hoekjes */
+            margin-bottom: 14px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* De naam van de vondst knalt er nu uit in het goud */
+        .vondst-titel-text {
+            color: var(--accent-gold) !important;
+            letter-spacing: 0.5px;
+        }
+
+        .vondst-cat-badge {
+            font-size: 13px;
+            font-family: 'Segoe UI', sans-serif;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
         }
 
         .vondst-grid-meta {
@@ -340,6 +357,7 @@
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 6px 15px;
             margin-bottom: 10px;
+            padding: 0 4px; /* Uitlijning met titel */
         }
 
         .vondst-meta {
@@ -355,6 +373,7 @@
             display: flex;
             gap: 12px;
             margin-top: 14px;
+            padding: 0 4px;
         }
 
         .img-wrapper {
@@ -451,6 +470,7 @@
             margin-top: 15px;
             border-top: 1px solid #334155;
             padding-top: 12px;
+            padding-left: 4px;
         }
 
         .btn-small {
@@ -1187,18 +1207,24 @@
 
                 let extraTagsLijn = "";
                 if(vondst.diameter || vondst.gewicht) {
-                    extraTagsLijn = `<div class="vondst-meta">${vondst.diameter ? `📏 <b>Ø:</b> ${vondst.diameter} mm` : ""} ${vondst.gewicht ? `| ⚖️ <b>Gewicht:</b> ${vondst.gewicht} gr` : ""}</div>`;
+                    extraTagsLijn = `<div class="vondst-meta" style="margin-top: 4px;">${vondst.diameter ? `📏 <b>Ø:</b> ${vondst.diameter} mm` : ""} ${vondst.gewicht ? `| ⚖️ <b>Gewicht:</b> ${vondst.gewicht} gr` : ""}</div>`;
                 }
 
+                // 👑 HIER WORDT HET CHIQUE TITELKADER MET DE GOUDEN LETTERS GEPLOT
                 card.innerHTML = `
-                    <div class="vondst-header"><span>${vondst.titel}</span><span class="vondst-cat-badge">${vondst.categorie}</span></div>
+                    <div class="vondst-header">
+                        <span class="vondst-titel-text">${vondst.titel}</span>
+                        <span class="vondst-cat-badge">${vondst.categorie}</span>
+                    </div>
                     <div class="vondst-grid-meta">
                         <div class="vondst-meta">💎 <b>Materiaal:</b> ${vondst.materiaal || 'Onbekend'}</div>
                         <div class="vondst-meta">✨ <b>Staat:</b> ${vondst.staat || 'Bodemvondst'}</div>
                         <div class="vondst-meta">📅 <b>Datering:</b> ${vondst.datering || 'Onbekend'}</div>
                         <div class="vondst-meta">📍 <b>Locatie:</b> ${vondst.locatieNaam || 'Niet vastgelegd'}</div>
                     </div>
-                    ${extraTagsLijn}
+                    <div style="padding-left: 4px;">
+                        ${extraTagsLijn}
+                    </div>
                     <div class="foto-container">
                         ${vondst.foto1 ? `<div class="img-wrapper" onclick="openFoto('${vondst.foto1}', '${veiligeTitel}')"><img src="${vondst.foto1}" class="card-img"><div class="zoom-icon">🔍</div></div>` : ''}
                         ${vondst.foto2 ? `<div class="img-wrapper" onclick="openFoto('${vondst.foto2}', '${veiligeTitel}')"><img src="${vondst.foto2}" class="card-img"><div class="zoom-icon">🔍</div></div>` : ''}
