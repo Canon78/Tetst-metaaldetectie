@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="nl">
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -1266,26 +1264,6 @@
         document.addEventListener('keydown', function(e) { if(e.key === 'Escape') { document.getElementById('lightbox').style.display='none'; } });
 
         window.onload = function() { toonVondsten(); };
-<script>
-  // 1. Hier plak je jouw configuratie tussen de accolades
-  const firebaseConfig = {
-    const firebaseConfig = {
-  apiKey: "AIzaSyDp8B4KnldB2n4GVqrMMqGsL9spERE5wAw",
-  authDomain: "metaaldetectievondsten-1dd62.firebaseapp.com",
-  projectId: "metaaldetectievondsten-1dd62",
-  storageBucket: "metaaldetectievondsten-1dd62.firebasestorage.app",
-  messagingSenderId: "486363185191",
-  appId: "1:486363185191:web:9b1efe7247d27599a28e02",
-  measurementId: "G-2BB4MPB74Z"
-};
-  };
-
-  // 2. Hier zorgt de app voor de verbinding
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  
-  console.log("Firebase is gekoppeld!");
-</script>
     </script>
 </body>
 </html>
