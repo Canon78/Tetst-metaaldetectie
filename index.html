@@ -36,7 +36,6 @@
             padding: 20px;
         }
 
-        /* GESYMMETRISCHE HEADER IN HET MIDDEN */
         .app-header {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
@@ -96,7 +95,6 @@
             background-color: rgba(212, 175, 55, 0.1);
         }
 
-        /* CHIQUE, ZACHTE GLOED VOOR DE TELLERS BOVENAAN */
         .stats-dashboard {
             display: flex;
             flex-wrap: wrap;
@@ -120,25 +118,12 @@
         }
 
         .stat-item.total { border-color: rgba(212, 175, 55, 0.3); background: linear-gradient(135deg, #1e2533 0%, rgba(212, 175, 55, 0.12) 100%); }
-        .stat-item.total:hover { border-color: rgba(212, 175, 55, 0.7); }
-        
         .stat-item.munt { border-color: rgba(241, 196, 15, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(241, 196, 15, 0.08) 100%); }
-        .stat-item.munt:hover { border-color: rgba(241, 196, 15, 0.6); }
-        
         .stat-item.gesp { border-color: rgba(52, 152, 219, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(52, 152, 219, 0.08) 100%); }
-        .stat-item.gesp:hover { border-color: rgba(52, 152, 219, 0.6); }
-        
         .stat-item.knoop { border-color: rgba(26, 188, 156, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(26, 188, 156, 0.08) 100%); }
-        .stat-item.knoop:hover { border-color: rgba(26, 188, 156, 0.6); }
-        
         .stat-item.mili { border-color: rgba(231, 76, 60, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(231, 76, 60, 0.08) 100%); }
-        .stat-item.mili:hover { border-color: rgba(231, 76, 60, 0.6); }
-        
         .stat-item.voorw { border-color: rgba(46, 204, 113, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(46, 204, 113, 0.08) 100%); }
-        .stat-item.voorw:hover { border-color: rgba(46, 204, 113, 0.6); }
-        
         .stat-item.over { border-color: rgba(155, 89, 182, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(155, 89, 182, 0.08) 100%); }
-        .stat-item.over:hover { border-color: rgba(155, 89, 182, 0.6); }
 
         .stat-val {
             font-size: 22px;
@@ -248,58 +233,6 @@
             color: white;
         }
 
-        .search-container {
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            border: 1px solid rgba(212, 175, 55, 0.4) !important;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23d4af37" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>');
-            background-repeat: no-repeat;
-            background-position: 14px center;
-            padding-left: 44px;
-            border-radius: 30px;
-            background-color: var(--card-bg) !important;
-        }
-
-        /* BEWEGENDE FILTERTABBLADEN ONDERAAN */
-        .tabs {
-            display: flex;
-            overflow-x: auto;
-            gap: 8px;
-            margin-bottom: 20px;
-            padding-bottom: 5px;
-        }
-
-        .tab {
-            padding: 10px 18px;
-            background-color: var(--card-bg);
-            border-radius: 30px;
-            white-space: nowrap;
-            cursor: pointer;
-            border: 1px solid #334155;
-            font-size: 14px;
-            color: #94a3b8;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-            transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
-        }
-
-        .tab.cat-Alles:hover { transform: translateY(-2px); border-color: rgba(212, 175, 55, 0.6); color: white; }
-        .tab.cat-Munten:hover { transform: translateY(-2px); border-color: rgba(241, 196, 15, 0.6); color: white; }
-        .tab.cat-Gespen:hover { transform: translateY(-2px); border-color: rgba(52, 152, 219, 0.6); color: white; }
-        .tab.cat-Knopen:hover { transform: translateY(-2px); border-color: rgba(26, 188, 156, 0.6); color: white; }
-        .tab.cat-Militaria:hover { transform: translateY(-2px); border-color: rgba(231, 76, 60, 0.6); color: white; }
-        .tab.cat-Gebruiksvoorwerpen:hover { transform: translateY(-2px); border-color: rgba(46, 204, 113, 0.6); color: white; }
-        .tab.cat-Overig:hover { transform: translateY(-2px); border-color: rgba(155, 89, 182, 0.6); color: white; }
-
-        .tab.cat-Alles.active { background-color: #d4af37; border-color: #d4af37; color: #000; font-weight: bold; transform: none; }
-        .tab.cat-Munten.active { background-color: #f1c40f; border-color: #f1c40f; color: #000; font-weight: bold; transform: none; }
-        .tab.cat-Gespen.active { background-color: #3498db; border-color: #3498db; color: #fff; font-weight: bold; transform: none; }
-        .tab.cat-Knopen.active { background-color: #1abc9c; border-color: #1abc9c; color: #000; font-weight: bold; transform: none; }
-        .tab.cat-Militaria.active { background-color: #e74c3c; border-color: #e74c3c; color: #fff; font-weight: bold; transform: none; }
-        .tab.cat-Gebruiksvoorwerpen.active { background-color: #2ecc71; border-color: #2ecc71; color: #000; font-weight: bold; transform: none; }
-        .tab.cat-Overig.active { background-color: #9b59b6; border-color: #9b59b6; color: #fff; font-weight: bold; transform: none; }
-
         .vondst-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -364,6 +297,42 @@
 
         .vondst-meta b {
             color: #94a3b8;
+        }
+
+        .foto-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+            padding: 0 4px;
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            border: 2px solid #334155 !important;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            background-color: #0f131a !important;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .zoom-icon {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--accent-gold);
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-size: 10px;
+            pointer-events: none;
         }
 
         .preview-img-container {
@@ -642,6 +611,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        let opgeslagenFoto1 = "";
+        let opgeslagenFoto2 = "";
+
         window.toggleInvoerFormulier = function() {
             const pagina = document.getElementById('page-invoer');
             pagina.classList.toggle('active');
@@ -666,6 +638,38 @@
             }
         };
 
+        window.verwerkFoto = function(event, fotoNummer) {
+            const bestand = event.target.files[0];
+            if (bestand) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Data = e.target.result;
+                    if (fotoNummer === 1) {
+                        opgeslagenFoto1 = base64Data;
+                        document.getElementById('img-preview1').src = base64Data;
+                        document.getElementById('wrapper-preview1').style.display = 'flex';
+                    } else {
+                        opgeslagenFoto2 = base64Data;
+                        document.getElementById('img-preview2').src = base64Data;
+                        document.getElementById('wrapper-preview2').style.display = 'flex';
+                    }
+                };
+                reader.readAsDataURL(bestand);
+            }
+        };
+
+        window.wisSpecifiekeFoto = function(fotoNummer) {
+            if (fotoNummer === 1) {
+                opgeslagenFoto1 = "";
+                document.getElementById('foto1').value = "";
+                document.getElementById('wrapper-preview1').style.display = 'none';
+            } else {
+                opgeslagenFoto2 = "";
+                document.getElementById('foto2').value = "";
+                document.getElementById('wrapper-preview2').style.display = 'none';
+            }
+        };
+
         window.opslaanVondst = async function() {
             const titel = document.getElementById('titel').value;
             const categorie = document.getElementById('categorie').value;
@@ -685,12 +689,18 @@
                     materiaal,
                     datering,
                     locatieNaam,
+                    foto1: opgeslagenFoto1,
+                    foto2: opgeslagenFoto2,
                     datum: new Date().toISOString()
                 });
                 alert('Vondst succesvol opgeslagen in de cloud!');
+                
                 document.getElementById('titel').value = '';
                 document.getElementById('datering').value = '';
                 document.getElementById('locatie-naam').value = '';
+                window.wisSpecifiekeFoto(1);
+                window.wisSpecifiekeFoto(2);
+
                 laadVondstenUitCloud();
             } catch (e) {
                 console.error("Fout bij opslaan: ", e);
@@ -723,6 +733,18 @@
                     if(data.categorie === 'Gebruiksvoorwerpen') voorwerpen++;
                     if(data.categorie === 'Overig') overig++;
 
+                    let fotosHtml = '';
+                    if (data.foto1 || data.foto2) {
+                        fotosHtml += '<div class="foto-container">';
+                        if (data.foto1) {
+                            fotosHtml += `<div class="img-wrapper"><img src="${data.foto1}" class="card-img"><div class="zoom-icon">Voorkant</div></div>`;
+                        }
+                        if (data.foto2) {
+                            fotosHtml += `<div class="img-wrapper"><img src="${data.foto2}" class="card-img"><div class="zoom-icon">Achterkant</div></div>`;
+                        }
+                        fotosHtml += '</div>';
+                    }
+
                     const kaart = document.createElement('div');
                     kaart.className = `vondst-card cat-${data.categorie}`;
                     kaart.innerHTML = `
@@ -735,6 +757,7 @@
                             <div class="vondst-meta"><b>Periode:</b> ${data.datering || 'Onbekend'}</div>
                             <div class="vondst-meta"><b>Locatie:</b> ${data.locatieNaam || 'Onbekend'}</div>
                         </div>
+                        ${fotosHtml}
                     `;
                     lijstContainer.appendChild(kaart);
                 });
@@ -751,7 +774,6 @@
             }
         }
 
-        // Laad de vondsten zodra de pagina opent
         laadVondstenUitCloud();
     </script>
 </body>
