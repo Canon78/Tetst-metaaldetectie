@@ -233,6 +233,30 @@
             color: white;
         }
 
+        /* FILTER TABS */
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            padding: 10px 18px;
+            background-color: var(--card-bg);
+            border-radius: 30px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid #334155;
+            font-size: 14px;
+            color: #94a3b8;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
+        }
+
+        .tab.active { background-color: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: bold; }
+
         .vondst-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -243,17 +267,11 @@
         }
 
         .vondst-card.cat-Munten { border-left-color: #f1c40f; }
-        .vondst-card.cat-Munten .vondst-cat-badge { color: #f1c40f; }
         .vondst-card.cat-Gespen { border-left-color: #3498db; }
-        .vondst-card.cat-Gespen .vondst-cat-badge { color: #3498db; }
         .vondst-card.cat-Knopen { border-left-color: #1abc9c; }
-        .vondst-card.cat-Knopen .vondst-cat-badge { color: #1abc9c; }
         .vondst-card.cat-Militaria { border-left-color: #e74c3c; }
-        .vondst-card.cat-Militaria .vondst-cat-badge { color: #e74c3c; }
         .vondst-card.cat-Gebruiksvoorwerpen { border-left-color: #2ecc71; }
-        .vondst-card.cat-Gebruiksvoorwerpen .vondst-cat-badge { color: #2ecc71; }
         .vondst-card.cat-Overig { border-left-color: #9b59b6; }
-        .vondst-card.cat-Overig .vondst-cat-badge { color: #9b59b6; }
 
         .vondst-header {
             display: flex;
@@ -457,7 +475,7 @@
         </div>
     </div>
 
-    <!-- LET OP: Geen 'active' klasse meer hieronder, dus hij start netjes ingeklapt -->
+    <!-- Invoerformulier (start ingeklapt) -->
     <div id="page-invoer" class="app-page">
         <div class="form-container">
             <h2 id="form-titel">Nieuwe Vondst</h2>
@@ -590,7 +608,18 @@
         </div>
     </div>
 
-    <div id="vondsten-lijst" style="margin-top: 20px;">
+    <!-- Categorie Filter Tabs -->
+    <div class="tabs" id="filter-tabs">
+        <div class="tab active" onclick="filterCategorie('Alles', this)">📜 Alle Vondsten</div>
+        <div class="tab" onclick="filterCategorie('Munten', this)">🪙 Munten</div>
+        <div class="tab" onclick="filterCategorie('Gespen', this)">🔍 Gespen</div>
+        <div class="tab" onclick="filterCategorie('Knopen', this)">🧷 Knopen</div>
+        <div class="tab" onclick="filterCategorie('Militaria', this)">🛡️ Militaria</div>
+        <div class="tab" onclick="filterCategorie('Gebruiksvoorwerpen', this)">🗝️ Gebruiksvoorwerpen</div>
+        <div class="tab" onclick="filterCategorie('Overig', this)">🏺 Overig</div>
+    </div>
+
+    <div id="vondsten-lijst">
         <!-- Hier komen de vondsten te staan -->
     </div>
 
@@ -614,6 +643,8 @@
 
         let opgeslagenFoto1 = "";
         let opgeslagenFoto2 = "";
+        let alleVondstenData = [];
+        let huidigeFilter = 'Alles';
 
         window.toggleInvoerFormulier = function() {
             const pagina = document.getElementById('page-invoer');
@@ -702,7 +733,7 @@
                 window.wisSpecifiekeFoto(1);
                 window.wisSpecifiekeFoto(2);
                 
-                // Formulier weer inklappen na opslaan
+                // Formulier inklappen na opslaan
                 document.getElementById('page-invoer').classList.remove('active');
 
                 laadVondstenUitCloud();
@@ -712,13 +743,20 @@
             }
         };
 
+        window.filterCategorie = function(categorie, element) {
+            huidigeFilter = categorie;
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+            toonVondsten();
+        };
+
         async function laadVondstenUitCloud() {
             const lijstContainer = document.getElementById('vondsten-lijst');
             lijstContainer.innerHTML = '<p style="text-align:center; color: var(--accent-gold);">Vondsten ophalen uit de cloud...</p>';
             
             try {
                 const querySnapshot = await getDocs(collection(db, "vondsten"));
-                lijstContainer.innerHTML = '';
+                alleVondstenData = [];
                 let totaal = 0;
                 let munten = 0;
                 let gespen = 0;
@@ -730,40 +768,14 @@
                 querySnapshot.forEach((doc) => {
                     totaal++;
                     const data = doc.data();
+                    alleVondstenData.push(data);
+
                     if(data.categorie === 'Munten') munten++;
                     if(data.categorie === 'Gespen') gespen++;
                     if(data.categorie === 'Knopen') knopen++;
                     if(data.categorie === 'Militaria') militaria++;
                     if(data.categorie === 'Gebruiksvoorwerpen') voorwerpen++;
                     if(data.categorie === 'Overig') overig++;
-
-                    let fotosHtml = '';
-                    if (data.foto1 || data.foto2) {
-                        fotosHtml += '<div class="foto-container">';
-                        if (data.foto1) {
-                            fotosHtml += `<div class="img-wrapper"><img src="${data.foto1}" class="card-img"><div class="zoom-icon">Voorkant</div></div>`;
-                        }
-                        if (data.foto2) {
-                            fotosHtml += `<div class="img-wrapper"><img src="${data.foto2}" class="card-img"><div class="zoom-icon">Achterkant</div></div>`;
-                        }
-                        fotosHtml += '</div>';
-                    }
-
-                    const kaart = document.createElement('div');
-                    kaart.className = `vondst-card cat-${data.categorie}`;
-                    kaart.innerHTML = `
-                        <div class="vondst-header">
-                            <span class="vondst-titel-text">${data.titel}</span>
-                            <span class="vondst-cat-badge">${data.categorie}</span>
-                        </div>
-                        <div class="vondst-grid-meta">
-                            <div class="vondst-meta"><b>Materiaal:</b> ${data.materiaal}</div>
-                            <div class="vondst-meta"><b>Periode:</b> ${data.datering || 'Onbekend'}</div>
-                            <div class="vondst-meta"><b>Locatie:</b> ${data.locatieNaam || 'Onbekend'}</div>
-                        </div>
-                        ${fotosHtml}
-                    `;
-                    lijstContainer.appendChild(kaart);
                 });
 
                 document.getElementById('stat-total').innerText = totaal;
@@ -773,9 +785,56 @@
                 document.getElementById('stat-militaria').innerText = militaria;
                 document.getElementById('stat-voorwerpen').innerText = voorwerpen;
                 document.getElementById('stat-overig').innerText = overig;
+
+                toonVondsten();
             } catch (e) {
                 console.error("Fout bij laden: ", e);
             }
+        }
+
+        function toonVondsten() {
+            const lijstContainer = document.getElementById('vondsten-lijst');
+            lijstContainer.innerHTML = '';
+
+            const gefilterd = alleVondstenData.filter(item => {
+                if (huidigeFilter === 'Alles') return true;
+                return item.categorie === huidigeFilter;
+            });
+
+            if (gefilterd.length === 0) {
+                lijstContainer.innerHTML = '<p style="text-align:center; color: #94a3b8;">Geen vondsten gevonden in deze categorie.</p>';
+                return;
+            }
+
+            gefilterd.forEach(data => {
+                let fotosHtml = '';
+                if (data.foto1 || data.foto2) {
+                    fotosHtml += '<div class="foto-container">';
+                    if (data.foto1) {
+                        fotosHtml += `<div class="img-wrapper"><img src="${data.foto1}" class="card-img"><div class="zoom-icon">Voorkant</div></div>`;
+                    }
+                    if (data.foto2) {
+                        fotosHtml += `<div class="img-wrapper"><img src="${data.foto2}" class="card-img"><div class="zoom-icon">Achterkant</div></div>`;
+                    }
+                    fotosHtml += '</div>';
+                }
+
+                const kaart = document.createElement('div');
+                kaart.className = `vondst-card cat-${data.categorie}`;
+                kaart.innerHTML = `
+                    <div class="vondst-header">
+                        <span class="vondst-titel-text">${data.titel}</span>
+                        <span class="vondst-cat-badge">${data.categorie}</span>
+                    </div>
+                    <div class="vondst-grid-meta">
+                        <div class="vondst-meta"><b>Materiaal:</b> ${data.materiaal}</div>
+                        <div class="vondst-meta"><b>Periode:</b> ${data.datering || 'Onbekend'}</div>
+                        <div class="vondst-meta"><b>Locatie:</b> ${data.locatieNaam || 'Onbekend'}</div>
+                    </div>
+                    ${fotosHtml}
+                `;
+                lijstContainer.appendChild(kaart);
+            });
         }
 
         laadVondstenUitCloud();
