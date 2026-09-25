@@ -233,7 +233,6 @@
             color: white;
         }
 
-        /* FILTER TABS */
         .tabs {
             display: flex;
             overflow-x: auto;
@@ -402,6 +401,27 @@
             text-align: center;
         }
 
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            border-top: 1px solid #334155;
+            padding-top: 12px;
+        }
+
+        .btn-small {
+            padding: 8px 14px;
+            font-size: 13px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid transparent !important;
+            background-color: #0f131a !important;
+        }
+        .btn-edit { color: #e67e22 !important; border-color: rgba(230, 126, 34, 0.4) !important; }
+        .btn-delete { color: #fc8181 !important; border-color: rgba(231, 76, 60, 0.4) !important; }
+
         button.main-btn {
             width: 100%;
             padding: 14px;
@@ -425,6 +445,27 @@
             width: 100%;
             border-radius: 8px;
             cursor: pointer;
+        }
+
+        /* Lightbox voor foto vergroten */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.93);
+            z-index: 9999;
+            justify-content: center; align-items: center;
+            flex-direction: column; padding: 20px;
+        }
+        .lightbox-img {
+            max-width: 90%; max-height: 80%;
+            border-radius: 8px; border: 2px solid var(--accent-gold);
+        }
+        .lightbox-close {
+            position: absolute; top: 20px; right: 20px;
+            background-color: #141822; color: var(--accent-gold);
+            border: 1px solid var(--accent-gold); padding: 8px 16px;
+            border-radius: 6px; font-weight: bold; cursor: pointer;
         }
     </style>
 </head>
@@ -475,7 +516,7 @@
         </div>
     </div>
 
-    <!-- Invoerformulier (start ingeklapt) -->
+    <!-- Invoerformulier -->
     <div id="page-invoer" class="app-page">
         <div class="form-container">
             <h2 id="form-titel">Nieuwe Vondst</h2>
@@ -619,14 +660,18 @@
         <div class="tab" onclick="filterCategorie('Overig', this)">🏺 Overig</div>
     </div>
 
-    <div id="vondsten-lijst">
-        <!-- Hier komen de vondsten te staan -->
+    <div id="vondsten-lijst"></div>
+
+    <!-- Lightbox voor foto vergroten -->
+    <div id="lightbox" class="lightbox" onclick="sluitLightbox()">
+        <button class="lightbox-close">Sluiten</button>
+        <img id="lightbox-img" class="lightbox-img">
     </div>
 
     <!-- Firebase & Database Koppeling -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateGrid, doc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB0g9D2CFoCVOAqk3KZ0JmTQXZjooWU7WE",
@@ -649,6 +694,10 @@
         window.toggleInvoerFormulier = function() {
             const pagina = document.getElementById('page-invoer');
             pagina.classList.toggle('active');
+            if(pagina.classList.contains('active')) {
+                document.getElementById('form-titel').innerText = "Nieuwe Vondst";
+                document.getElementById('bewerk-id').value = "";
+            }
         };
 
         window.setDatering = function(periode) {
@@ -702,44 +751,135 @@
             }
         };
 
+        window.zoomFoto = function(url) {
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('lightbox').style.display = 'flex';
+        };
+
+        window.sluitLightbox = function() {
+            document.getElementById('lightbox').style.display = 'none';
+        };
+
         window.opslaanVondst = async function() {
+            const bewerkId = document.getElementById('bewerk-id').value;
             const titel = document.getElementById('titel').value;
             const categorie = document.getElementById('categorie').value;
             const materiaal = document.getElementById('materiaal').value;
+            const vondstType = document.getElementById('vondstType').value;
+            const staat = document.getElementById('staat').value;
+            const diameter = document.getElementById('diameter').value;
+            const gewicht = document.getElementById('gewicht').value;
             const datering = document.getElementById('datering').value;
             const locatieNaam = document.getElementById('locatie-naam').value;
+            const locatieGps = document.getElementById('locatie-gps').value;
+            const weblink = document.getElementById('weblink').value;
+            const info = document.getElementById('info').value;
 
             if (!titel) {
                 alert('Vul alstublieft een beschrijving/naam in.');
                 return;
             }
 
+            const dataObj = {
+                titel,
+                categorie,
+                materiaal,
+                vondstType,
+                staat,
+                diameter,
+                gewicht,
+                datering,
+                locatieNaam,
+                locatieGps,
+                weblink,
+                info,
+                foto1: opgeslagenFoto1,
+                foto2: opgeslagenFoto2,
+                datum: new Date().toISOString()
+            };
+
             try {
-                await addDoc(collection(db, "vondsten"), {
-                    titel,
-                    categorie,
-                    materiaal,
-                    datering,
-                    locatieNaam,
-                    foto1: opgeslagenFoto1,
-                    foto2: opgeslagenFoto2,
-                    datum: new Date().toISOString()
-                });
-                alert('Vondst succesvol opgeslagen in de cloud!');
+                if (bewerkId) {
+                    // Update bestaande vondst
+                    await updateDoc(doc(db, "vondsten", bewerkId), dataObj);
+                    alert('Vondst succesvol bijgewerkt!');
+                } else {
+                    // Nieuwe toevoegen
+                    await addDoc(collection(db, "vondsten"), dataObj);
+                    alert('Vondst succesvol opgeslagen in de cloud!');
+                }
                 
+                // Formulier legen en sluiten
                 document.getElementById('titel').value = '';
                 document.getElementById('datering').value = '';
                 document.getElementById('locatie-naam').value = '';
+                document.getElementById('locatie-gps').value = '';
+                document.getElementById('diameter').value = '';
+                document.getElementById('gewicht').value = '';
+                document.getElementById('weblink').value = '';
+                document.getElementById('info').value = '';
+                document.getElementById('bewerk-id').value = '';
                 window.wisSpecifiekeFoto(1);
                 window.wisSpecifiekeFoto(2);
                 
-                // Formulier inklappen na opslaan
                 document.getElementById('page-invoer').classList.remove('active');
-
                 laadVondstenUitCloud();
             } catch (e) {
                 console.error("Fout bij opslaan: ", e);
                 alert('Er ging iets mis bij het opslaan.');
+            }
+        };
+
+        window.bewerkVondst = function(id) {
+            const item = alleVondstenData.find(v => v.id === id);
+            if (!item) return;
+
+            document.getElementById('bewerk-id').value = item.id;
+            document.getElementById('categorie').value = item.categorie || 'Munten';
+            document.getElementById('materiaal').value = item.materiaal || 'Onbekend';
+            document.getElementById('vondstType').value = item.vondstType || 'Signaal (Metaaldetector)';
+            document.getElementById('staat').value = item.staat || 'Bodemvondst (Topeffect)';
+            document.getElementById('diameter').value = item.diameter || '';
+            document.getElementById('gewicht').value = item.gewicht || '';
+            document.getElementById('titel').value = item.titel || '';
+            document.getElementById('datering').value = item.datering || '';
+            document.getElementById('locatie-naam').value = item.locatieNaam || '';
+            document.getElementById('locatie-gps').value = item.locatieGps || '';
+            document.getElementById('weblink').value = item.weblink || '';
+            document.getElementById('info').value = item.info || '';
+
+            // Foto's herstellen indien aanwezig
+            opgeslagenFoto1 = item.foto1 || "";
+            if (opgeslagenFoto1) {
+                document.getElementById('img-preview1').src = opgeslagenFoto1;
+                document.getElementById('wrapper-preview1').style.display = 'flex';
+            } else {
+                window.wisSpecifiekeFoto(1);
+            }
+
+            opgeslagenFoto2 = item.foto2 || "";
+            if (opgeslagenFoto2) {
+                document.getElementById('img-preview2').src = opgeslagenFoto2;
+                document.getElementById('wrapper-preview2').style.display = 'flex';
+            } else {
+                window.wisSpecifiekeFoto(2);
+            }
+
+            document.getElementById('form-titel').innerText = "Vondst Bewerken";
+            document.getElementById('page-invoer').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.verwijderVondst = async function(id) {
+            if (confirm('Weet je zeker dat je deze vondst wilt verwijderen?')) {
+                try {
+                    await deleteDoc(doc(db, "vondsten", id));
+                    alert('Vondst verwijderd.');
+                    laadVondstenUitCloud();
+                } catch (e) {
+                    console.error("Fout bij verwijderen:", e);
+                    alert('Kon de vondst niet verwijderen.');
+                }
             }
         };
 
@@ -765,9 +905,10 @@
                 let voorwerpen = 0;
                 let overig = 0;
 
-                querySnapshot.forEach((doc) => {
+                querySnapshot.forEach((docSnap) => {
                     totaal++;
-                    const data = doc.data();
+                    const data = docSnap.data();
+                    data.id = docSnap.id; // Sla het unieke ID op voor bewerken/verwijderen
                     alleVondstenData.push(data);
 
                     if(data.categorie === 'Munten') munten++;
@@ -811,13 +952,24 @@
                 if (data.foto1 || data.foto2) {
                     fotosHtml += '<div class="foto-container">';
                     if (data.foto1) {
-                        fotosHtml += `<div class="img-wrapper"><img src="${data.foto1}" class="card-img"><div class="zoom-icon">Voorkant</div></div>`;
+                        fotosHtml += `<div class="img-wrapper" onclick="zoomFoto('${data.foto1}')"><img src="${data.foto1}" class="card-img"><div class="zoom-icon">🔍 Vergroot</div></div>`;
                     }
                     if (data.foto2) {
-                        fotosHtml += `<div class="img-wrapper"><img src="${data.foto2}" class="card-img"><div class="zoom-icon">Achterkant</div></div>`;
+                        fotosHtml += `<div class="img-wrapper" onclick="zoomFoto('${data.foto2}')"><img src="${data.foto2}" class="card-img"><div class="zoom-icon">🔍 Vergroot</div></div>`;
                     }
                     fotosHtml += '</div>';
                 }
+
+                // Alle extra info velden dynamisch opbouwen als ze ingevuld zijn
+                let extraInfoHtml = '';
+                if (data.vondstType) extraInfoHtml += `<div class="vondst-meta"><b>Type:</b> ${data.vondstType}</div>`;
+                if (data.staat) extraInfoHtml += `<div class="vondst-meta"><b>Staat:</b> ${data.staat}</div>`;
+                if (data.diameter) extraInfoHtml += `<div class="vondst-meta"><b>Diameter:</b> ${data.diameter} mm</div>`;
+                if (data.gewicht) extraInfoHtml += `<div class="vondst-meta"><b>Gewicht:</b> ${data.gewicht} g</div>`;
+                if (data.locatieNaam) extraInfoHtml += `<div class="vondst-meta"><b>Locatie:</b> ${data.locatieNaam}</div>`;
+                if (data.locatieGps) extraInfoHtml += `<div class="vondst-meta"><b>GPS:</b> ${data.locatieGps}</div>`;
+                if (data.weblink) extraInfoHtml += `<div class="vondst-meta"><b>Link:</b> <a href="${data.weblink}" target="_blank" style="color:var(--accent-blue)">Website</a></div>`;
+                if (data.info) extraInfoHtml += `<div class="vondst-meta" style="grid-column: 1 / -1;"><b>Info:</b> ${data.info}</div>`;
 
                 const kaart = document.createElement('div');
                 kaart.className = `vondst-card cat-${data.categorie}`;
@@ -829,9 +981,13 @@
                     <div class="vondst-grid-meta">
                         <div class="vondst-meta"><b>Materiaal:</b> ${data.materiaal}</div>
                         <div class="vondst-meta"><b>Periode:</b> ${data.datering || 'Onbekend'}</div>
-                        <div class="vondst-meta"><b>Locatie:</b> ${data.locatieNaam || 'Onbekend'}</div>
+                        ${extraInfoHtml}
                     </div>
                     ${fotosHtml}
+                    <div class="action-buttons">
+                        <button class="btn-small btn-edit" onclick="bewerkVondst('${data.id}')">✏️ Bewerken</button>
+                        <button class="btn-small btn-delete" onclick="verwijderVondst('${data.id}')">🗑️ Verwijderen</button>
+                    </div>
                 `;
                 lijstContainer.appendChild(kaart);
             });
