@@ -447,6 +447,39 @@
             cursor: pointer;
         }
 
+        /* Scroll naar boven knop */
+        #scroll-top-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 999;
+            background-color: var(--card-bg);
+            color: var(--accent-gold);
+            border: 2px solid var(--accent-gold);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+        }
+
+        #scroll-top-btn.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #scroll-top-btn:hover {
+            transform: scale(1.1);
+            background-color: rgba(212, 175, 55, 0.15);
+        }
+
         .lightbox {
             display: none;
             position: fixed;
@@ -661,6 +694,9 @@
 
     <div id="vondsten-lijst"></div>
 
+    <!-- Scroll naar boven knop -->
+    <button id="scroll-top-btn" onclick="scrollToTop()" title="Naar boven">▲</button>
+
     <!-- Lightbox voor foto vergroten -->
     <div id="lightbox" class="lightbox" onclick="sluitLightbox()">
         <button class="lightbox-close">Sluiten</button>
@@ -689,6 +725,20 @@
         let opgeslagenFoto2 = "";
         let alleVondstenData = [];
         let huidigeFilter = 'Alles';
+
+        // Scroll naar boven logica
+        window.addEventListener('scroll', function() {
+            const scrollBtn = document.getElementById('scroll-top-btn');
+            if (window.scrollY > 300) {
+                scrollBtn.classList.add('show');
+            } else {
+                scrollBtn.classList.remove('show');
+            }
+        });
+
+        window.scrollToTop = function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
 
         window.toggleInvoerFormulier = function() {
             const pagina = document.getElementById('page-invoer');
