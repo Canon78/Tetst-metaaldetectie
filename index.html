@@ -14,10 +14,10 @@
 
     <style>
         :root {
-            --bg-color: #141822;       /* Diep antiek leisteen */
-            --card-bg: #1e2533;        /* Iets lichter voor de kaartjes */
-            --text-color: #e2e8f0;     /* Zacht wit/grijs */
-            --accent-gold: #d4af37;    /* Museum Goud */
+            --bg-color: #141822;
+            --card-bg: #1e2533;
+            --text-color: #e2e8f0;
+            --accent-gold: #d4af37;
             --accent-blue: #4a90e2;
             --accent-red: #e74c3c;
             --btn-green: #2ecc71;
@@ -447,7 +447,6 @@
             cursor: pointer;
         }
 
-        /* Lightbox voor foto vergroten */
         .lightbox {
             display: none;
             position: fixed;
@@ -671,7 +670,7 @@
     <!-- Firebase & Database Koppeling -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateGrid, doc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB0g9D2CFoCVOAqk3KZ0JmTQXZjooWU7WE",
@@ -697,6 +696,16 @@
             if(pagina.classList.contains('active')) {
                 document.getElementById('form-titel').innerText = "Nieuwe Vondst";
                 document.getElementById('bewerk-id').value = "";
+                document.getElementById('titel').value = '';
+                document.getElementById('datering').value = '';
+                document.getElementById('locatie-naam').value = '';
+                document.getElementById('locatie-gps').value = '';
+                document.getElementById('diameter').value = '';
+                document.getElementById('gewicht').value = '';
+                document.getElementById('weblink').value = '';
+                document.getElementById('info').value = '';
+                window.wisSpecifiekeFoto(1);
+                window.wisSpecifiekeFoto(2);
             }
         };
 
@@ -800,27 +809,12 @@
 
             try {
                 if (bewerkId) {
-                    // Update bestaande vondst
                     await updateDoc(doc(db, "vondsten", bewerkId), dataObj);
                     alert('Vondst succesvol bijgewerkt!');
                 } else {
-                    // Nieuwe toevoegen
                     await addDoc(collection(db, "vondsten"), dataObj);
                     alert('Vondst succesvol opgeslagen in de cloud!');
                 }
-                
-                // Formulier legen en sluiten
-                document.getElementById('titel').value = '';
-                document.getElementById('datering').value = '';
-                document.getElementById('locatie-naam').value = '';
-                document.getElementById('locatie-gps').value = '';
-                document.getElementById('diameter').value = '';
-                document.getElementById('gewicht').value = '';
-                document.getElementById('weblink').value = '';
-                document.getElementById('info').value = '';
-                document.getElementById('bewerk-id').value = '';
-                window.wisSpecifiekeFoto(1);
-                window.wisSpecifiekeFoto(2);
                 
                 document.getElementById('page-invoer').classList.remove('active');
                 laadVondstenUitCloud();
@@ -848,7 +842,6 @@
             document.getElementById('weblink').value = item.weblink || '';
             document.getElementById('info').value = item.info || '';
 
-            // Foto's herstellen indien aanwezig
             opgeslagenFoto1 = item.foto1 || "";
             if (opgeslagenFoto1) {
                 document.getElementById('img-preview1').src = opgeslagenFoto1;
@@ -908,7 +901,7 @@
                 querySnapshot.forEach((docSnap) => {
                     totaal++;
                     const data = docSnap.data();
-                    data.id = docSnap.id; // Sla het unieke ID op voor bewerken/verwijderen
+                    data.id = docSnap.id;
                     alleVondstenData.push(data);
 
                     if(data.categorie === 'Munten') munten++;
@@ -930,6 +923,7 @@
                 toonVondsten();
             } catch (e) {
                 console.error("Fout bij laden: ", e);
+                lijstContainer.innerHTML = '<p style="text-align:center; color: var(--accent-red);">Fout bij laden van vondsten uit de database.</p>';
             }
         }
 
@@ -960,7 +954,6 @@
                     fotosHtml += '</div>';
                 }
 
-                // Alle extra info velden dynamisch opbouwen als ze ingevuld zijn
                 let extraInfoHtml = '';
                 if (data.vondstType) extraInfoHtml += `<div class="vondst-meta"><b>Type:</b> ${data.vondstType}</div>`;
                 if (data.staat) extraInfoHtml += `<div class="vondst-meta"><b>Staat:</b> ${data.staat}</div>`;
