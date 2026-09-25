@@ -457,6 +457,7 @@
         </div>
     </div>
 
+    <!-- LET OP: Geen 'active' klasse meer hieronder, dus hij start netjes ingeklapt -->
     <div id="page-invoer" class="app-page">
         <div class="form-container">
             <h2 id="form-titel">Nieuwe Vondst</h2>
@@ -700,6 +701,9 @@
                 document.getElementById('locatie-naam').value = '';
                 window.wisSpecifiekeFoto(1);
                 window.wisSpecifiekeFoto(2);
+                
+                // Formulier weer inklappen na opslaan
+                document.getElementById('page-invoer').classList.remove('active');
 
                 laadVondstenUitCloud();
             } catch (e) {
