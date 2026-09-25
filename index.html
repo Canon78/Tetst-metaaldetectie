@@ -36,6 +36,7 @@
             padding: 20px;
         }
 
+        /* GESYMMETRISCHE HEADER IN HET MIDDEN */
         .app-header {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
@@ -95,6 +96,7 @@
             background-color: rgba(212, 175, 55, 0.1);
         }
 
+        /* CHIQUE, ZACHTE GLOED VOOR DE TELLERS BOVENAAN */
         .stats-dashboard {
             display: flex;
             flex-wrap: wrap;
@@ -118,12 +120,25 @@
         }
 
         .stat-item.total { border-color: rgba(212, 175, 55, 0.3); background: linear-gradient(135deg, #1e2533 0%, rgba(212, 175, 55, 0.12) 100%); }
+        .stat-item.total:hover { border-color: rgba(212, 175, 55, 0.7); }
+        
         .stat-item.munt { border-color: rgba(241, 196, 15, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(241, 196, 15, 0.08) 100%); }
+        .stat-item.munt:hover { border-color: rgba(241, 196, 15, 0.6); }
+        
         .stat-item.gesp { border-color: rgba(52, 152, 219, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(52, 152, 219, 0.08) 100%); }
+        .stat-item.gesp:hover { border-color: rgba(52, 152, 219, 0.6); }
+        
         .stat-item.knoop { border-color: rgba(26, 188, 156, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(26, 188, 156, 0.08) 100%); }
+        .stat-item.knoop:hover { border-color: rgba(26, 188, 156, 0.6); }
+        
         .stat-item.mili { border-color: rgba(231, 76, 60, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(231, 76, 60, 0.08) 100%); }
+        .stat-item.mili:hover { border-color: rgba(231, 76, 60, 0.6); }
+        
         .stat-item.voorw { border-color: rgba(46, 204, 113, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(46, 204, 113, 0.08) 100%); }
+        .stat-item.voorw:hover { border-color: rgba(46, 204, 113, 0.6); }
+        
         .stat-item.over { border-color: rgba(155, 89, 182, 0.2); background: linear-gradient(135deg, #1e2533 0%, rgba(155, 89, 182, 0.08) 100%); }
+        .stat-item.over:hover { border-color: rgba(155, 89, 182, 0.6); }
 
         .stat-val {
             font-size: 22px;
@@ -239,11 +254,15 @@
 
         .search-input {
             border: 1px solid rgba(212, 175, 55, 0.4) !important;
-            background-color: var(--card-bg) !important;
-            padding-left: 14px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23d4af37" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: 14px center;
+            padding-left: 44px;
             border-radius: 30px;
+            background-color: var(--card-bg) !important;
         }
 
+        /* BEWEGENDE FILTERTABBLADEN ONDERAAN */
         .tabs {
             display: flex;
             overflow-x: auto;
@@ -262,9 +281,24 @@
             font-size: 14px;
             color: #94a3b8;
             box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
         }
 
-        .tab.active { background-color: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: bold; }
+        .tab.cat-Alles:hover { transform: translateY(-2px); border-color: rgba(212, 175, 55, 0.6); color: white; }
+        .tab.cat-Munten:hover { transform: translateY(-2px); border-color: rgba(241, 196, 15, 0.6); color: white; }
+        .tab.cat-Gespen:hover { transform: translateY(-2px); border-color: rgba(52, 152, 219, 0.6); color: white; }
+        .tab.cat-Knopen:hover { transform: translateY(-2px); border-color: rgba(26, 188, 156, 0.6); color: white; }
+        .tab.cat-Militaria:hover { transform: translateY(-2px); border-color: rgba(231, 76, 60, 0.6); color: white; }
+        .tab.cat-Gebruiksvoorwerpen:hover { transform: translateY(-2px); border-color: rgba(46, 204, 113, 0.6); color: white; }
+        .tab.cat-Overig:hover { transform: translateY(-2px); border-color: rgba(155, 89, 182, 0.6); color: white; }
+
+        .tab.cat-Alles.active { background-color: #d4af37; border-color: #d4af37; color: #000; font-weight: bold; transform: none; }
+        .tab.cat-Munten.active { background-color: #f1c40f; border-color: #f1c40f; color: #000; font-weight: bold; transform: none; }
+        .tab.cat-Gespen.active { background-color: #3498db; border-color: #3498db; color: #fff; font-weight: bold; transform: none; }
+        .tab.cat-Knopen.active { background-color: #1abc9c; border-color: #1abc9c; color: #000; font-weight: bold; transform: none; }
+        .tab.cat-Militaria.active { background-color: #e74c3c; border-color: #e74c3c; color: #fff; font-weight: bold; transform: none; }
+        .tab.cat-Gebruiksvoorwerpen.active { background-color: #2ecc71; border-color: #2ecc71; color: #000; font-weight: bold; transform: none; }
+        .tab.cat-Overig.active { background-color: #9b59b6; border-color: #9b59b6; color: #fff; font-weight: bold; transform: none; }
 
         .vondst-card {
             background-color: var(--card-bg);
@@ -274,6 +308,19 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             border-left: 4px solid #334155;
         }
+
+        .vondst-card.cat-Munten { border-left-color: #f1c40f; }
+        .vondst-card.cat-Munten .vondst-cat-badge { color: #f1c40f; }
+        .vondst-card.cat-Gespen { border-left-color: #3498db; }
+        .vondst-card.cat-Gespen .vondst-cat-badge { color: #3498db; }
+        .vondst-card.cat-Knopen { border-left-color: #1abc9c; }
+        .vondst-card.cat-Knopen .vondst-cat-badge { color: #1abc9c; }
+        .vondst-card.cat-Militaria { border-left-color: #e74c3c; }
+        .vondst-card.cat-Militaria .vondst-cat-badge { color: #e74c3c; }
+        .vondst-card.cat-Gebruiksvoorwerpen { border-left-color: #2ecc71; }
+        .vondst-card.cat-Gebruiksvoorwerpen .vondst-cat-badge { color: #2ecc71; }
+        .vondst-card.cat-Overig { border-left-color: #9b59b6; }
+        .vondst-card.cat-Overig .vondst-cat-badge { color: #9b59b6; }
 
         .vondst-header {
             display: flex;
@@ -299,6 +346,7 @@
             font-family: 'Segoe UI', sans-serif;
             text-transform: uppercase;
             font-weight: bold;
+            letter-spacing: 0.5px;
         }
 
         .vondst-grid-meta {
@@ -440,7 +488,7 @@
         </div>
     </div>
 
-    <div id="page-invoer" class="app-page active">
+    <div id="page-invoer" class="app-page">
         <div class="form-container">
             <h2 id="form-titel">Nieuwe Vondst</h2>
             <input type="hidden" id="bewerk-id" value="">
@@ -470,6 +518,38 @@
                         <option value="Glas / Keramiek">🏺 Glas / Keramiek</option>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="vondstType">Type Vondst</label>
+                    <select id="vondstType">
+                        <option value="Signaal (Metaaldetector)">🌟 Signaal (Metaaldetector)</option>
+                        <option value="Oogvondst (Zonder detector)">👀 Oogvondst (Zonder detector)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="staat">Staat van de vondst</label>
+                    <select id="staat">
+                        <option value="Bodemvondst (Topeffect)">Bodemvondst (Topeffect)</option>
+                        <option value="Prachtig">✨ Prachtig</option>
+                        <option value="Mooi">👍 Mooi</option>
+                        <option value="Matig">📉 Matig</option>
+                        <option value="Onleesbaar">❌ Onleesbaar / Afgesleten</option>
+                        <option value="Voorkant blank">🔲 Voorkant blank</option>
+                        <option value="Achterkant blank">🔲 Achterkant blank</option>
+                        <option value="Fragment">🧩 Fragment / Stukje</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="diameter">Diameter (mm)</label>
+                    <input type="number" id="diameter" step="0.1" placeholder="Bijv. 23.5">
+                </div>
+                <div class="form-group">
+                    <label for="gewicht">Gewicht (gram)</label>
+                    <input type="number" id="gewicht" step="0.01" placeholder="Bijv. 4.25">
+                </div>
             </div>
 
             <div class="form-group">
@@ -480,13 +560,67 @@
             <div class="form-group">
                 <label for="datering">Vermoedelijke Periode</label>
                 <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr, 18e eeuw...">
+                <div class="quick-tags">
+                    <button type="button" class="tag-btn" onclick="setDatering('Romeins')">Romeins</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('Middeleeuws')">Middeleeuws</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('16e eeuw')">16e eeuw</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('17e eeuw')">17e eeuw</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('18e eeuw')">18e eeuw</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('19e eeuw')">19e eeuw</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('WO1')">WO1</button>
+                    <button type="button" class="tag-btn" onclick="setDatering('WO2')">WO2</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="locatie-naam">📍 Stad / Dorp / Zoekveld</label>
+                <input type="text" id="locatie-naam" placeholder="Bijv. Stabroek...">
+            </div>
+
+            <div class="form-group">
+                <label for="locatie-gps">🌍 Exacte GPS Coördinaten of Google Maps Link</label>
+                <input type="text" id="locatie-gps" placeholder="Plak hier coördinaten of de complete Google Maps link">
+                <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige Exacte GPS Vast</button>
+            </div>
+
+            <div class="form-group">
+                <label for="weblink">🌐 Referentie Website / Link</label>
+                <input type="url" id="weblink" placeholder="https://www.example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="info">📜 Extra Informatie</label>
+                <textarea id="info" placeholder="Waarvoor diende het? Details..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="foto1">📸 Foto 1 (Voorkant)</label>
+                <input type="file" id="foto1" accept="image/*" onchange="verwerkFoto(event, 1)">
+            </div>
+
+            <div class="form-group">
+                <label for="foto2">📸 Foto 2 (Achterkant)</label>
+                <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 2)">
+            </div>
+
+            <div class="preview-img-container">
+                <div id="wrapper-preview1" class="preview-wrapper">
+                    <span>Voorkant voorbeeld</span>
+                    <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis foto 1</button>
+                </div>
+                <div id="wrapper-preview2" class="preview-wrapper">
+                    <span>Achterkant voorbeeld</span>
+                    <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis foto 2</button>
+                </div>
             </div>
 
             <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan in Cloud</button>
         </div>
     </div>
 
-    <div id="vondsten-lijst">
+    <div id="vondsten-lijst" style="margin-top: 20px;">
         <!-- Hier komen de vondsten te staan -->
     </div>
 
@@ -513,11 +647,31 @@
             pagina.classList.toggle('active');
         };
 
+        window.setDatering = function(periode) {
+            document.getElementById('datering').value = periode;
+        };
+
+        window.haalGPS = function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    document.getElementById('locatie-gps').value = `${lat}, ${lon}`;
+                    alert('GPS-coördinaten succesvol vastgelegd!');
+                }, (error) => {
+                    alert('Kon GPS niet ophalen: ' + error.message);
+                });
+            } else {
+                alert('Geolocatie wordt niet ondersteund door je browser.');
+            }
+        };
+
         window.opslaanVondst = async function() {
             const titel = document.getElementById('titel').value;
             const categorie = document.getElementById('categorie').value;
             const materiaal = document.getElementById('materiaal').value;
             const datering = document.getElementById('datering').value;
+            const locatieNaam = document.getElementById('locatie-naam').value;
 
             if (!titel) {
                 alert('Vul alstublieft een beschrijving/naam in.');
@@ -530,11 +684,13 @@
                     categorie,
                     materiaal,
                     datering,
+                    locatieNaam,
                     datum: new Date().toISOString()
                 });
                 alert('Vondst succesvol opgeslagen in de cloud!');
                 document.getElementById('titel').value = '';
                 document.getElementById('datering').value = '';
+                document.getElementById('locatie-naam').value = '';
                 laadVondstenUitCloud();
             } catch (e) {
                 console.error("Fout bij opslaan: ", e);
@@ -551,11 +707,21 @@
                 lijstContainer.innerHTML = '';
                 let totaal = 0;
                 let munten = 0;
+                let gespen = 0;
+                let knopen = 0;
+                let militaria = 0;
+                let voorwerpen = 0;
+                let overig = 0;
 
                 querySnapshot.forEach((doc) => {
                     totaal++;
                     const data = doc.data();
                     if(data.categorie === 'Munten') munten++;
+                    if(data.categorie === 'Gespen') gespen++;
+                    if(data.categorie === 'Knopen') knopen++;
+                    if(data.categorie === 'Militaria') militaria++;
+                    if(data.categorie === 'Gebruiksvoorwerpen') voorwerpen++;
+                    if(data.categorie === 'Overig') overig++;
 
                     const kaart = document.createElement('div');
                     kaart.className = `vondst-card cat-${data.categorie}`;
@@ -567,6 +733,7 @@
                         <div class="vondst-grid-meta">
                             <div class="vondst-meta"><b>Materiaal:</b> ${data.materiaal}</div>
                             <div class="vondst-meta"><b>Periode:</b> ${data.datering || 'Onbekend'}</div>
+                            <div class="vondst-meta"><b>Locatie:</b> ${data.locatieNaam || 'Onbekend'}</div>
                         </div>
                     `;
                     lijstContainer.appendChild(kaart);
@@ -574,6 +741,11 @@
 
                 document.getElementById('stat-total').innerText = totaal;
                 document.getElementById('stat-munten').innerText = munten;
+                document.getElementById('stat-gespen').innerText = gespen;
+                document.getElementById('stat-knopen').innerText = knopen;
+                document.getElementById('stat-militaria').innerText = militaria;
+                document.getElementById('stat-voorwerpen').innerText = voorwerpen;
+                document.getElementById('stat-overig').innerText = overig;
             } catch (e) {
                 console.error("Fout bij laden: ", e);
             }
