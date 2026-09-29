@@ -930,12 +930,12 @@
                 foto1: opgeslagenFoto1,
                 foto2: opgeslagenFoto2,
                 foto3: opgeslagenFoto3,
-                datum: new Date().toISOString() // Slaat een schone gestandaardiseerde datumstring op
+                datum: new Date().toISOString()
             };
 
             try {
                 if (bewerkId) {
-                    await updateDoc(doc(db, "vondsten", bewIdIfExists = bewerkId), vondstObj);
+                    await updateDoc(doc(db, "vondsten", bewerkId), vondstObj);
                     alert('Vondst succesvol bijgewerkt!');
                 } else {
                     await addDoc(collection(db, "vondsten"), vondstObj);
@@ -984,10 +984,8 @@
             filterRender();
         };
 
-        // Hulpfunctie om datums netjes leesbaar te maken (ongeacht of het een oude of nieuwe datum is)
         function formatteerDatum(datumWaarde) {
             if (!datumWaarde) return '-';
-            // Als het een ISO string is of een lange datumstring, omzetten naar DD-MM-YYYY
             if (datumWaarde.includes('T') || datumWaarde.includes('-') && datumWaarde.length > 10) {
                 const d = new Date(datumWaarde);
                 if (!isNaN(d.getTime())) {
@@ -1059,6 +1057,7 @@
                     html += `</div>`;
                 }
 
+                // Hier wordt foto 3 nu correct weergegeven als deze aanwezig is!
                 if (v.foto3) {
                     html += `
                         <div class="origineel-sectie">
