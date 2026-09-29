@@ -242,6 +242,31 @@
             color: white;
         }
 
+        /* Zoekbalk Styling */
+        .search-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 42px;
+            background-color: var(--card-bg) !important;
+            border: 1px solid #475569 !important;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #f1f5f9 !important;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
         .tabs {
             display: flex;
             overflow-x: auto;
@@ -790,6 +815,12 @@
         </div>
     </div>
 
+    <!-- Zoekbalk -->
+    <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="zoek-input" class="search-input" placeholder="Zoek op titel, datering, locatie, materiaal of info..." oninput="filterEnZoekVondsten()">
+    </div>
+
     <!-- Categorie Filter Tabs -->
     <div class="tabs" id="filter-tabs">
         <div class="tab active" data-cat="Alles" onclick="filterCategorie('Alles', this)">📜 Alle Vondsten</div>
@@ -970,7 +1001,7 @@
                     alleVondstenData.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 updateStatistieken();
-                toonVondsten(huidigeFilter);
+                filterEnZoekVondsten();
             } catch (error) {
                 console.error("Fout bij laden van vondsten: ", error);
             }
@@ -1093,7 +1124,7 @@
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 element.classList.add('active');
             }
-            toonVondsten(cat);
+            filterEnZoekVondsten();
         };
 
         function updateStatistieken() {
@@ -1125,16 +1156,37 @@
             }
         };
 
-        window.toonVondsten = function(catFilter) {
+        window.filterEnZoekVondsten = function() {
+            const zoekTerm = document.getElementById('zoek-input').value.toLowerCase().trim();
             const lijstEl = document.getElementById('vondsten-lijst');
             lijstEl.innerHTML = '';
 
-            const gefilterd = catFilter === 'Alles' 
+            // 1. Filter op categorie
+            let gefilterd = huidigeFilter === 'Alles' 
                 ? alleVondstenData 
-                : alleVondstenData.filter(v => v.categorie === catFilter);
+                : alleVondstenData.filter(v => v.categorie === huidigeFilter);
+
+            // 2. Filter op zoekterm indien ingevuld
+            if (zoekTerm !== '') {
+                gefilterd = gefilterd.filter(v => {
+                    const titel = (v.titel || '').toLowerCase();
+                    const datering = (v.datering || '').toLowerCase();
+                    const locatie = (v.locatieNaam || '').toLowerCase();
+                    const materiaal = (v.materiaal || '').toLowerCase();
+                    const info = (v.info || '').toLowerCase();
+                    const staat = (v.staat || '').toLowerCase();
+
+                    return titel.includes(zoekTerm) || 
+                           datering.includes(zoekTerm) || 
+                           locatie.includes(zoekTerm) || 
+                           materiaal.includes(zoekTerm) || 
+                           info.includes(zoekTerm) ||
+                           staat.includes(zoekTerm);
+                });
+            }
 
             if (gefilterd.length === 0) {
-                lijstEl.innerHTML = `<div style="text-align:center; padding: 30px; color: #94a3b8;">Geen vondsten gevonden in deze categorie.</div>`;
+                lijstEl.innerHTML = `<div style="text-align:center; padding: 30px; color: #94a3b8;">Geen vondsten gevonden die aan je zoekopdracht voldoen.</div>`;
                 return;
             }
 
@@ -1192,7 +1244,7 @@
             document.getElementById('lightbox').style.display = 'flex';
         };
 
-        window.sluitLightbox = function() {
+        window.sluitLightbox = function$lightbox() {
             document.getElementById('lightbox').style.display = 'none';
         };
 
