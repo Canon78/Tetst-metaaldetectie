@@ -264,7 +264,6 @@
             transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
         }
 
-        /* SPECIFIEKE ACTIEVE KLEUREN PER CATEGORIE-TAB */
         .tab.active[data-cat="Alles"] { background-color: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: bold; }
         .tab.active[data-cat="Munten"] { background-color: var(--col-munten); border-color: var(--col-munten); color: #000; font-weight: bold; }
         .tab.active[data-cat="Gespen"] { background-color: var(--col-gespen); border-color: var(--col-gespen); color: #000; font-weight: bold; }
@@ -273,7 +272,6 @@
         .tab.active[data-cat="Gebruiksvoorwerpen"] { background-color: var(--col-voorwerpen); border-color: var(--col-voorwerpen); color: #000; font-weight: bold; }
         .tab.active[data-cat="Overig"] { background-color: var(--col-overig); border-color: var(--col-overig); color: #000; font-weight: bold; }
 
-        /* VONDST KAART EN FELLED DETAILSBALK */
         .vondst-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -342,6 +340,43 @@
 
         .vondst-meta b {
             color: #94a3b8;
+        }
+
+        /* Inklapbare Info Box */
+        .info-dropdown-container {
+            margin-top: 12px;
+        }
+
+        .btn-toggle-info {
+            background-color: #0d1117;
+            color: var(--accent-gold);
+            border: 1px solid rgba(241, 196, 15, 0.4);
+            padding: 8px 14px;
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-toggle-info:hover {
+            background-color: rgba(241, 196, 15, 0.15);
+        }
+
+        .info-content-box {
+            display: none;
+            margin-top: 8px;
+            padding: 14px;
+            background-color: rgba(13, 17, 23, 0.9);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            font-size: 13.5px;
+            line-height: 1.5;
+            color: #cbd5e1;
+            word-break: break-word;
         }
 
         .foto-container {
@@ -1079,6 +1114,17 @@
             document.getElementById('stat-overig').innerText = overig;
         }
 
+        window.toggleInfoBox = function(btnElement) {
+            const contentBox = btnElement.nextElementSibling;
+            if (contentBox.style.display === 'block') {
+                contentBox.style.display = 'none';
+                btnElement.innerHTML = '📜 Historische info & beschrijving tonen';
+            } else {
+                contentBox.style.display = 'block';
+                btnElement.innerHTML = '📜 Historische info verbergen';
+            }
+        };
+
         window.toonVondsten = function(catFilter) {
             const lijstEl = document.getElementById('vondsten-lijst');
             lijstEl.innerHTML = '';
@@ -1105,6 +1151,16 @@
                     fotosHtml += '</div>';
                 }
 
+                let infoHtml = '';
+                if (v.info) {
+                    infoHtml = `
+                        <div class="info-dropdown-container">
+                            <button type="button" class="btn-toggle-info" onclick="toggleInfoBox(this)">📜 Historische info & beschrijving tonen</button>
+                            <div class="info-content-box">${v.info}</div>
+                        </div>
+                    `;
+                }
+
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span class="vondst-titel-text">${v.titel}</span>
@@ -1120,7 +1176,7 @@
                         <div class="vondst-meta"><b>GPS:</b> ${v.locatieGps ? `<a href="https://maps.google.com/?q=${encodeURIComponent(v.locatieGps)}" target="_blank" style="color:var(--col-gespen); font-weight:bold;">Kaart openen</a>` : '-'}</div>
                         <div class="vondst-meta"><b>Link:</b> ${v.weblink ? `<a href="${v.weblink}" target="_blank" style="color:var(--accent-gold); font-weight:bold;">Website</a>` : '-'}</div>
                     </div>
-                    ${v.info ? `<div class="vondst-meta" style="margin-top:10px;"><b>Info:</b> ${v.info}</div>` : ''}
+                    ${infoHtml}
                     ${fotosHtml}
                     <div class="action-buttons">
                         <button class="btn-small btn-edit" onclick="bewerkVondst('${v.id}')">✏️ Bewerken</button>
