@@ -264,7 +264,14 @@
             transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
         }
 
-        .tab.active { background-color: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: bold; }
+        /* SPECIFIEKE ACTIEVE KLEUREN PER CATEGORIE-TAB */
+        .tab.active[data-cat="Alles"] { background-color: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Munten"] { background-color: var(--col-munten); border-color: var(--col-munten); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Gespen"] { background-color: var(--col-gespen); border-color: var(--col-gespen); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Knopen"] { background-color: var(--col-knopen); border-color: var(--col-knopen); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Militaria"] { background-color: var(--col-militaria); border-color: var(--col-militaria); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Gebruiksvoorwerpen"] { background-color: var(--col-voorwerpen); border-color: var(--col-voorwerpen); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Overig"] { background-color: var(--col-overig); border-color: var(--col-overig); color: #000; font-weight: bold; }
 
         /* VONDST KAART EN FELLED DETAILSBALK */
         .vondst-card {
@@ -310,7 +317,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* FELLED DETAILSBALK ACHTERGRONDEN & ACCENTEN */
         .vondst-grid-meta {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -751,13 +757,13 @@
 
     <!-- Categorie Filter Tabs -->
     <div class="tabs" id="filter-tabs">
-        <div class="tab active" onclick="filterCategorie('Alles', this)">📜 Alle Vondsten</div>
-        <div class="tab" onclick="filterCategorie('Munten', this)">🪙 Munten</div>
-        <div class="tab" onclick="filterCategorie('Gespen', this)">🔍 Gespen</div>
-        <div class="tab" onclick="filterCategorie('Knopen', this)">🧷 Knopen</div>
-        <div class="tab" onclick="filterCategorie('Militaria', this)">🛡️ Militaria</div>
-        <div class="tab" onclick="filterCategorie('Gebruiksvoorwerpen', this)">🗝️ Gebruiksvoorwerpen</div>
-        <div class="tab" onclick="filterCategorie('Overig', this)">🏺 Overig</div>
+        <div class="tab active" data-cat="Alles" onclick="filterCategorie('Alles', this)">📜 Alle Vondsten</div>
+        <div class="tab" data-cat="Munten" onclick="filterCategorie('Munten', this)">🪙 Munten</div>
+        <div class="tab" data-cat="Gespen" onclick="filterCategorie('Gespen', this)">🔍 Gespen</div>
+        <div class="tab" data-cat="Knopen" onclick="filterCategorie('Knopen', this)">🧷 Knopen</div>
+        <div class="tab" data-cat="Militaria" onclick="filterCategorie('Militaria', this)">🛡️ Militaria</div>
+        <div class="tab" data-cat="Gebruiksvoorwerpen" onclick="filterCategorie('Gebruiksvoorwerpen', this)">🗝️ Gebruiksvoorwerpen</div>
+        <div class="tab" data-cat="Overig" onclick="filterCategorie('Overig', this)">🏺 Overig</div>
     </div>
 
     <div id="vondsten-lijst"></div>
