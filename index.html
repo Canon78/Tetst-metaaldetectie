@@ -301,8 +301,8 @@
 
         .vondst-grid-meta {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 6px 15px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 8px 15px;
             margin-bottom: 10px;
             padding: 0 4px;
         }
@@ -804,11 +804,9 @@
             const topBtn = document.getElementById('top-toggle-btn');
             
             if(pagina.classList.contains('active')) {
-                // Als hij open staat -> sluiten zonder zeuren
                 pagina.classList.remove('active');
                 topBtn.innerText = "➕ Nieuwe Vondst";
             } else {
-                // Als hij dicht staat -> openen en resetten voor een schone lei
                 pagina.classList.add('active');
                 topBtn.innerText = "✖ Sluiten";
                 document.getElementById('form-titel').innerText = "Nieuwe Vondst";
@@ -932,12 +930,12 @@
                 foto1: opgeslagenFoto1,
                 foto2: opgeslagenFoto2,
                 foto3: opgeslagenFoto3,
-                datum: new Date().toLocaleDateString('nl-NL')
+                datum: new Date().toISOString() // Slaat een schone gestandaardiseerde datumstring op
             };
 
             try {
                 if (bewerkId) {
-                    await updateDoc(doc(db, "vondsten", bewerkId), vondstObj);
+                    await updateDoc(doc(db, "vondsten", bewIdIfExists = bewerkId), vondstObj);
                     alert('Vondst succesvol bijgewerkt!');
                 } else {
                     await addDoc(collection(db, "vondsten"), vondstObj);
@@ -986,6 +984,22 @@
             filterRender();
         };
 
+        // Hulpfunctie om datums netjes leesbaar te maken (ongeacht of het een oude of nieuwe datum is)
+        function formatteerDatum(datumWaarde) {
+            if (!datumWaarde) return '-';
+            // Als het een ISO string is of een lange datumstring, omzetten naar DD-MM-YYYY
+            if (datumWaarde.includes('T') || datumWaarde.includes('-') && datumWaarde.length > 10) {
+                const d = new Date(datumWaarde);
+                if (!isNaN(d.getTime())) {
+                    const dag = String(d.getDate()).padStart(2, '0');
+                    const maand = String(d.getMonth() + 1).padStart(2, '0');
+                    const jaar = d.getFullYear();
+                    return `${dag}-${maand}-${jaar}`;
+                }
+            }
+            return datumWaarde;
+        }
+
         window.filterRender = function() {
             const lijstEl = document.getElementById('vondsten-lijst');
             lijstEl.innerHTML = '';
@@ -1003,13 +1017,15 @@
                 const card = document.createElement('div');
                 card.className = `vondst-card cat-${v.categorie || 'Overig'}`;
 
+                const netteDatum = formatteerDatum(v.datum);
+
                 let html = `
                     <div class="vondst-header">
                         <span class="vondst-titel-text">${v.titel || 'Naamloze vondst'}</span>
                         <span class="vondst-cat-badge">${v.categorie}</span>
                     </div>
                     <div class="vondst-grid-meta">
-                        <div class="vondst-meta"><b>Datum:</b> ${v.datum || '-'}</div>
+                        <div class="vondst-meta"><b>Datum:</b> ${netteDatum}</div>
                         <div class="vondst-meta"><b>Periode:</b> ${v.datering || 'Onbekend'}</div>
                         <div class="vondst-meta"><b>Materiaal:</b> ${v.materiaal || '-'}</div>
                         <div class="vondst-meta"><b>Staat:</b> ${v.staat || '-'}</div>
