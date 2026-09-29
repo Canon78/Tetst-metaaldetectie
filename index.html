@@ -23,7 +23,6 @@
             --btn-green: #2ecc71;
             --btn-purple: #9b59b6;
 
-            /* Fellere, sprekendere categoriekleuren */
             --col-munten: #ffd700;
             --col-gespen: #00b4d8;
             --col-knopen: #00f5d4;
@@ -242,7 +241,6 @@
             color: white;
         }
 
-        /* Zoekbalk Styling */
         .search-container {
             position: relative;
             margin-bottom: 15px;
@@ -367,7 +365,6 @@
             color: #94a3b8;
         }
 
-        /* Inklapbare Info Box */
         .info-dropdown-container {
             margin-top: 12px;
         }
@@ -809,7 +806,7 @@
             </div>
 
             <div class="form-buttons-row">
-                <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan in Cloud</button>
+                <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan</button>
                 <button type="button" class="cancel-btn" onclick="toggleInvoerFormulier()">❌ Annuleren</button>
             </div>
         </div>
@@ -843,7 +840,7 @@
         <img id="lightbox-img" class="lightbox-img">
     </div>
 
-    <!-- Firebase & Database Koppeling -->
+    <!-- Firebase & Database Koppeling met LocalStorage Fallback -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -858,8 +855,13 @@
             measurementId: "G-JQ436BF560"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        let db = null;
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+        } catch (e) {
+            console.warn("Kon Firebase niet initialiseren, app werkt via lokale back-up.", e);
+        }
 
         let opgeslagenFoto1 = "";
         let opgeslagenFoto2 = "";
@@ -995,16 +997,28 @@
 
         window.laadVondsten = async function() {
             try {
-                const querySnapshot = await getDocs(collection(db, "vondsten"));
-                alleVondstenData = [];
-                querySnapshot.forEach((docSnap) => {
-                    alleVondstenData.push({ id: docSnap.id, ...docSnap.data() });
-                });
-                updateStatistieken();
-                filterEnZoekVondsten();
+                if (db) {
+                    const querySnapshot = await getDocs(collection(db, "vondsten"));
+                    alleVondstenData = [];
+                    querySnapshot.forEach((docSnap) => {
+                        alleVondstenData.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    // Sla direct op als lokale back-up
+                    localStorage.setItem('metaaldetectie_vondsten_backup', JSON.stringify(alleVondstenData));
+                } else {
+                    throw new GeenDbVerbinding();
+                }
             } catch (error) {
-                console.error("Fout bij laden van vondsten: ", error);
+                console.warn("Kon cloud niet bereiken, laad lokale back-up...", error);
+                const lokaleData = localStorage.getItem('metaaldetectie_vondsten_backup');
+                if (lokaleData) {
+                    alleVondstenData = JSON.parse(lokaleData);
+                } else {
+                    alleVondstenData = [];
+                }
             }
+            updateStatistieken();
+            filterEnZoekVondsten();
         };
 
         window.opslaanVondst = async function() {
@@ -1042,27 +1056,59 @@
             };
 
             try {
-                if (bewerkId) {
-                    await updateDoc(doc(db, "vondsten", bewerkId), vondstObj);
-                    alert("Vondst succesvol bijgewerkt!");
+                if (db) {
+                    if (bewerkId) {
+                        await updateDoc(doc(db, "vondsten", bewerkId), vondstObj);
+                    } else {
+                        await addDoc(collection(db, "vondsten"), vondstObj);
+                    }
                 } else {
-                    await addDoc(collection(db, "vondsten"), vondstObj);
-                    alert("Nieuwe vondst succesvol opgeslagen!");
+                    // Lokaal opslaan als fallback
+                    if (bewerkId) {
+                        const idx = alleVondstenData.findIndex(item => item.id === bewerkId);
+                        if (idx !== -1) {
+                            alleVondstenData[idx] = { id: bewerkId, ...vondstObj };
+                        }
+                    } else {
+                        vondstObj.id = 'lokale_' + Date.now();
+                        alleVondstenData.unshift(vondstObj);
+                    }
+                    localStorage.setItem('metaaldetectie_vondsten_backup', JSON.stringify(alleVondstenData));
                 }
+                alert("Vondst succesvol opgeslagen!");
                 toggleInvoerFormulier();
                 laadVondsten();
             } catch (error) {
-                alert("Fout bij opslaan: " + error.message);
+                // Fallback naar lokaal bij netwerkfout
+                if (bewerkId) {
+                    const idx = alleVondstenData.findIndex(item => item.id === bewerkId);
+                    if (idx !== -1) {
+                        alleVondstenData[idx] = { id: bewerkId, ...vondstObj };
+                    }
+                } else {
+                    vondstObj.id = 'lokale_' + Date.now();
+                    alleVondstenData.unshift(vondstObj);
+                }
+                localStorage.setItem('metaaldetectie_vondsten_backup', JSON.stringify(alleVondstenData));
+                alert("Opgeslagen in lokale back-up (cloud was tijdelijk onbereikbaar).");
+                toggleInvoerFormulier();
+                laadVondsten();
             }
         };
 
         window.verwijderVondst = async function(id) {
             if (confirm("Weet je zeker dat je deze vondst wilt verwijderen?")) {
                 try {
-                    await deleteDoc(doc(db, "vondsten", id));
+                    if (db && !id.startsWith('lokale_')) {
+                        await deleteDoc(doc(db, "vondsten", id));
+                    }
+                    alleVondstenData = alleVondstenData.filter(item => item.id !== id);
+                    localStorage.setItem('metaaldetectie_vondsten_backup', JSON.stringify(alleVondstenData));
                     laadVondsten();
                 } catch (error) {
-                    alert("Fout bij verwijderen: " + error.message);
+                    alleVondstenData = alleVondstenData.filter(item => item.id !== id);
+                    localStorage.setItem('metaaldetectie_vondsten_backup', JSON.stringify(alleVondstenData));
+                    laadVondsten();
                 }
             }
         };
@@ -1161,12 +1207,10 @@
             const lijstEl = document.getElementById('vondsten-lijst');
             lijstEl.innerHTML = '';
 
-            // 1. Filter op categorie
             let gefilterd = huidigeFilter === 'Alles' 
                 ? alleVondstenData 
                 : alleVondstenData.filter(v => v.categorie === huidigeFilter);
 
-            // 2. Filter op zoekterm indien ingevuld
             if (zoekTerm !== '') {
                 gefilterd = gefilterd.filter(v => {
                     const titel = (v.titel || '').toLowerCase();
@@ -1244,9 +1288,13 @@
             document.getElementById('lightbox').style.display = 'flex';
         };
 
-        window.sluitLightbox = function$lightbox() {
+        window.sluitLightbox = function() {
             document.getElementById('lightbox').style.display = 'none';
         };
+
+        function GeenDbVerbinding() {
+            this.message = "Geen database verbinding";
+        }
 
         laadVondsten();
     </script>
