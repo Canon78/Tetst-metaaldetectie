@@ -353,7 +353,6 @@
             pointer-events: none;
         }
 
-        /* Sectie voor originele staat in vondstkaart */
         .origineel-sectie {
             margin-top: 15px;
             background-color: rgba(212, 175, 55, 0.05);
@@ -445,8 +444,13 @@
         .btn-edit { color: #e67e22 !important; border-color: rgba(230, 126, 34, 0.4) !important; }
         .btn-delete { color: #fc8181 !important; border-color: rgba(231, 76, 60, 0.4) !important; }
 
+        .form-buttons-row {
+            display: flex;
+            gap: 10px;
+        }
+
         button.main-btn {
-            width: 100%;
+            flex: 2;
             padding: 14px;
             background-color: var(--accent-gold);
             color: #000;
@@ -456,6 +460,23 @@
             font-weight: bold;
             cursor: pointer;
             margin-bottom: 10px;
+        }
+
+        button.cancel-btn {
+            flex: 1;
+            padding: 14px;
+            background-color: #0f131a;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        button.cancel-btn:hover {
+            color: white;
+            border-color: #94a3b8;
         }
 
         button.gps-btn {
@@ -470,7 +491,6 @@
             cursor: pointer;
         }
 
-        /* Scroll naar boven knop */
         #scroll-top-btn {
             position: fixed;
             bottom: 25px;
@@ -712,7 +732,10 @@
                 </div>
             </div>
 
-            <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan in Cloud</button>
+            <div class="form-buttons-row">
+                <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan in Cloud</button>
+                <button type="button" class="cancel-btn" onclick="toggleInvoerFormulier()">❌ Annuleren</button>
+            </div>
         </div>
     </div>
 
@@ -778,8 +801,16 @@
 
         window.toggleInvoerFormulier = function() {
             const pagina = document.getElementById('page-invoer');
-            pagina.classList.toggle('active');
+            const topBtn = document.getElementById('top-toggle-btn');
+            
             if(pagina.classList.contains('active')) {
+                // Als hij open staat -> sluiten zonder zeuren
+                pagina.classList.remove('active');
+                topBtn.innerText = "➕ Nieuwe Vondst";
+            } else {
+                // Als hij dicht staat -> openen en resetten voor een schone lei
+                pagina.classList.add('active');
+                topBtn.innerText = "✖ Sluiten";
                 document.getElementById('form-titel').innerText = "Nieuwe Vondst";
                 document.getElementById('bewerk-id').value = "";
                 document.getElementById('titel').value = '';
@@ -793,6 +824,7 @@
                 window.wisSpecifiekeFoto(1);
                 window.wisSpecifiekeFoto(2);
                 window.wisSpecifiekeFoto(3);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
 
@@ -912,6 +944,7 @@
                     alert('Vondst succesvol opgeslagen in de cloud!');
                 }
                 document.getElementById('page-invoer').classList.remove('active');
+                document.getElementById('top-toggle-btn').innerText = "➕ Nieuwe Vondst";
                 laadVondsten();
             } catch (e) {
                 alert('Fout bij opslaan: ' + e.message);
@@ -999,7 +1032,6 @@
                     html += `<div class="vondst-meta" style="margin-top:8px; background:rgba(15,19,26,0.4); padding:8px; border-radius:6px;"><b>Extra info / Gebruik:</b> ${v.info}</div>`;
                 }
 
-                // Foto's van de vondst zelf
                 if (v.foto1 || v.foto2) {
                     html += `<div class="foto-container">`;
                     if (v.foto1) {
@@ -1011,7 +1043,6 @@
                     html += `</div>`;
                 }
 
-                // ORIGINELE STAAT SECTIE (Als foto 3 aanwezig is)
                 if (v.foto3) {
                     html += `
                         <div class="origineel-sectie">
@@ -1056,7 +1087,6 @@
             document.getElementById('weblink').value = v.weblink || '';
             document.getElementById('info').value = v.info || '';
 
-            // Foto's herladen in formulier
             window.wisSpecifiekeFoto(1);
             window.wisSpecifiekeFoto(2);
             window.wisSpecifiekeFoto(3);
@@ -1079,6 +1109,7 @@
 
             document.getElementById('form-titel').innerText = "Vondst Bewerken";
             document.getElementById('page-invoer').classList.add('active');
+            document.getElementById('top-toggle-btn').innerText = "✖ Sluiten";
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -1094,7 +1125,6 @@
             }
         };
 
-        // Init bij opstarten
         laadVondsten();
     </script>
 </body>
