@@ -23,6 +23,7 @@
             --btn-green: #2ecc71;
             --btn-purple: #9b59b6;
 
+            /* Fellere, sprekendere categoriekleuren */
             --col-munten: #ffd700;
             --col-gespen: #00b4d8;
             --col-knopen: #00f5d4;
@@ -241,30 +242,6 @@
             color: white;
         }
 
-        .search-container {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 15px 12px 42px;
-            background-color: var(--card-bg) !important;
-            border: 1px solid #475569 !important;
-            border-radius: 8px;
-            font-size: 15px;
-            color: #f1f5f9 !important;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px;
-            pointer-events: none;
-        }
-
         .tabs {
             display: flex;
             overflow-x: auto;
@@ -365,6 +342,7 @@
             color: #94a3b8;
         }
 
+        /* Inklapbare Info Box */
         .info-dropdown-container {
             margin-top: 12px;
         }
@@ -806,16 +784,10 @@
             </div>
 
             <div class="form-buttons-row">
-                <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan</button>
+                <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan in Cloud</button>
                 <button type="button" class="cancel-btn" onclick="toggleInvoerFormulier()">❌ Annuleren</button>
             </div>
         </div>
-    </div>
-
-    <!-- Zoekbalk -->
-    <div class="search-container">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="zoek-input" class="search-input" placeholder="Zoek op titel, datering, locatie, materiaal of info..." oninput="filterEnZoekVondsten()">
     </div>
 
     <!-- Categorie Filter Tabs -->
@@ -840,7 +812,7 @@
         <img id="lightbox-img" class="lightbox-img">
     </div>
 
-    <!-- Firebase & Database Koppeling met LocalStorage Fallback -->
+    <!-- Firebase & Database Koppeling -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -855,13 +827,8 @@
             measurementId: "G-JQ436BF560"
         };
 
-        let db = null;
-        try {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-        } catch (e) {
-            console.warn("Kon Firebase niet initialiseren, app werkt via lokale back-up.", e);
-        }
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
         let opgeslagenFoto1 = "";
         let opgeslagenFoto2 = "";
@@ -997,28 +964,16 @@
 
         window.laadVondsten = async function() {
             try {
-                if (db) {
-                    const querySnapshot = await getDocs(collection(db, "vondsten"));
-                    alleVondstenData = [];
-                    querySnapshot.forEach((docSnap) => {
-                        alleVondstenData.push({ id: docSnap.id, ...docSnap.data() });
-                    });
-                    // Sla direct op als lokale back-up
-                    localStorage.setItem('metaaldetectie_vondsten_backup', JSON.stringify(alleVondstenData));
-                } else {
-                    throw new GeenDbVerbinding();
-                }
+                const querySnapshot = await getDocs(collection(db, "vondsten"));
+                alleVondstenData = [];
+                querySnapshot.forEach((docSnap) => {
+                    alleVondstenData.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                updateStatistieken();
+                toonVondsten(huidigeFilter);
             } catch (error) {
-                console.warn("Kon cloud niet bereiken, laad lokale back-up...", error);
-                const lokaleData = localStorage.getItem('metaaldetectie_vondsten_backup');
-                if (lokaleData) {
-                    alleVondstenData = JSON.parse(lokaleData);
-                } else {
-                    alleVondstenData = [];
-                }
+                console.error("Fout bij laden van vondsten: ", error);
             }
-            updateStatistieken();
-            filterEnZoekVondsten();
         };
 
         window.opslaanVondst = async function() {
@@ -1056,59 +1011,27 @@
             };
 
             try {
-                if (db) {
-                    if (bewerkId) {
-                        await updateDoc(doc(db, "vondsten", bewerkId), vondstObj);
-                    } else {
-                        await addDoc(collection(db, "vondsten"), vondstObj);
-                    }
+                if (bewerkId) {
+                    await updateDoc(doc(db, "vondsten", bewerkId), vondstObj);
+                    alert("Vondst succesvol bijgewerkt!");
                 } else {
-                    // Lokaal opslaan als fallback
-                    if (bewerkId) {
-                        const idx = alleVondstenData.findIndex(item => item.id === bewerkId);
-                        if (idx !== -1) {
-                            alleVondstenData[idx] = { id: bewerkId, ...vondstObj };
-                        }
-                    } else {
-                        vondstObj.id = 'lokale_' + Date.now();
-                        alleVondstenData.unshift(vondstObj);
-                    }
-                    localStorage.setItem('metaaldetectie_vondsten_backup', JSON.stringify(alleVondstenData));
+                    await addDoc(collection(db, "vondsten"), vondstObj);
+                    alert("Nieuwe vondst succesvol opgeslagen!");
                 }
-                alert("Vondst succesvol opgeslagen!");
                 toggleInvoerFormulier();
                 laadVondsten();
             } catch (error) {
-                // Fallback naar lokaal bij netwerkfout
-                if (bewerkId) {
-                    const idx = alleVondstenData.findIndex(item => item.id === bewerkId);
-                    if (idx !== -1) {
-                        alleVondstenData[idx] = { id: bewerkId, ...vondstObj };
-                    }
-                } else {
-                    vondstObj.id = 'lokale_' + Date.now();
-                    alleVondstenData.unshift(vondstObj);
-                }
-                localStorage.setItem('metaaldetectie_vondsten_backup', JSON.stringify(alleVondstenData));
-                alert("Opgeslagen in lokale back-up (cloud was tijdelijk onbereikbaar).");
-                toggleInvoerFormulier();
-                laadVondsten();
+                alert("Fout bij opslaan: " + error.message);
             }
         };
 
         window.verwijderVondst = async function(id) {
             if (confirm("Weet je zeker dat je deze vondst wilt verwijderen?")) {
                 try {
-                    if (db && !id.startsWith('lokale_')) {
-                        await deleteDoc(doc(db, "vondsten", id));
-                    }
-                    alleVondstenData = alleVondstenData.filter(item => item.id !== id);
-                    localStorage.setItem('metaaldetectie_vondsten_backup', JSON.stringify(alleVondstenData));
+                    await deleteDoc(doc(db, "vondsten", id));
                     laadVondsten();
                 } catch (error) {
-                    alleVondstenData = alleVondstenData.filter(item => item.id !== id);
-                    localStorage.setItem('metaaldetectie_vondsten_backup', JSON.stringify(alleVondstenData));
-                    laadVondsten();
+                    alert("Fout bij verwijderen: " + error.message);
                 }
             }
         };
@@ -1170,7 +1093,7 @@
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 element.classList.add('active');
             }
-            filterEnZoekVondsten();
+            toonVondsten(cat);
         };
 
         function updateStatistieken() {
@@ -1202,35 +1125,16 @@
             }
         };
 
-        window.filterEnZoekVondsten = function() {
-            const zoekTerm = document.getElementById('zoek-input').value.toLowerCase().trim();
+        window.toonVondsten = function(catFilter) {
             const lijstEl = document.getElementById('vondsten-lijst');
             lijstEl.innerHTML = '';
 
-            let gefilterd = huidigeFilter === 'Alles' 
+            const gefilterd = catFilter === 'Alles' 
                 ? alleVondstenData 
-                : alleVondstenData.filter(v => v.categorie === huidigeFilter);
-
-            if (zoekTerm !== '') {
-                gefilterd = gefilterd.filter(v => {
-                    const titel = (v.titel || '').toLowerCase();
-                    const datering = (v.datering || '').toLowerCase();
-                    const locatie = (v.locatieNaam || '').toLowerCase();
-                    const materiaal = (v.materiaal || '').toLowerCase();
-                    const info = (v.info || '').toLowerCase();
-                    const staat = (v.staat || '').toLowerCase();
-
-                    return titel.includes(zoekTerm) || 
-                           datering.includes(zoekTerm) || 
-                           locatie.includes(zoekTerm) || 
-                           materiaal.includes(zoekTerm) || 
-                           info.includes(zoekTerm) ||
-                           staat.includes(zoekTerm);
-                });
-            }
+                : alleVondstenData.filter(v => v.categorie === catFilter);
 
             if (gefilterd.length === 0) {
-                lijstEl.innerHTML = `<div style="text-align:center; padding: 30px; color: #94a3b8;">Geen vondsten gevonden die aan je zoekopdracht voldoen.</div>`;
+                lijstEl.innerHTML = `<div style="text-align:center; padding: 30px; color: #94a3b8;">Geen vondsten gevonden in deze categorie.</div>`;
                 return;
             }
 
@@ -1291,10 +1195,6 @@
         window.sluitLightbox = function() {
             document.getElementById('lightbox').style.display = 'none';
         };
-
-        function GeenDbVerbinding() {
-            this.message = "Geen database verbinding";
-        }
 
         laadVondsten();
     </script>
