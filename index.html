@@ -333,12 +333,22 @@
             overflow: hidden;
             cursor: pointer;
             background-color: #0f131a !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Specifiek voor het bredere museumvoorbeeld zodat deze breder kan tonen indien nodig */
+        .img-wrapper.wide-wrapper {
+            width: 100%;
+            max-width: 260px;
+            height: 140px;
         }
 
         .card-img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* Toont de volledige foto zonder bij te snijden */
         }
 
         .zoom-icon {
@@ -1057,13 +1067,13 @@
                     html += `</div>`;
                 }
 
-                // Hier wordt foto 3 nu correct weergegeven als deze aanwezig is!
+                // Foto 3 met breder kader en volledige weergave (contain)
                 if (v.foto3) {
                     html += `
                         <div class="origineel-sectie">
                             <div class="origineel-titel">🏛️ Originele Staat / Museumvoorbeeld</div>
                             <div class="foto-container" style="margin-top:4px;">
-                                <div class="img-wrapper" onclick="zoomFoto('${v.foto3}')">
+                                <div class="img-wrapper wide-wrapper" onclick="zoomFoto('${v.foto3}')">
                                     <img src="${v.foto3}" class="card-img" alt="Originele staat">
                                     <div class="zoom-icon">🔍 Zoom</div>
                                 </div>
