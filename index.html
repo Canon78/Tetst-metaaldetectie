@@ -11,30 +11,38 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { 50: '#fdf8f6', 100: '#f2e8e5', 500: '#8b4513', 600: '#703810', 700: '#5a2d0c' }
+                        brand: {
+                            50: '#fbf7f4',
+                            100: '#f5ede6',
+                            500: '#c59b27',
+                            600: '#a67c1e',
+                            700: '#866017',
+                            800: '#694a15',
+                            900: '#4d3511'
+                        }
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-amber-50/40 text-stone-800 min-h-screen flex flex-col font-sans">
+<body class="bg-[#121212] text-stone-100 min-h-screen flex flex-col font-sans selection:bg-amber-600 selection:text-white">
 
     <!-- Header -->
-    <header class="bg-gradient-to-r from-stone-900 via-stone-800 to-amber-950 text-white shadow-xl border-b-4 border-amber-600">
-        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <header class="bg-gradient-to-r from-[#18181b] via-[#27272a] to-[#18181b] text-white shadow-2xl border-b border-amber-600/30 sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
-                <div class="bg-amber-600 p-3 rounded-xl shadow-inner text-amber-100">
-                    <i class="fa-solid fa-medal text-2xl"></i>
+                <div class="bg-gradient-to-br from-amber-500 to-amber-700 p-3 rounded-xl shadow-lg text-stone-950 font-bold border border-amber-400/30">
+                    <i class="fa-solid fa-map-location-dot text-2xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Metaaldetectie Vondsten</h1>
-                    <p class="text-xs sm:text-sm text-amber-200/80">Lokale registratie & archief</p>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent">Metaaldetectie Vondsten</h1>
+                    <p class="text-xs sm:text-sm text-stone-400">Veldlogboek & Categorieënbeheer</p>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="document.getElementById('vondstFormContainer').scrollIntoView({behavior: 'smooth'})" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg font-medium shadow transition flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-plus"></i> Nieuwe Vondst
+                <button onclick="document.getElementById('vondstFormContainer').scrollIntoView({behavior: 'smooth'})" class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-bold px-5 py-2.5 rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center gap-2 text-sm border border-amber-400/40">
+                    <i class="fa-solid fa-plus-circle"></i> Nieuwe Vondst
                 </button>
             </div>
         </div>
@@ -45,101 +53,104 @@
 
         <!-- Statistiekenbalk -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200 flex items-center gap-4">
-                <div class="bg-amber-100 text-amber-800 p-3 rounded-lg"><i class="fa-solid fa-box-archive text-xl"></i></div>
+            <div class="bg-[#1c1c1e] p-5 rounded-2xl shadow-xl border border-stone-800 flex items-center gap-4 relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 text-stone-800/40 text-6xl pointer-events-none"><i class="fa-solid fa-box-archive"></i></div>
+                <div class="bg-amber-500/10 text-amber-500 p-3.5 rounded-xl border border-amber-500/20"><i class="fa-solid fa-box-archive text-xl"></i></div>
                 <div>
-                    <p class="text-xs text-stone-500 font-medium">Totaal Vondsten</p>
-                    <h3 id="statTotal" class="text-xl font-bold text-stone-800">0</h3>
+                    <p class="text-xs text-stone-400 font-medium uppercase tracking-wider">Totaal Vondsten</p>
+                    <h3 id="statTotal" class="text-2xl font-bold text-white mt-0.5">0</h3>
                 </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200 flex items-center gap-4">
-                <div class="bg-emerald-100 text-emerald-800 p-3 rounded-lg"><i class="fa-solid fa-coins text-xl"></i></div>
+            <div class="bg-[#1c1c1e] p-5 rounded-2xl shadow-xl border border-stone-800 flex items-center gap-4 relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 text-stone-800/40 text-6xl pointer-events-none"><i class="fa-solid fa-coins"></i></div>
+                <div class="bg-emerald-500/10 text-emerald-400 p-3.5 rounded-xl border border-emerald-500/20"><i class="fa-solid fa-coins text-xl"></i></div>
                 <div>
-                    <p class="text-xs text-stone-500 font-medium">Munten</p>
-                    <h3 id="statCoins" class="text-xl font-bold text-stone-800">0</h3>
+                    <p class="text-xs text-stone-400 font-medium uppercase tracking-wider">Munten</p>
+                    <h3 id="statCoins" class="text-2xl font-bold text-white mt-0.5">0</h3>
                 </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200 flex items-center gap-4">
-                <div class="bg-blue-100 text-blue-800 p-3 rounded-lg"><i class="fa-solid fa-shield-halved text-xl"></i></div>
+            <div class="bg-[#1c1c1e] p-5 rounded-2xl shadow-xl border border-stone-800 flex items-center gap-4 relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 text-stone-800/40 text-6xl pointer-events-none"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="bg-blue-500/10 text-blue-400 p-3.5 rounded-xl border border-blue-500/20"><i class="fa-solid fa-shield-halved text-xl"></i></div>
                 <div>
-                    <p class="text-xs text-stone-500 font-medium">Militaria</p>
-                    <h3 id="statMilitaria" class="text-xl font-bold text-stone-800">0</h3>
+                    <p class="text-xs text-stone-400 font-medium uppercase tracking-wider">Militaria</p>
+                    <h3 id="statMilitaria" class="text-2xl font-bold text-white mt-0.5">0</h3>
                 </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200 flex items-center gap-4">
-                <div class="bg-purple-100 text-purple-800 p-3 rounded-lg"><i class="fa-solid fa-gem text-xl"></i></div>
+            <div class="bg-[#1c1c1e] p-5 rounded-2xl shadow-xl border border-stone-800 flex items-center gap-4 relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 text-stone-800/40 text-6xl pointer-events-none"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="bg-purple-500/10 text-purple-400 p-3.5 rounded-xl border border-purple-500/20"><i class="fa-solid fa-layer-group text-xl"></i></div>
                 <div>
-                    <p class="text-xs text-stone-500 font-medium">Overige Categorieën</p>
-                    <h3 id="statOther" class="text-xl font-bold text-stone-800">0</h3>
+                    <p class="text-xs text-stone-400 font-medium uppercase tracking-wider">Overig</p>
+                    <h3 id="statOther" class="text-2xl font-bold text-white mt-0.5">0</h3>
                 </div>
             </div>
         </div>
 
         <!-- Filter & Zoekbalk -->
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="bg-[#1c1c1e] p-4 rounded-2xl shadow-xl border border-stone-800 flex flex-col md:flex-row justify-between items-center gap-4">
             <div id="filterButtonsContainer" class="flex flex-wrap gap-2 w-full md:w-auto">
-                <button onclick="setFilter('alle')" id="filter-alle" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-amber-600 text-white shadow">Alle</button>
-                <!-- Dynamische filterknoppen komen hier -->
+                <!-- Dynamische filterknoppen -->
             </div>
-            <div class="w-full md:w-72 relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400"><i class="fa-solid fa-search"></i></span>
-                <input type="text" id="searchInput" oninput="filterVondsten()" placeholder="Zoek op titel, locatie..." class="w-full pl-10 pr-4 py-2 bg-stone-50 border border-stone-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-600">
+            <div class="w-full md:w-80 relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400"><i class="fa-solid fa-search"></i></span>
+                <input type="text" id="searchInput" oninput="filterVondsten()" placeholder="Zoek op titel, locatie, materiaal..." class="w-full pl-10 pr-4 py-2.5 bg-[#121212] border border-stone-800 rounded-xl text-sm text-stone-200 placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-500 transition">
             </div>
         </div>
 
         <!-- Invoerformulier -->
-        <div id="vondstFormContainer" class="bg-white rounded-2xl shadow-md border border-stone-200 overflow-hidden">
-            <div class="bg-stone-900 text-white px-6 py-4 flex items-center justify-between">
-                <h2 class="font-semibold text-lg flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-amber-500"></i> Nieuwe Vondst Registreren</h2>
-                <span class="text-xs bg-amber-600/30 text-amber-300 px-2.5 py-1 rounded-full border border-amber-500/30">Lokale Modus</span>
+        <div id="vondstFormContainer" class="bg-[#1c1c1e] rounded-2xl shadow-2xl border border-stone-800 overflow-hidden">
+            <div class="bg-gradient-to-r from-stone-900 to-[#18181b] text-white px-6 py-4 flex items-center justify-between border-b border-stone-800">
+                <h2 class="font-bold text-lg flex items-center gap-2.5 text-amber-400"><i class="fa-solid fa-pen-to-square"></i> Nieuwe Vondst</h2>
+                <span class="text-xs bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full border border-amber-500/30 font-medium">Lokaal Logboek</span>
             </div>
             <form id="vondstForm" onsubmit="saveVondst(event)" class="p-6 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-medium text-stone-700 mb-1">Titel / Omschrijving *</label>
-                        <input type="text" id="titel" required placeholder="Bijv. Romeinse Follis, Zilveren gesp..." class="w-full px-3 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:outline-none">
+                        <label class="block text-sm font-medium text-stone-300 mb-1.5">Titel / Omschrijving *</label>
+                        <input type="text" id="titel" required placeholder="Bijv. Romeinse Follis, Zilveren gesp..." class="w-full px-4 py-2.5 bg-[#121212] border border-stone-800 rounded-xl text-stone-200 placeholder-stone-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-stone-700 mb-1">Categorie (Kies of typ zelf) *</label>
-                        <input type="text" id="categorie" list="categorieSuggesties" required placeholder="Bijv. Munten, Romeins, Knopen..." class="w-full px-3 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:outline-none">
+                        <label class="block text-sm font-medium text-stone-300 mb-1.5">Categorie (Kies of typ zelf) *</label>
+                        <input type="text" id="categorie" list="categorieSuggesties" required placeholder="Bijv. Munten, Militaria, Knoppen..." class="w-full px-4 py-2.5 bg-[#121212] border border-stone-800 rounded-xl text-stone-200 placeholder-stone-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition">
                         <datalist id="categorieSuggesties">
-                            <option value="Munt">
+                            <option value="Munten">
                             <option value="Militaria">
-                            <option value="Juweel / Sieraad">
-                            <option value="Gereedschap">
-                            <option value="Knoop">
+                            <option value="Juwelen">
+                            <option value="Knoppen">
+                            <option value="Loodjes">
                             <option value="Overig">
                         </datalist>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-stone-700 mb-1">Locatie / Regio</label>
-                        <input type="text" id="locatie" placeholder="Bijv. Omgeving Diest, Akker X..." class="w-full px-3 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:outline-none">
+                        <label class="block text-sm font-medium text-stone-300 mb-1.5">Locatie / Regio</label>
+                        <input type="text" id="locatie" placeholder="Bijv. Omgeving Diest, Akker X..." class="w-full px-4 py-2.5 bg-[#121212] border border-stone-800 rounded-xl text-stone-200 placeholder-stone-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-stone-700 mb-1">Datum Vondst</label>
-                        <input type="date" id="datum" class="w-full px-3 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:outline-none">
+                        <label class="block text-sm font-medium text-stone-300 mb-1.5">Datum Vondst</label>
+                        <input type="date" id="datum" class="w-full px-4 py-2.5 bg-[#121212] border border-stone-800 rounded-xl text-stone-200 focus:ring-2 focus:ring-amber-500 focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-stone-700 mb-1">Diepte (cm)</label>
-                        <input type="number" id="diepte" placeholder="Bijv. 20" class="w-full px-3 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:outline-none">
+                        <label class="block text-sm font-medium text-stone-300 mb-1.5">Diepte (cm)</label>
+                        <input type="number" id="diepte" placeholder="Bijv. 20" class="w-full px-4 py-2.5 bg-[#121212] border border-stone-800 rounded-xl text-stone-200 placeholder-stone-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-stone-700 mb-1">Metaal / Materiaal</label>
-                        <input type="text" id="materiaal" placeholder="Bijv. Brons, Zilver, IJzer..." class="w-full px-3 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:outline-none">
+                        <label class="block text-sm font-medium text-stone-300 mb-1.5">Metaal / Materiaal</label>
+                        <input type="text" id="materiaal" placeholder="Bijv. Brons, Zilver, IJzer..." class="w-full px-4 py-2.5 bg-[#121212] border border-stone-800 rounded-xl text-stone-200 placeholder-stone-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-stone-700 mb-1">Notities & Historische Context</label>
-                    <textarea id="notities" rows="3" placeholder="Bijv. Conditie, keurmerken, vermoedelijke periode..." class="w-full px-3 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-600 focus:outline-none"></textarea>
+                    <label class="block text-sm font-medium text-stone-300 mb-1.5">Notities & Historische Context</label>
+                    <textarea id="notities" rows="3" placeholder="Bijv. Conditie, keurmerken, vermoedelijke periode..." class="w-full px-4 py-2.5 bg-[#121212] border border-stone-800 rounded-xl text-stone-200 placeholder-stone-600 focus:ring-2 focus:ring-amber-500 focus:outline-none transition"></textarea>
                 </div>
                 <!-- Foto Upload & Compressie -->
                 <div>
-                    <label class="block text-sm font-medium text-stone-700 mb-1">Foto's toevoegen (max. 3)</label>
-                    <input type="file" id="fotoInput" accept="image/*" multiple onchange="handleImageUpload(event)" class="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 cursor-pointer">
+                    <label class="block text-sm font-medium text-stone-300 mb-1.5">Foto's toevoegen (max. 3)</label>
+                    <input type="file" id="fotoInput" accept="image/*" multiple onchange="handleImageUpload(event)" class="w-full text-sm text-stone-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-amber-500/10 file:text-amber-400 hover:file:bg-amber-500/25 cursor-pointer border border-stone-800 rounded-xl bg-[#121212] p-2">
                     <div id="fotoPreviewContainer" class="flex gap-3 mt-3 flex-wrap"></div>
                 </div>
-                <div class="flex justify-end gap-3 pt-4 border-t border-stone-100">
-                    <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-2.5 rounded-lg font-medium shadow-md transition flex items-center gap-2">
+                <div class="flex justify-end gap-3 pt-4 border-t border-stone-800">
+                    <button type="submit" class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-bold px-6 py-3 rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2 border border-amber-400/40">
                         <i class="fa-solid fa-floppy-disk"></i> Vondst Opslaan
                     </button>
                 </div>
@@ -149,8 +160,8 @@
         <!-- Overzicht Vondsten -->
         <div class="space-y-4">
             <div class="flex justify-between items-center">
-                <h3 class="text-xl font-bold text-stone-800">Geregistreerde Vondsten</h3>
-                <span id="vondstCount" class="text-xs bg-stone-200 text-stone-700 px-2.5 py-1 rounded-full font-medium">0 items</span>
+                <h3 class="text-xl font-bold text-stone-100">Geregistreerde Vondsten</h3>
+                <span id="vondstCount" class="text-xs bg-stone-800 text-stone-300 px-3 py-1 rounded-full font-medium border border-stone-700">0 items</span>
             </div>
             <div id="vondstenLijst" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Dynamisch gevuld -->
@@ -160,13 +171,13 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-stone-900 text-stone-400 py-6 border-t border-stone-800 mt-12 text-center text-xs">
+    <footer class="bg-[#18181b] text-stone-400 py-6 border-t border-stone-800 mt-12 text-center text-xs">
         <p>&copy; 2026 Metaaldetectie Vondstenbeheer. Alle rechten voorbehouden.</p>
     </footer>
 
     <!-- Lightbox Modal -->
-    <div id="lightbox" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 cursor-pointer" onclick="closeLightbox()">
-        <img id="lightboxImg" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl object-contain">
+    <div id="lightbox" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 cursor-pointer backdrop-blur-sm" onclick="closeLightbox()">
+        <img id="lightboxImg" class="max-w-full max-h-[90vh] rounded-2xl shadow-2xl object-contain border border-stone-800">
     </div>
 
     <!-- Script -->
@@ -212,7 +223,7 @@
                         compressedImages.push(compressedDataUrl);
 
                         const thumbDiv = document.createElement('div');
-                        thumbDiv.className = 'relative w-20 h-20 rounded-lg border border-stone-200 overflow-hidden shadow-sm';
+                        thumbDiv.className = 'relative w-20 h-20 rounded-xl border border-stone-700 overflow-hidden shadow-md bg-stone-900';
                         thumbDiv.innerHTML = `<img src="${compressedDataUrl}" class="w-full h-full object-cover">`;
                         container.appendChild(thumbDiv);
                     }
@@ -225,7 +236,6 @@
         function saveVondst(e) {
             e.preventDefault();
             const categorieInput = document.getElementById('categorie').value.trim();
-            // Maak de eerste letter mooi hoofdletter of laat vrije tekst zoals ingevoerd
             const formattedCategorie = categorieInput ? categorieInput.charAt(0).toUpperCase() + categorieInput.slice(1) : 'Overig';
 
             const nieuweVondst = {
@@ -269,7 +279,7 @@
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
             const lijstEl = document.getElementById('vondstenLijst');
             
-            // Unieke categorieën ophalen voor statistieken en dynamische filterknoppen
+            // Unieke categorieën ophalen voor statistieken en dynamische filters
             const categorieënSet = [...new Set(vondsten.map(v => v.categorie))];
 
             // Statistieken bijwerken
@@ -280,11 +290,11 @@
 
             // Dynamische filterknoppen opbouwen
             const filterContainer = document.getElementById('filterButtonsContainer');
-            let filterHtml = `<button onclick="setFilter('alle')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium ${currentFilter === 'alle' ? 'bg-amber-600 text-white shadow' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}">Alle</button>`;
+            let filterHtml = `<button onclick="setFilter('alle')" class="px-4 py-2 rounded-xl text-sm font-semibold transition ${currentFilter === 'alle' ? 'bg-amber-600 text-stone-950 shadow-lg border border-amber-400/40' : 'bg-[#121212] text-stone-400 hover:bg-stone-800 border border-stone-800'}">Alle</button>`;
             
             categorieënSet.forEach(cat => {
                 const isActive = currentFilter === cat;
-                filterHtml += `<button onclick="setFilter('${cat}')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium ${isActive ? 'bg-amber-600 text-white shadow' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}">${cat}</button>`;
+                filterHtml += `<button onclick="setFilter('${cat}')" class="px-4 py-2 rounded-xl text-sm font-semibold transition ${isActive ? 'bg-amber-600 text-stone-950 shadow-lg border border-amber-400/40' : 'bg-[#121212] text-stone-400 hover:bg-stone-800 border border-stone-800'}">${cat}</button>`;
             });
             filterContainer.innerHTML = filterHtml;
 
@@ -299,41 +309,41 @@
 
             if (gefilterd.length === 0) {
                 lijstEl.innerHTML = `
-                    <div class="col-span-full py-12 text-center text-stone-400 bg-white rounded-2xl border border-dashed border-stone-300">
-                        <i class="fa-solid fa-folder-open text-4xl mb-2 text-stone-300"></i>
+                    <div class="col-span-full py-16 text-center text-stone-500 bg-[#1c1c1e] rounded-2xl border border-dashed border-stone-800">
+                        <i class="fa-solid fa-folder-open text-4xl mb-3 text-stone-600"></i>
                         <p class="text-sm font-medium">Geen vondsten gevonden</p>
                     </div>`;
                 return;
             }
 
             lijstEl.innerHTML = gefilterd.map(v => `
-                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden flex flex-col justify-between hover:shadow-md transition">
+                <div class="bg-[#1c1c1e] rounded-2xl shadow-xl border border-stone-800 overflow-hidden flex flex-col justify-between hover:border-amber-600/40 transition duration-300">
                     <div>
                         ${v.fotos && v.fotos.length > 0 ? `
-                            <div class="h-48 bg-stone-100 relative overflow-hidden flex items-center justify-center">
-                                <img src="${v.fotos[0]}" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-300" onclick="openLightbox('${v.fotos[0]}')">
-                                <span class="absolute top-2 right-2 bg-stone-900/70 text-white text-xs px-2.5 py-1 rounded-md uppercase tracking-wider font-semibold">${escapeHtml(v.categorie)}</span>
+                            <div class="h-48 bg-stone-900 relative overflow-hidden flex items-center justify-center">
+                                <img src="${v.fotos[0]}" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-500" onclick="openLightbox('${v.fotos[0]}')">
+                                <span class="absolute top-3 right-3 bg-stone-950/80 backdrop-blur-md text-amber-400 border border-amber-500/30 text-xs px-3 py-1 rounded-lg uppercase tracking-wider font-bold shadow-md">${escapeHtml(v.categorie)}</span>
                             </div>
                         ` : `
-                            <div class="h-32 bg-amber-50/50 flex items-center justify-center text-amber-800/40 relative">
+                            <div class="h-32 bg-stone-900/50 flex items-center justify-center text-stone-700 relative">
                                 <i class="fa-solid fa-image text-3xl"></i>
-                                <span class="absolute top-2 right-2 bg-stone-900/70 text-white text-xs px-2.5 py-1 rounded-md uppercase tracking-wider font-semibold">${escapeHtml(v.categorie)}</span>
+                                <span class="absolute top-3 right-3 bg-stone-950/80 backdrop-blur-md text-amber-400 border border-amber-500/30 text-xs px-3 py-1 rounded-lg uppercase tracking-wider font-bold shadow-md">${escapeHtml(v.categorie)}</span>
                             </div>
                         `}
-                        <div class="p-5 space-y-3">
-                            <h4 class="font-bold text-lg text-stone-900">${escapeHtml(v.titel)}</h4>
-                            <div class="grid grid-cols-2 gap-2 text-xs text-stone-600">
-                                <div><i class="fa-solid fa-location-dot text-amber-600 mr-1"></i> ${escapeHtml(v.locatie)}</div>
-                                <div><i class="fa-solid fa-calendar text-amber-600 mr-1"></i> ${v.datum}</div>
-                                <div><i class="fa-solid fa-arrows-down-to-line text-amber-600 mr-1"></i> ${v.diepte} cm diep</div>
-                                <div><i class="fa-solid fa-hammer text-amber-600 mr-1"></i> ${escapeHtml(v.materiaal)}</div>
+                        <div class="p-5 space-y-3.5">
+                            <h4 class="font-bold text-lg text-stone-100 tracking-tight">${escapeHtml(v.titel)}</h4>
+                            <div class="grid grid-cols-2 gap-2.5 text-xs text-stone-300">
+                                <div class="bg-[#121212] p-2 rounded-xl border border-stone-800/80 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-amber-500"></i> <span class="truncate">${escapeHtml(v.locatie)}</span></div>
+                                <div class="bg-[#121212] p-2 rounded-xl border border-stone-800/80 flex items-center gap-1.5"><i class="fa-solid fa-calendar text-amber-500"></i> ${v.datum}</div>
+                                <div class="bg-[#121212] p-2 rounded-xl border border-stone-800/80 flex items-center gap-1.5"><i class="fa-solid fa-arrows-down-to-line text-amber-500"></i> ${v.diepte} cm</div>
+                                <div class="bg-[#121212] p-2 rounded-xl border border-stone-800/80 flex items-center gap-1.5"><i class="fa-solid fa-hammer text-amber-500"></i> <span class="truncate">${escapeHtml(v.materiaal)}</span></div>
                             </div>
-                            ${v.notities ? `<p class="text-xs text-stone-500 bg-stone-50 p-2.5 rounded-lg border border-stone-100 italic">"${escapeHtml(v.notities)}"</p>` : ''}
+                            ${v.notities ? `<p class="text-xs text-stone-400 bg-[#121212] p-3 rounded-xl border border-stone-800/80 italic leading-relaxed">"${escapeHtml(v.notities)}"</p>` : ''}
                         </div>
                     </div>
-                    <div class="px-5 py-3 bg-stone-50 border-t border-stone-100 flex justify-between items-center">
-                        <span class="text-xs text-stone-400">ID: ${v.id}</span>
-                        <button onclick="deleteVondst(${v.id})" class="text-red-500 hover:text-red-700 text-xs font-medium flex items-center gap-1 transition">
+                    <div class="px-5 py-3.5 bg-[#18181b] border-t border-stone-800 flex justify-between items-center">
+                        <span class="text-xs text-stone-500">ID: ${v.id}</span>
+                        <button onclick="deleteVondst(${v.id})" class="text-red-400 hover:text-red-300 text-xs font-semibold flex items-center gap-1.5 transition bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg border border-red-500/20">
                             <i class="fa-solid fa-trash"></i> Verwijderen
                         </button>
                     </div>
