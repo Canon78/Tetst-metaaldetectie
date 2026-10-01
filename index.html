@@ -790,6 +790,42 @@
         </div>
     </div>
 
+    <!-- NIEUW: Vrije Zoekbalk en Extra Filters (Op het eerste blad) -->
+    <div style="background-color: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #334155;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <div style="flex: 2; min-width: 200px;">
+                <input type="text" id="vrije-zoekbalk" placeholder="🔍 Zoek op trefwoord, beschrijving, locatie..." oninput="voerFilterUit()" style="margin-bottom: 0;">
+            </div>
+            <div style="flex: 1; min-width: 140px;">
+                <select id="filter-materiaal" onchange="voerFilterUit()" style="margin-bottom: 0;">
+                    <option value="">Alle materialen</option>
+                    <option value="Goud">Goud</option>
+                    <option value="Zilver">Zilver</option>
+                    <option value="Brons / Koper">Brons / Koper</option>
+                    <option value="Lood / Tin">Lood / Tin</option>
+                    <option value="IJzer">IJzer</option>
+                    <option value="Glas / Keramiek">Glas / Keramiek</option>
+                </select>
+            </div>
+            <div style="flex: 1; min-width: 140px;">
+                <select id="filter-periode" onchange="voerFilterUit()" style="margin-bottom: 0;">
+                    <option value="">Alle periodes</option>
+                    <option value="Romeins">Romeins</option>
+                    <option value="Middeleeuws">Middeleeuws</option>
+                    <option value="16e eeuw">16e eeuw</option>
+                    <option value="17e eeuw">17e eeuw</option>
+                    <option value="18e eeuw">18e eeuw</option>
+                    <option value="19e eeuw">19e eeuw</option>
+                    <option value="WO1">WO1</option>
+                    <option value="WO2">WO2</option>
+                </select>
+            </div>
+            <div>
+                <button type="button" onclick="resetFilters()" style="padding: 12px 15px; background-color: #0d1117; color: var(--accent-gold); border: 1px solid var(--accent-gold); border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap;">Reset</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Categorie Filter Tabs -->
     <div class="tabs" id="filter-tabs">
         <div class="tab active" data-cat="Alles" onclick="filterCategorie('Alles', this)">📜 Alle Vondsten</div>
@@ -830,87 +866,65 @@
         const db = getFirestore(app);
 
         let alleVondsten = [];
-        let huidigeFilter = 'Alles';
-        let fotoData = { 1: '', 2: '', 3: '' };
+        let huidigeCategorie = 'Alles';
+        let actieveFotos = { foto1: '', foto2: '', foto3: '' };
 
+        // Globale functies beschikbaar maken voor HTML onclicks
         window.toggleInvoerFormulier = function() {
-            const page = document.getElementById('page-invoer');
+            const pagina = document.getElementById('page-invoer');
             const btn = document.getElementById('top-toggle-btn');
-            if (page.classList.contains('active')) {
-                page.classList.remove('active');
+            if (pagina.classList.contains('active')) {
+                pagina.classList.remove('active');
                 btn.textContent = "➕ Nieuwe Vondst";
-                leegFormulier();
+                wisFormulier();
             } else {
-                page.classList.add('active');
-                btn.textContent = "✖ Sluiten";
+                pagina.classList.add('active');
+                btn.textContent = "✖️ Sluiten";
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
 
-        window.setDatering = function(periode) {
-            document.getElementById('datering').value = periode;
+        window.setDatering = function(waarde) {
+            document.getElementById('datering').value = waarde;
         };
 
         window.haalGPS = function() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    const lat = pos.coords.latitude.toFixed(6);
-                    const lon = pos.coords.longitude.toFixed(6);
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude.toFixed(6);
+                    const lon = position.coords.longitude.toFixed(6);
                     document.getElementById('locatie-gps').value = `${lat}, ${lon}`;
-                }, (err) => {
-                    alert("Kon GPS locatie niet ophalen: " + err.message);
+                }, () => {
+                    alert('Kon GPS-locatie niet ophalen.');
                 });
             } else {
-                alert("Geolocatie wordt niet ondersteund door deze browser.");
+                alert('Geolocatie wordt niet ondersteund door je browser.');
             }
         };
 
         window.verwerkFoto = function(event, fotoNummer) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
-                    const maxDim = 800;
-
-                    if (width > height && width > maxDim) {
-                        height *= maxDim / width;
-                        width = maxDim;
-                    } else if (height > maxDim) {
-                        width *= maxDim / height;
-                        height = maxDim;
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                    fotoData[fotoNummer] = compressedDataUrl;
-
-                    const previewImg = document.getElementById(`img-preview${fotoNummer}`);
-                    const wrapper = document.getElementById(`wrapper-preview${fotoNummer}`);
-                    previewImg.src = compressedDataUrl;
-                    wrapper.style.display = 'flex';
-                };
-                img.src = e.target.result;
+                const base64String = e.target.result;
+                actieveFotos[`foto${fotoNummer}`] = base64String;
+                
+                const previewImg = document.getElementById(`img-preview${fotoNummer}`);
+                const wrapper = document.getElementById(`wrapper-preview${fotoNummer}`);
+                previewImg.src = base64String;
+                wrapper.style.display = 'flex';
             };
             reader.readAsDataURL(file);
         };
 
         window.wisSpecifiekeFoto = function(fotoNummer) {
-            fotoData[fotoNummer] = '';
+            actieveFotos[`foto${fotoNummer}`] = '';
             document.getElementById(`foto${fotoNummer}`).value = '';
             document.getElementById(`wrapper-preview${fotoNummer}`).style.display = 'none';
         };
 
-        function leegFormulier() {
+        window.wisFormulier = function() {
             document.getElementById('bewerk-id').value = '';
             document.getElementById('form-titel').textContent = 'Nieuwe Vondst';
             document.getElementById('categorie').value = 'Munten';
@@ -925,65 +939,65 @@
             document.getElementById('locatie-gps').value = '';
             document.getElementById('weblink').value = '';
             document.getElementById('info').value = '';
-            
-            fotoData = { 1: '', 2: '', 3: '' };
+
+            actieveFotos = { foto1: '', foto2: '', foto3: '' };
             for (let i = 1; i <= 3; i++) {
                 document.getElementById(`foto${i}`).value = '';
                 document.getElementById(`wrapper-preview${i}`).style.display = 'none';
             }
-        }
+        };
 
         window.opslaanVondst = async function() {
             const bewerkId = document.getElementById('bewerk-id').value;
             const data = {
+                titel: document.getElementById('titel').value || 'Naamloze vondst',
                 categorie: document.getElementById('categorie').value,
                 materiaal: document.getElementById('materiaal').value,
                 vondstType: document.getElementById('vondstType').value,
                 staat: document.getElementById('staat').value,
                 diameter: document.getElementById('diameter').value,
                 gewicht: document.getElementById('gewicht').value,
-                titel: document.getElementById('titel').value || 'Naamloze Vondst',
                 datering: document.getElementById('datering').value,
                 locatieNaam: document.getElementById('locatie-naam').value,
                 locatieGps: document.getElementById('locatie-gps').value,
                 weblink: document.getElementById('weblink').value,
                 info: document.getElementById('info').value,
-                foto1: fotoData[1],
-                foto2: fotoData[2],
-                foto3: fotoData[3],
+                foto1: actieveFotos.foto1,
+                foto2: actieveFotos.foto2,
+                foto3: actieveFotos.foto3,
                 datumToegevoegd: new Date().toISOString()
             };
 
             try {
                 if (bewerkId) {
                     await updateDoc(doc(db, "vondsten", bewerkId), data);
-                    alert("Vondst succesvol bijgewerkt!");
                 } else {
                     await addDoc(collection(db, "vondsten"), data);
-                    alert("Nieuwe vondst opgeslagen in de cloud!");
                 }
                 toggleInvoerFormulier();
                 laadVondsten();
-            } catch (err) {
-                alert("Fout bij opslaan: " + err.message);
+            } catch (error) {
+                console.error("Fout bij opslaan: ", error);
+                alert("Opslaan mislukt.");
             }
         };
 
-        async function laadVondsten() {
+        window.laadVondsten = async function() {
             try {
                 const querySnapshot = await getDocs(collection(db, "vondsten"));
                 alleVondsten = [];
                 querySnapshot.forEach((docSnap) => {
                     alleVondsten.push({ id: docSnap.id, ...docSnap.data() });
                 });
+                
                 updateStatistieken();
-                toonVondsten();
-            } catch (err) {
-                console.error("Fout bij laden van vondsten:", err);
+                voerFilterUit();
+            } catch (error) {
+                console.error("Fout bij laden: ", error);
             }
-        }
+        };
 
-        function updateStatistieken() {
+        window.updateStatistieken = function() {
             document.getElementById('stat-total').textContent = alleVondsten.length;
             document.getElementById('stat-munten').textContent = alleVondsten.filter(v => v.categorie === 'Munten').length;
             document.getElementById('stat-gespen').textContent = alleVondsten.filter(v => v.categorie === 'Gespen').length;
@@ -991,40 +1005,71 @@
             document.getElementById('stat-militaria').textContent = alleVondsten.filter(v => v.categorie === 'Militaria').length;
             document.getElementById('stat-voorwerpen').textContent = alleVondsten.filter(v => v.categorie === 'Gebruiksvoorwerpen').length;
             document.getElementById('stat-overig').textContent = alleVondsten.filter(v => v.categorie === 'Overig').length;
-        }
-
-        window.filterCategorie = function(cat, tabElement) {
-            huidigeFilter = cat;
-            if (tabElement) {
-                document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
-                tabElement.classList.add('active');
-            }
-            toonVondsten();
         };
 
-        function toonVondsten() {
-            const lijstContainer = document.getElementById('vondsten-lijst');
-            lijstContainer.innerHTML = '';
+        // Uitgebreide filterfunctie
+        window.voerFilterUit = function() {
+            const zoekTerm = document.getElementById('vrije-zoekbalk').value.toLowerCase();
+            const geselecteerdMateriaal = document.getElementById('filter-materiaal').value;
+            const geselecteerdePeriode = document.getElementById('filter-periode').value;
 
-            const gefilterd = huidigeFilter === 'Alles' 
-                ? alleVondsten 
-                : alleVondsten.filter(v => v.categorie === huidigeFilter);
+            const gefilterd = alleVondsten.filter(vondst => {
+                const matchCat = (huidigeCategorie === 'Alles' || vondst.categorie === huidigeCategorie);
+                
+                const combinatieTekst = `${vondst.titel || ''} ${vondst.info || ''} ${vondst.locatieNaam || ''} ${vondst.materiaal || ''} ${vondst.datering || ''}`.toLowerCase();
+                const matchZoek = combinatieTekst.includes(zoekTerm);
 
-            if (gefilterd.length === 0) {
-                lijstContainer.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:20px;">Geen vondsten gevonden in deze categorie.</p>`;
+                const matchMat = (!geselecteerdMateriaal || vondst.materiaal === geselecteerdMateriaal);
+                const matchPer = (!geselecteerdePeriode || (vondst.datering && vondst.datering.toLowerCase().includes(geselecteerdePeriode.toLowerCase())));
+
+                return matchCat && matchZoek && matchMat && matchPer;
+            });
+
+            tekenVondstenLijst(gefilterd);
+        };
+
+        window.resetFilters = function() {
+            document.getElementById('vrije-zoekbalk').value = '';
+            document.getElementById('filter-materiaal').value = '';
+            document.getElementById('filter-periode').value = '';
+            huidigeCategorie = 'Alles';
+            
+            document.querySelectorAll('.tabs .tab').forEach(t => {
+                if(t.getAttribute('data-cat') === 'Alles') t.classList.add('active');
+                else t.classList.remove('active');
+            });
+
+            voerFilterUit();
+        };
+
+        window.filterCategorie = function(cat, element = null) {
+            huidigeCategorie = cat;
+            if (element) {
+                document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+                element.classList.add('active');
+            }
+            voerFilterUit();
+        };
+
+        window.tekenVondstenLijst = function(lijst) {
+            const container = document.getElementById('vondsten-lijst');
+            container.innerHTML = '';
+
+            if (lijst.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 30px; color: #94a3b8;">Geen vondsten gevonden die aan je filters voldoen.</div>`;
                 return;
             }
 
-            gefilterd.forEach(v => {
+            lijst.forEach(v => {
                 const card = document.createElement('div');
                 card.className = `vondst-card cat-${v.categorie}`;
 
                 let fotosHtml = '';
-                [1, 2, 3].forEach(num => {
-                    if (v[`foto${num}`]) {
+                ['foto1', 'foto2', 'foto3'].forEach((fKey, index) => {
+                    if (v[fKey]) {
                         fotosHtml += `
-                            <div class="img-wrapper" onclick="openLightbox('${v[`foto${num}`]}')">
-                                <img src="${v[`foto${num}`]}" class="card-img" alt="Foto ${num}">
+                            <div class="img-wrapper" onclick="openLightbox('${v[fKey]}')">
+                                <img src="${v[fKey]}" class="card-img" alt="Foto ${index+1}">
                                 <div class="zoom-icon">vergroot</div>
                             </div>
                         `;
@@ -1037,19 +1082,16 @@
                         <span class="vondst-cat-badge">${escapeHtml(v.categorie)}</span>
                     </div>
                     <div class="vondst-grid-meta">
+                        <div class="vondst-meta"><b>Materiaal:</b> ${escapeHtml(v.materiaal || 'Onbekend')}</div>
                         <div class="vondst-meta"><b>Periode:</b> ${escapeHtml(v.datering || 'Onbekend')}</div>
-                        <div class="vondst-meta"><b>Materiaal:</b> ${escapeHtml(v.materiaal)}</div>
-                        <div class="vondst-meta"><b>Staat:</b> ${escapeHtml(v.staat)}</div>
-                        <div class="vondst-meta"><b>Diameter:</b> ${v.diameter ? v.diameter + ' mm' : '-'}</div>
-                        <div class="vondst-meta"><b>Gewicht:</b> ${v.gewicht ? v.gewicht + ' g' : '-'}</div>
-                        <div class="vondst-meta"><b>Vondsttype:</b> ${escapeHtml(v.vondstType || '-')}</div>
+                        <div class="vondst-meta"><b>Staat:</b> ${escapeHtml(v.staat || '-')}</div>
                         <div class="vondst-meta"><b>Locatie:</b> ${escapeHtml(v.locatieNaam || '-')}</div>
-                        <div class="vondst-meta"><b>GPS:</b> ${v.locatieGps ? `<a href="https://maps.google.com/?q=${encodeURIComponent(v.locatieGps)}" target="_blank" style="color:var(--accent-blue)">Open Kaart</a>` : '-'}</div>
+                        ${v.diameter ? `<div class="vondst-meta"><b>Diameter:</b> ${v.diameter} mm</div>` : ''}
+                        ${v.gewicht ? `<div class="vondst-meta"><b>Gewicht:</b> ${v.gewicht} g</div>` : ''}
                     </div>
-                    ${v.weblink ? `<div style="margin: 8px 0;"><a href="${escapeHtml(v.weblink)}" target="_blank" style="color:var(--accent-gold); font-size:13px;">🌐 Referentie Link</a></div>` : ''}
                     ${v.info ? `
                         <div class="info-dropdown-container">
-                            <button class="btn-toggle-info" onclick="toggleInfoBox(this)">📜 Toon Historische Info</button>
+                            <button type="button" class="btn-toggle-info" onclick="toggleInfoBox(this)">📜 Toon info & historiek</button>
                             <div class="info-content-box">${escapeHtml(v.info)}</div>
                         </div>
                     ` : ''}
@@ -1059,19 +1101,28 @@
                         <button class="btn-small btn-delete" onclick="verwijderVondst('${v.id}')">🗑️ Verwijderen</button>
                     </div>
                 `;
-                lijstContainer.appendChild(card);
+                container.appendChild(card);
             });
-        }
+        };
 
         window.toggleInfoBox = function(btn) {
             const box = btn.nextElementSibling;
             if (box.style.display === 'block') {
                 box.style.display = 'none';
-                btn.textContent = "📜 Toon Historische Info";
+                btn.textContent = '📜 Toon info & historiek';
             } else {
                 box.style.display = 'block';
-                btn.textContent = "📜 Verberg Historische Info";
+                btn.textContent = '📜 Verberg info';
             }
+        };
+
+        window.openLightbox = function(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        };
+
+        window.sluitLightbox = function() {
+            document.getElementById('lightbox').style.display = 'none';
         };
 
         window.bewerkVondst = function(id) {
@@ -1093,10 +1144,11 @@
             document.getElementById('weblink').value = v.weblink || '';
             document.getElementById('info').value = v.info || '';
 
-            fotoData = { 1: v.foto1 || '', 2: v.foto2 || '', 3: v.foto3 || '' };
-            [1, 2, 3].forEach(num => {
-                if (fotoData[num]) {
-                    document.getElementById(`img-preview${num}`).src = fotoData[num];
+            actieveFotos = { foto1: v.foto1 || '', foto2: v.foto2 || '', foto3: v.foto3 || '' };
+            ['foto1', 'foto2', 'foto3'].forEach((fKey, index) => {
+                const num = index + 1;
+                if (v[fKey]) {
+                    document.getElementById(`img-preview${num}`).src = v[fKey];
                     document.getElementById(`wrapper-preview${num}`).style.display = 'flex';
                 } else {
                     document.getElementById(`wrapper-preview${num}`).style.display = 'none';
@@ -1104,7 +1156,7 @@
             });
 
             document.getElementById('page-invoer').classList.add('active');
-            document.getElementById('top-toggle-btn').textContent = "✖ Sluiten";
+            document.getElementById('top-toggle-btn').textContent = "✖️ Sluiten";
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -1112,22 +1164,18 @@
             if (confirm("Weet je zeker dat je deze vondst wilt verwijderen?")) {
                 try {
                     await deleteDoc(doc(db, "vondsten", id));
-                    alert("Vondst verwijderd.");
                     laadVondsten();
-                } catch (err) {
-                    alert("Fout bij verwijderen: " + err.message);
+                } catch (error) {
+                    console.error("Fout bij verwijderen: ", error);
+                    alert("Verwijderen mislukt.");
                 }
             }
         };
 
-        window.openLightbox = function(src) {
-            document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox').style.display = 'flex';
-        };
-
-        window.sluitLightbox = function() {
-            document.getElementById('lightbox').style.display = 'none';
-        };
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
 
         window.scrollToTop = function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1142,16 +1190,7 @@
             }
         });
 
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/&/g, "&amp;")
-                      .replace(/</g, "&lt;")
-                      .replace(/>/g, "&gt;")
-                      .replace(/"/g, "&quot;")
-                      .replace(/'/g, "&#039;");
-        }
-
-        // Start applicatie door vondsten in te laden
+        // Laad direct bij opstarten
         laadVondsten();
     </script>
 </body>
