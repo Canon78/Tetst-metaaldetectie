@@ -124,7 +124,6 @@
         .stat-item.hang { border-color: var(--col-hangertjes); background: linear-gradient(135deg, #1a202c 0%, rgba(236, 72, 153, 0.18) 100%); }
         .stat-item.varia { border-color: var(--col-varia); background: linear-gradient(135deg, #1a202c 0%, rgba(139, 92, 246, 0.18) 100%); }
         .stat-item.kera { border-color: var(--col-keramiek); background: linear-gradient(135deg, #1a202c 0%, rgba(217, 119, 6, 0.18) 100%); }
-
         .stat-val {
             font-size: 22px;
             font-weight: bold;
@@ -283,7 +282,6 @@
         .tab.active[data-cat="Varia"] { background-color: var(--col-varia); border-color: var(--col-varia); color: #000; font-weight: bold; }
         .tab.active[data-cat="Keramiek"] { background-color: var(--col-keramiek); border-color: var(--col-keramiek); color: #fff; font-weight: bold; }
         .tab.active[data-cat="Kaart"] { background-color: var(--accent-blue); border-color: var(--accent-blue); color: #fff; font-weight: bold; }
-
         /* Kaart stijling */
         #map-container {
             display: none;
@@ -297,7 +295,6 @@
         #map-container.active {
             display: block;
         }
-
         .vondst-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -315,7 +312,6 @@
         .vondst-card.cat-Hangertjes { border-left-color: var(--col-hangertjes); }
         .vondst-card.cat-Varia { border-left-color: var(--col-varia); }
         .vondst-card.cat-Keramiek { border-left-color: var(--col-keramiek); }
-
         .vondst-header {
             display: flex;
             justify-content: space-between;
@@ -359,7 +355,6 @@
         .cat-Hangertjes .vondst-grid-meta { background-color: rgba(236, 72, 153, 0.12); border-left-color: var(--col-hangertjes); }
         .cat-Varia .vondst-grid-meta { background-color: rgba(139, 92, 246, 0.12); border-left-color: var(--col-varia); }
         .cat-Keramiek .vondst-grid-meta { background-color: rgba(217, 119, 6, 0.12); border-left-color: var(--col-keramiek); }
-
         .vondst-meta {
             font-size: 14px;
             color: #f1f5f9;
@@ -634,7 +629,6 @@
         </div>
         <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuwe Vondst</button>
     </div>
-
     <!-- Dashboard Statistieken -->
     <div class="stats-dashboard" id="dashboard-balk">
         <div class="stat-item total" onclick="filterCategorie('Alles')">
@@ -678,7 +672,6 @@
             <div class="stat-lbl">🏺 Keramiek</div>
         </div>
     </div>
-
     <!-- Invoerformulier -->
     <div id="page-invoer" class="app-page">
         <div class="form-container">
@@ -848,7 +841,6 @@
             </div>
         </div>
     </div>
-
     <!-- Categorie Filter Tabs & Kaart Tab -->
     <div class="tabs" id="filter-tabs">
         <div class="tab active" data-cat="Alles" onclick="filterCategorie('Alles', this)">📜 Alle Vondsten</div>
@@ -863,18 +855,14 @@
         <div class="tab" data-cat="Keramiek" onclick="filterCategorie('Keramiek', this)">🏺 Keramiek</div>
         <div class="tab" data-cat="Kaart" onclick="filterCategorie('Kaart', this)">🗺️ Kaart (Overzicht)</div>
     </div>
-
     <!-- Zoekbalk met Wisknop -->
     <div class="search-container" id="zoek-sectie">
         <input type="text" id="zoek-input" class="search-input" placeholder="🔍 Zoek op titel, datering, materiaal, locatie of info...">
         <button type="button" class="clear-search-btn" onclick="wisZoekbalk()">❌ Wis</button>
     </div>
-
     <!-- Interactieve Kaart Container -->
     <div id="map-container"></div>
-
     <div id="vondsten-lijst"></div>
-
     <!-- Scroll naar boven knop -->
     <button id="scroll-top-btn" onclick="scrollToTop()" title="Naar boven">▲</button>
     <!-- Lightbox voor foto vergroten -->
@@ -882,7 +870,6 @@
         <button class="lightbox-close">Sluiten</button>
         <img id="lightbox-img" class="lightbox-img">
     </div>
-
     <!-- Firebase & Database Koppeling -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -911,7 +898,6 @@
         
         let map = null;
         let markersLayer = null;
-
         window.toggleInvoerFormulier = function() {
             const page = document.getElementById('page-invoer');
             const btn = document.getElementById('top-toggle-btn');
@@ -919,7 +905,6 @@
             const zoekSectie = document.getElementById('zoek-sectie');
             const lijstContainer = document.getElementById('vondsten-lijst');
             const mapContainer = document.getElementById('map-container');
-
             if (page.classList.contains('active')) {
                 page.classList.remove('active');
                 btn.textContent = "➕ Nieuwe Vondst";
@@ -944,11 +929,9 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
-
         window.setDatering = function(periode) {
             document.getElementById('datering').value = periode;
         };
-
         window.haalGPS = function() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((pos) => {
@@ -962,7 +945,6 @@
                 alert("Geolocatie wordt niet ondersteund door deze browser.");
             }
         };
-
         window.verwerkFoto = function(event, fotoNummer) {
             const file = event.target.files[0];
             if (!file) return;
@@ -998,7 +980,6 @@
             };
             reader.readAsDataURL(file);
         };
-
         window.updateFotoType = function(fotoNummer) {
             const selectEl = document.getElementById(`type-foto${fotoNummer}`);
             const wrapper = document.getElementById(`wrapper-preview${fotoNummer}`);
@@ -1012,13 +993,11 @@
                 wrapper.classList.remove('orig-staat-preview');
             }
         };
-
         window.wisSpecifiekeFoto = function(fotoNummer) {
             fotoData[fotoNummer].url = '';
             document.getElementById(`foto${fotoNummer}`).value = '';
             document.getElementById(`wrapper-preview${fotoNummer}`).style.display = 'none';
         };
-
         function leegFormulier() {
             document.getElementById('bewerk-id').value = '';
             document.getElementById('form-titel').textContent = 'Nieuwe Vondst';
@@ -1028,7 +1007,6 @@
             
             const vandaag = new Date().toISOString().split('T')[0];
             document.getElementById('vondstDatum').value = vandaag;
-
             document.getElementById('staat').value = 'Bodemvondst (Topeffect)';
             document.getElementById('diameter').value = '';
             document.getElementById('gewicht').value = '';
@@ -1045,7 +1023,6 @@
                 3: { url: '', isReferentie: false }, 
                 4: { url: '', isReferentie: true } 
             };
-
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(`foto${i}`).value = '';
                 document.getElementById(`wrapper-preview${i}`).style.display = 'none';
@@ -1054,12 +1031,10 @@
             }
             document.getElementById('wrapper-preview4').classList.add('orig-staat-preview');
         }
-
         // Hulpfunctie om graden-notatie (bijv. 51°00'36.0"N 2°41'45.6"E) om te zetten naar decimaal
         function parseCoords(inputStr) {
             if (!inputStr) return null;
             let str = inputStr.trim();
-
             if (str.includes('http://') || str.includes('https://')) {
                 let latLonMatch = str.match(/@([0-9\.\-]+),([0-9\.\-]+)/);
                 if (latLonMatch) {
@@ -1070,34 +1045,27 @@
                     return { lat: parseFloat(qMatch[1]), lon: parseFloat(qMatch[2]) };
                 }
             }
-
             let dmsMatch = str.match(/([0-9]+)[°\s]+([0-9]+)['\s]+([0-9]+(\.[0-9]+)?)["\s]*([NS])[,]?\s*([0-9]+)[°\s]+([0-9]+)['\s]+([0-9]+(\.[0-9]+)?)["\s]*([EW])/i);
             if (dmsMatch) {
                 let latDeg = parseFloat(dmsMatch[1]), latMin = parseFloat(dmsMatch[2]), latSec = parseFloat(dmsMatch[3]);
                 let latDir = dmsMatch[5].toUpperCase();
                 let lat = latDeg + latMin / 60 + latSec / 3600;
                 if (latDir === 'S') lat = -lat;
-
                 let lonDeg = parseFloat(dmsMatch[6]), lonMin = parseFloat(dmsMatch[7]), lonSec = parseFloat(dmsMatch[8]);
                 let lonDir = dmsMatch[10].toUpperCase();
                 let lon = lonDeg + lonMin / 60 + lonSec / 3600;
                 if (lonDir === 'W') lon = -lon;
-
                 return { lat: lat, lon: lon };
             }
-
             let coordsMatch = str.match(/([0-9]+\.[0-9]+)[^0-9\-]+([0-9]+\.[0-9]+)/);
             if (coordsMatch) {
                 return { lat: parseFloat(coordsMatch[1]), lon: parseFloat(coordsMatch[2]) };
             }
-
             return null;
         }
-
         window.opslaanVondst = async function() {
             const bewerkId = document.getElementById('bewerk-id').value;
             let gpsInput = document.getElementById('locatie-gps').value.trim();
-
             if (gpsInput.includes('maps.app.goo.gl')) {
                 try {
                     let response = await fetch(gpsInput, { method: 'HEAD', redirect: 'follow' });
@@ -1106,7 +1074,6 @@
                     }
                 } catch(e) {}
             }
-
             const data = {
                 categorie: document.getElementById('categorie').value,
                 materiaal: document.getElementById('materiaal').value,
@@ -1141,28 +1108,37 @@
                 alert("Fout bij opslaan: " + err.message);
             }
         };
-
         async function laadVondsten() {
+            const lijstContainer = document.getElementById('vondsten-lijst');
+            if (lijstContainer && huidigeFilter !== 'Kaart') {
+                lijstContainer.innerHTML = `<p style="text-align:center; color:#cbd5e1; padding:20px;">⏳ Vondsten ophalen uit de cloud...</p>`;
+            }
+
             try {
                 const querySnapshot = await getDocs(collection(db, "vondsten"));
                 alleVondsten = [];
                 querySnapshot.forEach((docSnap) => {
                     alleVondsten.push({ id: docSnap.id, ...docSnap.data() });
                 });
-
                 alleVondsten.sort((a, b) => {
                     const datumA = a.vondstDatum ? new Date(a.vondstDatum) : (a.datumToegevoegd ? new Date(a.datumToegevoegd) : new Date(0));
                     const datumB = b.vondstDatum ? new Date(b.vondstDatum) : (b.datumToegevoegd ? new Date(b.datumToegevoegd) : new Date(0));
                     return datumB - datumA;
                 });
-
                 updateStatistieken();
-                toonVondsten();
+                
+                if (huidigeFilter === 'Kaart') {
+                    initialiseerKaart();
+                } else {
+                    toonVondsten();
+                }
             } catch (err) {
                 console.error("Fout bij laden van vondsten:", err);
+                if (lijstContainer) {
+                    lijstContainer.innerHTML = `<p style="text-align:center; color:#ff6b6b; padding:20px;">⚠️ Kon de vondsten niet laden. Controleer je verbinding.</p>`;
+                }
             }
         }
-
         function updateStatistieken() {
             document.getElementById('stat-total').textContent = alleVondsten.length;
             document.getElementById('stat-munten').textContent = alleVondsten.filter(v => v.categorie === 'Munten').length;
@@ -1175,18 +1151,15 @@
             document.getElementById('stat-varia').textContent = alleVondsten.filter(v => v.categorie === 'Varia').length;
             document.getElementById('stat-keramiek').textContent = alleVondsten.filter(v => v.categorie === 'Keramiek').length;
         }
-
         window.filterCategorie = function(cat, tabElement) {
             huidigeFilter = cat;
             if (tabElement) {
                 document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
                 tabElement.classList.add('active');
             }
-
             const mapContainer = document.getElementById('map-container');
             const lijstContainer = document.getElementById('vondsten-lijst');
             const zoekSectie = document.getElementById('zoek-sectie');
-
             if (cat === 'Kaart') {
                 mapContainer.classList.add('active');
                 lijstContainer.style.display = 'none';
@@ -1199,7 +1172,6 @@
                 toonVondsten();
             }
         };
-
         function getCategorieKleur(cat) {
             switch(cat) {
                 case 'Munten': return '#ffd700';
@@ -1214,7 +1186,6 @@
                 default: return '#f1c40f';
             }
         }
-
         async function haalAdresOp(lat, lon, elementId) {
             try {
                 let res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`, {
@@ -1233,7 +1204,6 @@
                 }
             } catch(e) {}
         }
-
         function initialiseerKaart() {
             const mapContainer = document.getElementById('map-container');
             
@@ -1247,11 +1217,8 @@
             } else {
                 map.invalidateSize();
             }
-
             markersLayer.clearLayers();
-
             let bounds = [];
-
             alleVondsten.forEach((v, index) => {
                 if (v.locatieGps) {
                     let coords = parseCoords(v.locatieGps);
@@ -1259,7 +1226,6 @@
                         let lat = coords.lat;
                         let lon = coords.lon;
                         bounds.push([lat, lon]);
-
                         let thumbnailHtml = '';
                         for(let i=1; i<=4; i++) {
                             if(v[`foto${i}`] && !v[`foto${i}Ref`]) {
@@ -1286,7 +1252,6 @@
                                 <div id="${adresId}" style="font-size:11.5px; color:#1e293b; margin-top:4px; border-top:1px solid #ddd; padding-top:3px;">📍 Adres laden...</div>
                             </div>
                         `;
-
                         let catKleur = getCategorieKleur(v.categorie);
                         let customIcon = L.divIcon({
                             className: 'custom-map-pin',
@@ -1294,42 +1259,33 @@
                             iconSize: [20, 20],
                             iconAnchor: [10, 10]
                         });
-
                         let marker = L.marker([lat, lon], { icon: customIcon }).bindPopup(popupContent);
                         
                         marker.on('popupopen', () => {
                             haalAdresOp(lat, lon, adresId);
                         });
-
                         markersLayer.addLayer(marker);
                     }
                 }
             });
-
             if (bounds.length > 0) {
                 map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
             }
         }
-
         const zoekInputEl = document.getElementById('zoek-input');
         zoekInputEl.addEventListener('input', () => toonVondsten());
-
         window.wisZoekbalk = function() {
             document.getElementById('zoek-input').value = '';
             toonVondsten();
         };
-
         window.toonVondsten = function() {
             const lijstContainer = document.getElementById('vondsten-lijst');
             const zoekTerm = document.getElementById('zoek-input').value.toLowerCase().trim();
             lijstContainer.innerHTML = '';
-
             let gefilterd = huidigeFilter === 'Alles' 
                 ? alleVondsten 
                 : alleVondsten.filter(v => v.categorie === huidigeFilter);
-
             let bronLijst = (zoekTerm !== '' && huidigeFilter === 'Alles') ? alleVondsten : gefilterd;
-
             if (zoekTerm !== '') {
                 bronLijst = bronLijst.filter(v => {
                     return (
@@ -1344,12 +1300,10 @@
                     );
                 });
             }
-
             if (bronLijst.length === 0) {
                 lijstContainer.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:20px;">Geen vondsten gevonden die aan je zoekopdracht voldoen.</p>`;
                 return;
             }
-
             bronLijst.forEach(v => {
                 const card = document.createElement('div');
                 card.className = `vondst-card cat-${v.categorie}`;
@@ -1378,7 +1332,6 @@
                         }
                     }
                 });
-
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span class="vondst-titel-text">${escapeHtml(v.titel)}</span>
@@ -1411,7 +1364,6 @@
                 lijstContainer.appendChild(card);
             });
         }
-
         window.toggleInfoBox = function(btn) {
             const box = btn.nextElementSibling;
             if (box.style.display === 'block') {
@@ -1422,7 +1374,6 @@
                 btn.textContent = "📜 Verberg Historische Info";
             }
         };
-
         window.bewerkVondst = function(id) {
             const v = alleVondsten.find(item => item.id === id);
             if (!v) return;
@@ -1448,7 +1399,6 @@
                 3: { url: v.foto3 || '', isReferentie: !!v.foto3Ref },
                 4: { url: v.foto4 || '', isReferentie: v.foto4Ref !== undefined ? !!v.foto4Ref : true }
             };
-
             [1, 2, 3, 4].forEach(num => {
                 const item = fotoData[num];
                 const selectEl = document.getElementById(`type-foto${num}`);
@@ -1461,7 +1411,6 @@
                 } else {
                     wrapper.classList.remove('orig-staat-preview');
                 }
-
                 if (item.url) {
                     document.getElementById(`img-preview${num}`).src = item.url;
                     wrapper.style.display = 'flex';
@@ -1478,7 +1427,6 @@
             document.getElementById('map-container').classList.remove('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
-
         window.verwijderVondst = async function(id) {
             if (confirm("Weet je zeker dat je deze vondst wilt verwijderen?")) {
                 try {
@@ -1490,20 +1438,16 @@
                 }
             }
         };
-
         window.openLightbox = function(src) {
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').style.display = 'flex';
         };
-
         window.sluitLightbox = function() {
             document.getElementById('lightbox').style.display = 'none';
         };
-
         window.scrollToTop = function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
-
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('scroll-top-btn');
             if (window.scrollY > 300) {
@@ -1512,7 +1456,6 @@
                 btn.classList.remove('show');
             }
         });
-
         function escapeHtml(str) {
             if (!str) return '';
             return str.replace(/&/g, "&amp;")
@@ -1521,7 +1464,6 @@
                       .replace(/"/g, "&quot;")
                       .replace(/'/g, "&#039;");
         }
-
         laadVondsten();
     </script>
 </body>
