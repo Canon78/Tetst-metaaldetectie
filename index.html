@@ -655,7 +655,7 @@
         </div>
         <div class="stat-item mili" onclick="filterCategorie('Militaria')">
             <div class="stat-val" id="stat-militaria">0</div>
-            <div class="stat-lbl">🛡️️ Militaria</div>
+            <div class="stat-lbl">🛡 Militaria</div>
         </div>
         <div class="stat-item voorw" onclick="filterCategorie('Gebruiksvoorwerpen')">
             <div class="stat-val" id="stat-voorwerpen">0</div>
@@ -774,8 +774,8 @@
                 <input type="text" id="locatie-naam" placeholder="Bijv. Stabroek...">
             </div>
             <div class="form-group">
-                <label for="locatie-gps">🌍 Exacte GPS Coördinaten of Google Maps Link</label>
-                <input type="text" id="locatie-gps" placeholder="Plak hier coördinaten of de complete Google Maps link">
+                <label for="locatie-gps">🌍 Coördinaten, Graden of Google Maps Link (ook korte links!)</label>
+                <input type="text" id="locatie-gps" placeholder="Plak coördinaten, graden of Maps link (bijv. https://maps.app.goo.gl/...)">
                 <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige Exacte GPS Vast</button>
             </div>
             <div class="form-group">
@@ -940,7 +940,7 @@
                 zoekSectie.style.display = 'none';
                 lijstContainer.style.display = 'none';
                 mapContainer.classList.remove('active');
-                leegFormulier(); // Zorgt dat de datum op vandaag springt bij openen
+                leegFormulier();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
@@ -1026,7 +1026,6 @@
             document.getElementById('materiaal').value = 'Onbekend';
             document.getElementById('vondstType').value = 'Signaal (Metaaldetector)';
             
-            // Stel standaard vandaag in (YYYY-MM-DD formaat)
             const vandaag = new Date().toISOString().split('T')[0];
             document.getElementById('vondstDatum').value = vandaag;
 
@@ -1056,8 +1055,66 @@
             document.getElementById('wrapper-preview4').classList.add('orig-staat-preview');
         }
 
+        // Hulpfunctie om graden-notatie (bijv. 51°00'36.0"N 2°41'45.6"E) om te zetten naar decimaal
+        function parseCoords(inputStr) {
+            if (!inputStr) return null;
+            let str = inputStr.trim();
+
+            // Check op Google Maps korte link of gewone url met @lat,lon
+            if (str.includes('http://') || str.includes('https://')) {
+                // Als het een korte link is, kunnen we hem helaas niet direct uitlezen zonder server, 
+                // maar we kunnen proberen te kijken of er coördinaten in de url staan of een q= parameter
+                let latLonMatch = str.match(/@([0-9\.\-]+),([0-9\.\-]+)/);
+                if (latLonMatch) {
+                    return { lat: parseFloat(latLonMatch[1]), lon: parseFloat(latLonMatch[2]) };
+                }
+                let qMatch = str.match(/[?&]q=([0-9\.\-]+),([0-9\.\-]+)/);
+                if (qMatch) {
+                    return { lat: parseFloat(qMatch[1]), lon: parseFloat(qMatch[2]) };
+                }
+            }
+
+            // Check op graden notatie zoals 51°00'36.0"N 2°41'45.6"E
+            let dmsMatch = str.match(/([0-9]+)[°\s]+([0-9]+)['\s]+([0-9]+(\.[0-9]+)?)["\s]*([NS])[,]?\s*([0-9]+)[°\s]+([0-9]+)['\s]+([0-9]+(\.[0-9]+)?)["\s]*([EW])/i);
+            if (dmsMatch) {
+                let latDeg = parseFloat(dmsMatch[1]), latMin = parseFloat(dmsMatch[2]), latSec = parseFloat(dmsMatch[3]);
+                let latDir = dmsMatch[5].toUpperCase();
+                let lat = latDeg + latMin / 60 + latSec / 3600;
+                if (latDir === 'S') lat = -lat;
+
+                let lonDeg = parseFloat(dmsMatch[6]), lonMin = parseFloat(dmsMatch[7]), lonSec = parseFloat(dmsMatch[8]);
+                let lonDir = dmsMatch[10].toUpperCase();
+                let lon = lonDeg + lonMin / 60 + lonSec / 3600;
+                if (lonDir === 'W') lon = -lon;
+
+                return { lat: lat, lon: lon };
+            }
+
+            // Standaard decimale coördinaten (bijv. 51.2194, 4.4025)
+            let coordsMatch = str.match(/([0-9]+\.[0-9]+)[^0-9\-]+([0-9]+\.[0-9]+)/);
+            if (coordsMatch) {
+                return { lat: parseFloat(coordsMatch[1]), lon: parseFloat(coordsMatch[2]) };
+            }
+
+            return null;
+        }
+
         window.opslaanVondst = async function() {
             const bewerkId = document.getElementById('bewerk-id').value;
+            let gpsInput = document.getElementById('locatie-gps').value.trim();
+
+            // Als het een korte Google Maps link is die niet direct coördinaten bevat, proberen op te lossen of waarschuwen
+            if (gpsInput.includes('maps.app.goo.gl')) {
+                try {
+                    let response = await fetch(gpsInput, { method: 'HEAD', redirect: 'follow' });
+                    if (response.url) {
+                        gpsInput = response.url; // De volledige uitgevouwen URL
+                    }
+                } catch(e) {
+                    // CORS kan dit blokkeren in sommige browsers, dan vallen we terug op de tekst
+                }
+            }
+
             const data = {
                 categorie: document.getElementById('categorie').value,
                 materiaal: document.getElementById('materiaal').value,
@@ -1069,7 +1126,7 @@
                 titel: document.getElementById('titel').value || 'Naamloze Vondst',
                 datering: document.getElementById('datering').value,
                 locatieNaam: document.getElementById('locatie-naam').value,
-                locatieGps: document.getElementById('locatie-gps').value,
+                locatieGps: gpsInput,
                 weblink: document.getElementById('weblink').value,
                 info: document.getElementById('info').value,
                 foto1: fotoData[1].url, foto1Ref: fotoData[1].isReferentie,
@@ -1109,7 +1166,7 @@
 
                 updateStatistieken();
                 toonVondsten();
-            } catch (err) {
+            } cache (err) {
                 console.error("Fout bij laden van vondsten:", err);
             }
         }
@@ -1166,6 +1223,28 @@
             }
         }
 
+        async function haalAdresOp(lat, lon, elementId) {
+            try {
+                let res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`, {
+                    headers: { 'Accept-Language': 'nl' }
+                });
+                let data = await res.json();
+                if (data && data.display_name) {
+                    let el = document.getElementById(elementId);
+                    if (el) {
+                        // Maak een korter, leesbaar adres (straat + plaats of gemeente)
+                        let addr = data.address;
+                        let straat = addr.road || addr.suburb || addr.village || '';
+                        let stad = addr.city || addr.town || addr.municipality || addr.county || '';
+                        let leesbaar = (straat && stad) ? `${straat}, ${stad}` : (straat || stad || data.display_name);
+                        el.innerHTML = `📍 <b>Adres/Gebied:</b> ${escapeHtml(leesbaar)}`;
+                    }
+                }
+            } catch(e) {
+                // Stil falen als internet of nominatim trager is
+            }
+        }
+
         function initialiseerKaart() {
             const mapContainer = document.getElementById('map-container');
             
@@ -1182,16 +1261,14 @@
 
             markersLayer.clearLayers();
 
-            let heeftPuntjes = false;
             let bounds = [];
 
-            alleVondsten.forEach(v => {
+            alleVondsten.forEach((v, index) => {
                 if (v.locatieGps) {
-                    let coordsMatch = v.locatieGps.match(/([0-9]+\.[0-9]+)[^0-9\-]+([0-9]+\.[0-9]+)/);
-                    if (coordsMatch) {
-                        let lat = parseFloat(coordsMatch[1]);
-                        let lon = parseFloat(coordsMatch[2]);
-                        heeftPuntjes = true;
+                    let coords = parseCoords(v.locatieGps);
+                    if (coords) {
+                        let lat = coords.lat;
+                        let lon = coords.lon;
                         bounds.push([lat, lon]);
 
                         let thumbnailHtml = '';
@@ -1210,12 +1287,14 @@
                             }
                         }
                         
+                        let adresId = `kaart-adres-${index}`;
                         let popupContent = `
-                            <div style="font-family:'Segoe UI',sans-serif; text-align:center; min-width:120px;">
+                            <div style="font-family:'Segoe UI',sans-serif; text-align:center; min-width:140px;">
                                 ${thumbnailHtml}
                                 <b style="color:#d97706; font-size:14px;">${escapeHtml(v.titel)}</b><br>
                                 <span style="font-size:12px; color:#333;"><b>Cat:</b> ${escapeHtml(v.categorie)}</span><br>
-                                <span style="font-size:12px; color:#555;"><b>Datum:</b> ${escapeHtml(v.vondstDatum || 'Onbekend')}</span>
+                                <span style="font-size:12px; color:#555;"><b>Datum:</b> ${escapeHtml(v.vondstDatum || 'Onbekend')}</span><br>
+                                <div id="${adresId}" style="font-size:11.5px; color:#1e293b; margin-top:4px; border-top:1px solid #ddd; padding-top:3px;">📍 Adres laden...</div>
                             </div>
                         `;
 
@@ -1228,6 +1307,12 @@
                         });
 
                         let marker = L.marker([lat, lon], { icon: customIcon }).bindPopup(popupContent);
+                        
+                        // Zodra iemand op het pinnetje klikt om de pop-up te openen, halen we het adres op
+                        marker.on('popupopen', () => {
+                            haalAdresOp(lat, lon, adresId);
+                        });
+
                         markersLayer.addLayer(marker);
                     }
                 }
