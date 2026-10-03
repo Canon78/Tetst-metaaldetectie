@@ -282,6 +282,21 @@
         .tab.active[data-cat="Hangertjes"] { background-color: var(--col-hangertjes); border-color: var(--col-hangertjes); color: #000; font-weight: bold; }
         .tab.active[data-cat="Varia"] { background-color: var(--col-varia); border-color: var(--col-varia); color: #000; font-weight: bold; }
         .tab.active[data-cat="Keramiek"] { background-color: var(--col-keramiek); border-color: var(--col-keramiek); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Kaart"] { background-color: var(--accent-blue); border-color: var(--accent-blue); color: #fff; font-weight: bold; }
+
+        /* Kaart stijling */
+        #map-container {
+            display: none;
+            width: 100%;
+            height: 550px;
+            border-radius: 12px;
+            border: 2px solid #334155;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        #map-container.active {
+            display: block;
+        }
 
         .vondst-card {
             background-color: var(--card-bg);
@@ -778,7 +793,7 @@
         </div>
     </div>
 
-    <!-- Categorie Filter Tabs -->
+    <!-- Categorie Filter Tabs & Kaart Tab -->
     <div class="tabs" id="filter-tabs">
         <div class="tab active" data-cat="Alles" onclick="filterCategorie('Alles', this)">📜 Alle Vondsten</div>
         <div class="tab" data-cat="Munten" onclick="filterCategorie('Munten', this)">🪙 Munten</div>
@@ -790,6 +805,7 @@
         <div class="tab" data-cat="Hangertjes" onclick="filterCategorie('Hangertjes', this)">📿 Hangertjes</div>
         <div class="tab" data-cat="Varia" onclick="filterCategorie('Varia', this)">📦 Varia</div>
         <div class="tab" data-cat="Keramiek" onclick="filterCategorie('Keramiek', this)">🏺 Keramiek</div>
+        <div class="tab" data-cat="Kaart" onclick="filterCategorie('Kaart', this)">🗺️ Kaart (Overzicht)</div>
     </div>
 
     <!-- Zoekbalk met Zoekknop -->
@@ -797,6 +813,9 @@
         <input type="text" id="zoek-input" class="search-input" placeholder="🔍 Zoek op titel, datering, materiaal, locatie of info...">
         <button type="button" class="search-btn" onclick="toonVondsten()">Zoek</button>
     </div>
+
+    <!-- Interactieve Kaart Container -->
+    <div id="map-container"></div>
 
     <div id="vondsten-lijst"></div>
 
@@ -827,6 +846,9 @@
         let alleVondsten = [];
         let huidigeFilter = 'Alles';
         let fotoData = { 1: '', 2: '', 3: '' };
+        
+        let map = null;
+        let markersLayer = null;
 
         window.toggleInvoerFormulier = function() {
             const page = document.getElementById('page-invoer');
@@ -834,13 +856,20 @@
             const filterTabs = document.getElementById('filter-tabs');
             const zoekSectie = document.getElementById('zoek-sectie');
             const lijstContainer = document.getElementById('vondsten-lijst');
+            const mapContainer = document.getElementById('map-container');
 
             if (page.classList.contains('active')) {
                 page.classList.remove('active');
                 btn.textContent = "➕ Nieuwe Vondst";
                 filterTabs.style.display = 'flex';
                 zoekSectie.style.display = 'flex';
-                lijstContainer.style.display = 'block';
+                if (huidigeFilter === 'Kaart') {
+                    mapContainer.classList.add('active');
+                    lijstContainer.style.display = 'none';
+                } else {
+                    lijstContainer.style.display = 'block';
+                    mapContainer.classList.remove('active');
+                }
                 leegFormulier();
             } else {
                 page.classList.add('active');
@@ -848,6 +877,7 @@
                 filterTabs.style.display = 'none';
                 zoekSectie.style.display = 'none';
                 lijstContainer.style.display = 'none';
+                mapContainer.classList.remove('active');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
@@ -1008,8 +1038,76 @@
                 document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
                 tabElement.classList.add('active');
             }
-            toonVondsten();
+
+            const mapContainer = document.getElementById('map-container');
+            const lijstContainer = document.getElementById('vondsten-lijst');
+            const zoekSectie = document.getElementById('zoek-sectie');
+
+            if (cat === 'Kaart') {
+                mapContainer.classList.add('active');
+                lijstContainer.style.display = 'none';
+                zoekSectie.style.display = 'none';
+                initialiseerKaart();
+            } else {
+                mapContainer.classList.remove('active');
+                lijstContainer.style.display = 'block';
+                zoekSectie.style.display = 'flex';
+                toonVondsten();
+            }
         };
+
+        function initialiseerKaart() {
+            const mapContainer = document.getElementById('map-container');
+            
+            // Als de kaart al bestaat, even hertekenen
+            if (!map) {
+                // Standaard coördinaten op Stabroek gezet (Antwerpen, België)
+                map = L.map('map-container').setView([51.3400, 4.4000], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+                markersLayer = L.layerGroup().addTo(map);
+            } else {
+                map.invalidateSize();
+            }
+
+            markersLayer.clearLayers();
+
+            let heeftPuntjes = false;
+            let bounds = [];
+
+            alleVondsten.forEach(v => {
+                if (v.locatieGps) {
+                    // Haal coördinaten uit string (bijv. "51.321, 4.392")
+                    let coordsMatch = v.locatieGps.match(/([0-9]+\.[0-9]+)[^0-9\-]+([0-9]+\.[0-9]+)/);
+                    if (coordsMatch) {
+                        let lat = parseFloat(coordsMatch[1]);
+                        let lon = parseFloat(coordsMatch[2]);
+                        heeftPuntjes = true;
+                        bounds.push([lat, lon]);
+
+                        let thumbnailHtml = v.foto1 ? `<img src="${v.foto1}" style="width:60px; height:60px; object-fit:contain; border-radius:4px; margin-bottom:5px; display:block;">` : '';
+                        
+                        let popupContent = `
+                            <div style="font-family:'Segoe UI',sans-serif; text-align:center; min-width:120px;">
+                                ${thumbnailHtml}
+                                <b style="color:#d97706; font-size:14px;">${escapeHtml(v.titel)}</b><br>
+                                <span style="font-size:12px; color:#333;"><b>Cat:</b> ${escapeHtml(v.categorie)}</span><br>
+                                <span style="font-size:12px; color:#555;"><b>Periode:</b> ${escapeHtml(v.datering || 'Onbekend')}</span>
+                            </div>
+                        `;
+
+                        let marker = L.marker([lat, lon]).bindPopup(popupContent);
+                        markersLayer.addLayer(marker);
+                    }
+                }
+            });
+
+            if (bounds.length > 0) {
+                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+            }
+        }
 
         const zoekInputEl = document.getElementById('zoek-input');
         zoekInputEl.addEventListener('input', () => toonVondsten());
@@ -1139,6 +1237,7 @@
             document.getElementById('filter-tabs').style.display = 'none';
             document.getElementById('zoek-sectie').style.display = 'none';
             document.getElementById('vondsten-lijst').style.display = 'none';
+            document.getElementById('map-container').classList.remove('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
