@@ -607,6 +607,7 @@
             <div class="stat-lbl">🏺 Overig</div>
         </div>
     </div>
+
     <!-- Invoerformulier -->
     <div id="page-invoer" class="app-page">
         <div class="form-container">
@@ -747,13 +748,13 @@
         <div class="tab" data-cat="Munten" onclick="filterCategorie('Munten', this)">🪙 Munten</div>
         <div class="tab" data-cat="Gespen" onclick="filterCategorie('Gespen', this)">🔍 Gespen</div>
         <div class="tab" data-cat="Knopen" onclick="filterCategorie('Knopen', this)">🧷 Knopen</div>
-        <div class="tab" data-cat="Militaria" onclick="filterCategorie('Militaria', this)">🛡️ Militaria</div>
+        <div class="tab" data-cat="Militaria" onclick="filterCategorie('Militaria', this)">🛡️️ Militaria</div>
         <div class="tab" data-cat="Gebruiksvoorwerpen" onclick="filterCategorie('Gebruiksvoorwerpen', this)">🗝️ Gebruiksvoorwerpen</div>
         <div class="tab" data-cat="Overig" onclick="filterCategorie('Overig', this)">🏺 Overig</div>
     </div>
 
     <!-- Zoekbalk met Zoekknop -->
-    <div class="search-container">
+    <div class="search-container" id="zoek-sectie">
         <input type="text" id="zoek-input" class="search-input" placeholder="🔍 Zoek op titel, datering, materiaal, locatie of info...">
         <button type="button" class="search-btn" onclick="toonVondsten()">Zoek</button>
     </div>
@@ -791,13 +792,25 @@
         window.toggleInvoerFormulier = function() {
             const page = document.getElementById('page-invoer');
             const btn = document.getElementById('top-toggle-btn');
+            const filterTabs = document.getElementById('filter-tabs');
+            const zoekSectie = document.getElementById('zoek-sectie');
+            const lijstContainer = document.getElementById('vondsten-lijst');
+
             if (page.classList.contains('active')) {
+                // Sluit formulier, toon tabs, zoekbalk en lijst weer
                 page.classList.remove('active');
                 btn.textContent = "➕ Nieuwe Vondst";
+                filterTabs.style.display = 'flex';
+                zoekSectie.style.display = 'flex';
+                lijstContainer.style.display = 'block';
                 leegFormulier();
             } else {
+                // Open formulier, verberg tabs, zoekbalk en lijst zodat je alleen het formulier ziet
                 page.classList.add('active');
                 btn.textContent = "✖ Sluiten";
+                filterTabs.style.display = 'none';
+                zoekSectie.style.display = 'none';
+                lijstContainer.style.display = 'none';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
@@ -925,6 +938,13 @@
                 querySnapshot.forEach((docSnap) => {
                     alleVondsten.push({ id: docSnap.id, ...docSnap.data() });
                 });
+
+                alleVondsten.sort((a, b) => {
+                    const datumA = a.datumToegevoegd ? new Date(a.datumToegevoegd) : new Date(0);
+                    const datumB = b.datumToegevoegd ? new Date(b.datumToegevoegd) : new Date(0);
+                    return datumB - datumA;
+                });
+
                 updateStatistieken();
                 toonVondsten();
             } catch (err) {
@@ -948,11 +968,9 @@
                 document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
                 tabElement.classList.add('active');
             }
-            // Als er op een categorie-tab geklikt wordt, zetten we de zoekbalk automatisch op 'Alles' tab zodat je direct al je vondsten binnen die categorie ziet
             toonVondsten();
         };
 
-        // Zorg dat live meefiteren én Enter toets correct werken
         const zoekInputEl = document.getElementById('zoek-input');
         zoekInputEl.addEventListener('input', () => toonVondsten());
         zoekInputEl.addEventListener('keypress', (e) => {
@@ -967,12 +985,10 @@
             const zoekTerm = document.getElementById('zoek-input').value.toLowerCase().trim();
             lijstContainer.innerHTML = '';
 
-            // Als er gezocht wordt, zetten we het filter eventueel automatisch naar 'Alles' als de gebruiker per ongeluk in een specifieke categorie zat te zoeken waar het niet in stond
             let gefilterd = huidigeFilter === 'Alles' 
                 ? alleVondsten 
                 : alleVondsten.filter(v => v.categorie === huidigeFilter);
 
-            // Als er een zoekterm is ingevuld, doorzoeken we óók over alle categorieën heen of binnen de geselecteerde categorie
             let bronLijst = (zoekTerm !== '' && huidigeFilter === 'Alles') ? alleVondsten : gefilterd;
 
             if (zoekTerm !== '') {
@@ -1077,8 +1093,13 @@
                     document.getElementById(`wrapper-preview${num}`).style.display = 'none';
                 }
             });
+            
+            // Open formulier en verberg tabs/zoekbalk/lijst
             document.getElementById('page-invoer').classList.add('active');
             document.getElementById('top-toggle-btn').textContent = "✖ Sluiten";
+            document.getElementById('filter-tabs').style.display = 'none';
+            document.getElementById('zoek-sectie').style.display = 'none';
+            document.getElementById('vondsten-lijst').style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -1125,7 +1146,6 @@
                       .replace(/'/g, "&#039;");
         }
 
-        // Start applicatie door vondsten in te laden
         laadVondsten();
     </script>
 </body>
