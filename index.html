@@ -28,7 +28,7 @@
             --col-loodjes: #f97316;
             --col-hangertjes: #ec4899;
             --col-varia: #8b5cf6;
-            --col-keramiek: #14b8a6;
+            --col-keramiek: #d97706; /* Warme terracotta/aardewerk kleur */
         }
         html {
             scroll-behavior: smooth;
@@ -123,7 +123,7 @@
         .stat-item.lood { border-color: var(--col-loodjes); background: linear-gradient(135deg, #1a202c 0%, rgba(249, 115, 22, 0.18) 100%); }
         .stat-item.hang { border-color: var(--col-hangertjes); background: linear-gradient(135deg, #1a202c 0%, rgba(236, 72, 153, 0.18) 100%); }
         .stat-item.varia { border-color: var(--col-varia); background: linear-gradient(135deg, #1a202c 0%, rgba(139, 92, 246, 0.18) 100%); }
-        .stat-item.kera { border-color: var(--col-keramiek); background: linear-gradient(135deg, #1a202c 0%, rgba(20, 184, 166, 0.18) 100%); }
+        .stat-item.kera { border-color: var(--col-keramiek); background: linear-gradient(135deg, #1a202c 0%, rgba(217, 119, 6, 0.18) 100%); }
 
         .stat-val {
             font-size: 22px;
@@ -281,7 +281,7 @@
         .tab.active[data-cat="Loodjes"] { background-color: var(--col-loodjes); border-color: var(--col-loodjes); color: #000; font-weight: bold; }
         .tab.active[data-cat="Hangertjes"] { background-color: var(--col-hangertjes); border-color: var(--col-hangertjes); color: #000; font-weight: bold; }
         .tab.active[data-cat="Varia"] { background-color: var(--col-varia); border-color: var(--col-varia); color: #000; font-weight: bold; }
-        .tab.active[data-cat="Keramiek"] { background-color: var(--col-keramiek); border-color: var(--col-keramiek); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Keramiek"] { background-color: var(--col-keramiek); border-color: var(--col-keramiek); color: #fff; font-weight: bold; }
         .tab.active[data-cat="Kaart"] { background-color: var(--accent-blue); border-color: var(--accent-blue); color: #fff; font-weight: bold; }
 
         /* Kaart stijling */
@@ -358,7 +358,7 @@
         .cat-Loodjes .vondst-grid-meta { background-color: rgba(249, 115, 22, 0.12); border-left-color: var(--col-loodjes); }
         .cat-Hangertjes .vondst-grid-meta { background-color: rgba(236, 72, 153, 0.12); border-left-color: var(--col-hangertjes); }
         .cat-Varia .vondst-grid-meta { background-color: rgba(139, 92, 246, 0.12); border-left-color: var(--col-varia); }
-        .cat-Keramiek .vondst-grid-meta { background-color: rgba(20, 184, 166, 0.12); border-left-color: var(--col-keramiek); }
+        .cat-Keramiek .vondst-grid-meta { background-color: rgba(217, 119, 6, 0.12); border-left-color: var(--col-keramiek); }
 
         .vondst-meta {
             font-size: 14px;
@@ -804,7 +804,7 @@
                         <option value="eigen">📸 Eigen Vondst</option>
                         <option value="referentie">💡 Originele Staat / Ref</option>
                     </select>
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️️ Wis</button>
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis</button>
                 </div>
                 <div id="wrapper-preview2" class="preview-wrapper">
                     <span>Foto 2</span>
@@ -813,7 +813,7 @@
                         <option value="eigen">📸 Eigen Vondst</option>
                         <option value="referentie">💡 Originele Staat / Ref</option>
                     </select>
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis</button>
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️️ Wis</button>
                 </div>
                 <div id="wrapper-preview3" class="preview-wrapper">
                     <span>Foto 3</span>
@@ -1146,7 +1146,7 @@
                 case 'Loodjes': return '#f97316';
                 case 'Hangertjes': return '#ec4899';
                 case 'Varia': return '#8b5cf6';
-                case 'Keramiek': return '#14b8a6';
+                case 'Keramiek': return '#d97706';
                 default: return '#f1c40f';
             }
         }
@@ -1180,14 +1180,12 @@
                         bounds.push([lat, lon]);
 
                         let thumbnailHtml = '';
-                        // Zoek de eerste eigen foto voor de thumbnail in de popup
                         for(let i=1; i<=4; i++) {
                             if(v[`foto${i}`] && !v[`foto${i}Ref`]) {
                                 thumbnailHtml = `<img src="${v[`foto${i}`]}" style="width:60px; height:60px; object-fit:contain; border-radius:4px; margin-bottom:5px; display:block;">`;
                                 break;
                             }
                         }
-                        // Als er geen eigen foto is, neem dan de eerste die er wel is
                         if(!thumbnailHtml) {
                             for(let i=1; i<=4; i++) {
                                 if(v[`foto${i}`]) {
@@ -1206,7 +1204,6 @@
                             </div>
                         `;
 
-                        // Maak een gekleurde cirkelpion op basis van de categoriekleur
                         let catKleur = getCategorieKleur(v.categorie);
                         let customIcon = L.divIcon({
                             className: 'custom-map-pin',
