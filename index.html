@@ -655,7 +655,7 @@
         </div>
         <div class="stat-item mili" onclick="filterCategorie('Militaria')">
             <div class="stat-val" id="stat-militaria">0</div>
-            <div class="stat-lbl">🛡️ Militaria</div>
+            <div class="stat-lbl">🛡️️ Militaria</div>
         </div>
         <div class="stat-item voorw" onclick="filterCategorie('Gebruiksvoorwerpen')">
             <div class="stat-val" id="stat-voorwerpen">0</div>
@@ -725,6 +725,10 @@
                 </div>
             </div>
             <div class="form-row">
+                <div class="form-group">
+                    <label for="vondstDatum">📅 Vondstdatum</label>
+                    <input type="date" id="vondstDatum">
+                </div>
                 <div class="form-group">
                     <label for="staat">Staat van de vondst</label>
                     <select id="staat">
@@ -936,6 +940,7 @@
                 zoekSectie.style.display = 'none';
                 lijstContainer.style.display = 'none';
                 mapContainer.classList.remove('active');
+                leegFormulier(); // Zorgt dat de datum op vandaag springt bij openen
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
@@ -1020,6 +1025,11 @@
             document.getElementById('categorie').value = 'Munten';
             document.getElementById('materiaal').value = 'Onbekend';
             document.getElementById('vondstType').value = 'Signaal (Metaaldetector)';
+            
+            // Stel standaard vandaag in (YYYY-MM-DD formaat)
+            const vandaag = new Date().toISOString().split('T')[0];
+            document.getElementById('vondstDatum').value = vandaag;
+
             document.getElementById('staat').value = 'Bodemvondst (Topeffect)';
             document.getElementById('diameter').value = '';
             document.getElementById('gewicht').value = '';
@@ -1052,6 +1062,7 @@
                 categorie: document.getElementById('categorie').value,
                 materiaal: document.getElementById('materiaal').value,
                 vondstType: document.getElementById('vondstType').value,
+                vondstDatum: document.getElementById('vondstDatum').value,
                 staat: document.getElementById('staat').value,
                 diameter: document.getElementById('diameter').value,
                 gewicht: document.getElementById('gewicht').value,
@@ -1091,8 +1102,8 @@
                 });
 
                 alleVondsten.sort((a, b) => {
-                    const datumA = a.datumToegevoegd ? new Date(a.datumToegevoegd) : new Date(0);
-                    const datumB = b.datumToegevoegd ? new Date(b.datumToegevoegd) : new Date(0);
+                    const datumA = a.vondstDatum ? new Date(a.vondstDatum) : (a.datumToegevoegd ? new Date(a.datumToegevoegd) : new Date(0));
+                    const datumB = b.vondstDatum ? new Date(b.vondstDatum) : (b.datumToegevoegd ? new Date(b.datumToegevoegd) : new Date(0));
                     return datumB - datumA;
                 });
 
@@ -1204,7 +1215,7 @@
                                 ${thumbnailHtml}
                                 <b style="color:#d97706; font-size:14px;">${escapeHtml(v.titel)}</b><br>
                                 <span style="font-size:12px; color:#333;"><b>Cat:</b> ${escapeHtml(v.categorie)}</span><br>
-                                <span style="font-size:12px; color:#555;"><b>Periode:</b> ${escapeHtml(v.datering || 'Onbekend')}</span>
+                                <span style="font-size:12px; color:#555;"><b>Datum:</b> ${escapeHtml(v.vondstDatum || 'Onbekend')}</span>
                             </div>
                         `;
 
@@ -1253,6 +1264,7 @@
                         (v.datering && v.datering.toLowerCase().includes(zoekTerm)) ||
                         (v.materiaal && v.materiaal.toLowerCase().includes(zoekTerm)) ||
                         (v.locatieNaam && v.locatieNaam.toLowerCase().includes(zoekTerm)) ||
+                        (v.vondstDatum && v.vondstDatum.toLowerCase().includes(zoekTerm)) ||
                         (v.info && v.info.toLowerCase().includes(zoekTerm)) ||
                         (v.staat && v.staat.toLowerCase().includes(zoekTerm)) ||
                         (v.categorie && v.categorie.toLowerCase().includes(zoekTerm))
@@ -1300,6 +1312,7 @@
                         <span class="vondst-cat-badge">${escapeHtml(v.categorie)}</span>
                     </div>
                     <div class="vondst-grid-meta">
+                        <div class="vondst-meta"><b>Datum:</b> ${escapeHtml(v.vondstDatum || '-')}</div>
                         <div class="vondst-meta"><b>Periode:</b> ${escapeHtml(v.datering || 'Onbekend')}</div>
                         <div class="vondst-meta"><b>Materiaal:</b> ${escapeHtml(v.materiaal)}</div>
                         <div class="vondst-meta"><b>Staat:</b> ${escapeHtml(v.staat)}</div>
@@ -1345,6 +1358,7 @@
             document.getElementById('categorie').value = v.categorie || 'Munten';
             document.getElementById('materiaal').value = v.materiaal || 'Onbekend';
             document.getElementById('vondstType').value = v.vondstType || 'Signaal (Metaaldetector)';
+            document.getElementById('vondstDatum').value = v.vondstDatum || new Date().toISOString().split('T')[0];
             document.getElementById('staat').value = v.staat || 'Bodemvondst (Topeffect)';
             document.getElementById('diameter').value = v.diameter || '';
             document.getElementById('gewicht').value = v.gewicht || '';
