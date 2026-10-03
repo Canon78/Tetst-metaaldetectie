@@ -23,10 +23,11 @@
            --btn-green: #2ecc71;
            --btn-purple: #9b59b6;
 
-           /* Fellere, sprekendere categoriekleuren */
+           /* Fellere, sprekendere categoriekleuren inclusief Hangertjes & Loodjes */
            --col-munten: #ffd700;
            --col-gespen: #00b4d8;
            --col-knopen: #00f5d4;
+           --col-hangertjes: #f43f5e; /* Nieuwe mooie roze/rode kleur voor hangertjes en loodjes */
            --col-militaria: #ff4d4d;
            --col-voorwerpen: #00e676;
            --col-overig: #d946ef;
@@ -113,9 +114,9 @@
 
         .stat-item {
             flex: 1;
-            min-width: 110px;
+            min-width: 100px;
            text-align: center;
-            padding: 12px 8px;
+            padding: 12px 6px;
            border-radius: 8px;
             border: 1px solid #334155;
            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -130,12 +131,13 @@
         .stat-item.munt { border-color: var(--col-munten); background: linear-gradient(135deg, #1a202c 0%, rgba(255, 215, 0, 0.18) 100%); }
         .stat-item.gesp { border-color: var(--col-gespen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 180, 216, 0.18) 100%); }
         .stat-item.knoop { border-color: var(--col-knopen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 245, 212, 0.18) 100%); }
+        .stat-item.hangertje { border-color: var(--col-hangertjes); background: linear-gradient(135deg, #1a202c 0%, rgba(244, 63, 94, 0.18) 100%); }
         .stat-item.mili { border-color: var(--col-militaria); background: linear-gradient(135deg, #1a202c 0%, rgba(255, 77, 77, 0.18) 100%); }
         .stat-item.voorw { border-color: var(--col-voorwerpen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 230, 118, 0.18) 100%); }
         .stat-item.over { border-color: var(--col-overig); background: linear-gradient(135deg, #1a202c 0%, rgba(217, 70, 239, 0.18) 100%); }
 
         .stat-val {
-            font-size: 22px;
+            font-size: 20px;
            font-weight: bold;
             color: white;
            margin-bottom: 2px;
@@ -143,7 +145,7 @@
         .stat-item.total .stat-val { color: var(--accent-gold); }
 
         .stat-lbl {
-            font-size: 11px;
+            font-size: 10px;
             color: #cbd5e1;
            text-transform: uppercase;
            letter-spacing: 0.5px;
@@ -268,6 +270,7 @@
         .tab.active[data-cat="Munten"] { background-color: var(--col-munten); border-color: var(--col-munten); color: #000; font-weight: bold; }
         .tab.active[data-cat="Gespen"] { background-color: var(--col-gespen); border-color: var(--col-gespen); color: #000; font-weight: bold; }
         .tab.active[data-cat="Knopen"] { background-color: var(--col-knopen); border-color: var(--col-knopen); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Hangertjes en loodjes"] { background-color: var(--col-hangertjes); border-color: var(--col-hangertjes); color: #fff; font-weight: bold; }
         .tab.active[data-cat="Militaria"] { background-color: var(--col-militaria); border-color: var(--col-militaria); color: #000; font-weight: bold; }
         .tab.active[data-cat="Gebruiksvoorwerpen"] { background-color: var(--col-voorwerpen); border-color: var(--col-voorwerpen); color: #000; font-weight: bold; }
         .tab.active[data-cat="Overig"] { background-color: var(--col-overig); border-color: var(--col-overig); color: #000; font-weight: bold; }
@@ -284,6 +287,7 @@
         .vondst-card.cat-Munten { border-left-color: var(--col-munten); }
         .vondst-card.cat-Gespen { border-left-color: var(--col-gespen); }
         .vondst-card.cat-Knopen { border-left-color: var(--col-knopen); }
+        .vondst-card.cat-Hangertjes_en_loodjes { border-left-color: var(--col-hangertjes); }
         .vondst-card.cat-Militaria { border-left-color: var(--col-militaria); }
         .vondst-card.cat-Gebruiksvoorwerpen { border-left-color: var(--col-voorwerpen); }
         .vondst-card.cat-Overig { border-left-color: var(--col-overig); }
@@ -329,6 +333,7 @@
         .cat-Munten .vondst-grid-meta { background-color: rgba(255, 215, 0, 0.12); border-left-color: var(--col-munten); }
         .cat-Gespen .vondst-grid-meta { background-color: rgba(0, 180, 216, 0.12); border-left-color: var(--col-gespen); }
         .cat-Knopen .vondst-grid-meta { background-color: rgba(0, 245, 212, 0.12); border-left-color: var(--col-knopen); }
+        .cat-Hangertjes_en_loodjes .vondst-grid-meta { background-color: rgba(244, 63, 94, 0.12); border-left-color: var(--col-hangertjes); }
         .cat-Militaria .vondst-grid-meta { background-color: rgba(255, 77, 77, 0.12); border-left-color: var(--col-militaria); }
         .cat-Gebruiksvoorwerpen .vondst-grid-meta { background-color: rgba(0, 230, 118, 0.12); border-left-color: var(--col-voorwerpen); }
         .cat-Overig .vondst-grid-meta { background-color: rgba(217, 70, 239, 0.12); border-left-color: var(--col-overig); }
@@ -628,6 +633,10 @@
             <div class="stat-val" id="stat-knopen">0</div>
             <div class="stat-lbl">🧷 Knopen</div>
         </div>
+        <div class="stat-item hangertje" onclick="filterCategorie('Hangertjes en loodjes')">
+            <div class="stat-val" id="stat-hangertjes">0</div>
+            <div class="stat-lbl">💎 Hangertjes & Loodjes</div>
+        </div>
         <div class="stat-item mili" onclick="filterCategorie('Militaria')">
             <div class="stat-val" id="stat-militaria">0</div>
             <div class="stat-lbl">🛡️ Militaria</div>
@@ -655,6 +664,7 @@
                        <option value="Munten">🪙 Munten</option>
                        <option value="Gespen">🔍 Gespen</option>
                        <option value="Knopen">🧷 Knopen</option>
+                       <option value="Hangertjes en loodjes">💎 Hangertjes en loodjes</option>
                        <option value="Militaria">🛡️ Militaria</option>
                        <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
                        <option value="Overig">🏺 Overig / Keramiek</option>
@@ -709,7 +719,7 @@
 
             <div class="form-group">
                <label for="titel">Beschrijving / Naam</label>
-               <input type="text" id="titel" placeholder="Bijv. Romeinse denarius, koperen knoop...">
+               <input type="text" id="titel" placeholder="Bijv. Loden pelgrimsloodje, bronzen hangertje...">
             </div>
 
             <div class="form-group">
@@ -760,7 +770,7 @@
                </div>
 
                <div class="form-group">
-                   <label for="foto3">🏛️ Foto 3 (Originele Staat / Referentie)</label>
+                   <label for="foto3">🏛️️ Foto 3 (Originele Staat / Referentie)</label>
                    <input type="file" id="foto3" accept="image/*" onchange="verwerkFoto(event, 3)">
                </div>
             </div>
@@ -796,6 +806,7 @@
         <div class="tab" data-cat="Munten" onclick="filterCategorie('Munten', this)">🪙 Munten</div>
         <div class="tab" data-cat="Gespen" onclick="filterCategorie('Gespen', this)">🔍 Gespen</div>
         <div class="tab" data-cat="Knopen" onclick="filterCategorie('Knopen', this)">🧷 Knopen</div>
+        <div class="tab" data-cat="Hangertjes en loodjes" onclick="filterCategorie('Hangertjes en loodjes', this)">💎 Hangertjes & Loodjes</div>
         <div class="tab" data-cat="Militaria" onclick="filterCategorie('Militaria', this)">🛡️ Militaria</div>
         <div class="tab" data-cat="Gebruiksvoorwerpen" onclick="filterCategorie('Gebruiksvoorwerpen', this)">🗝️ Gebruiksvoorwerpen</div>
         <div class="tab" data-cat="Overig" onclick="filterCategorie('Overig', this)">🏺 Overig</div>
@@ -967,6 +978,7 @@
             document.getElementById('stat-munten').innerText = alleVondsten.filter(v => v.categorie === 'Munten').length;
             document.getElementById('stat-gespen').innerText = alleVondsten.filter(v => v.categorie === 'Gespen').length;
             document.getElementById('stat-knopen').innerText = alleVondsten.filter(v => v.categorie === 'Knopen').length;
+            document.getElementById('stat-hangertjes').innerText = alleVondsten.filter(v => v.categorie === 'Hangertjes en loodjes').length;
             document.getElementById('stat-militaria').innerText = alleVondsten.filter(v => v.categorie === 'Militaria').length;
             document.getElementById('stat-voorwerpen').innerText = alleVondsten.filter(v => v.categorie === 'Gebruiksvoorwerpen').length;
             document.getElementById('stat-overig').innerText = alleVondsten.filter(v => v.categorie === 'Overig').length;
@@ -999,7 +1011,8 @@
 
             gefilterd.forEach(v => {
                 const card = document.createElement('div');
-                card.className = `vondst-card cat-${v.categorie}`;
+                const catClass = v.categorie ? v.categorie.replace(/ /g, '_') : 'Overig';
+                card.className = `vondst-card cat-${catClass}`;
                 
                 let fotosHtml = '';
                 [v.foto1, v.foto2, v.foto3].forEach((f, idx) => {
@@ -1059,7 +1072,7 @@
 
             document.getElementById('bewerk-id').value = v.id;
             document.getElementById('form-titel').innerText = 'Vondst Bewerken';
-            document.getElementById('categorie').value = v.categorie;
+            document.getElementById('categorie').value = v.categorie || 'Munten';
             document.getElementById('materiaal').value = v.materiaal;
             document.getElementById('vondstType').value = v.vondstType;
             document.getElementById('staat').value = v.staat;
