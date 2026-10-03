@@ -28,7 +28,7 @@
             --col-loodjes: #f97316;
             --col-hangertjes: #ec4899;
             --col-varia: #8b5cf6;
-            --col-keramiek: #d97706; /* Warme terracotta/aardewerk kleur */
+            --col-keramiek: #d97706;
         }
         html {
             scroll-behavior: smooth;
@@ -219,19 +219,19 @@
         .search-input:focus {
             border-color: var(--accent-gold);
         }
-        .search-btn {
-            background-color: var(--accent-gold);
-            color: #000;
-            border: none;
-            padding: 0 20px;
+        .clear-search-btn {
+            background-color: rgba(255, 56, 56, 0.2);
+            color: #ff6b6b;
+            border: 1px solid var(--accent-red);
+            padding: 0 16px;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
-            transition: opacity 0.2s;
+            transition: background-color 0.2s;
         }
-        .search-btn:hover {
-            opacity: 0.9;
+        .clear-search-btn:hover {
+            background-color: rgba(255, 56, 56, 0.35);
         }
         .quick-tags {
             display: flex;
@@ -813,7 +813,7 @@
                         <option value="eigen">📸 Eigen Vondst</option>
                         <option value="referentie">💡 Originele Staat / Ref</option>
                     </select>
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️️ Wis</button>
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis</button>
                 </div>
                 <div id="wrapper-preview3" class="preview-wrapper">
                     <span>Foto 3</span>
@@ -856,10 +856,10 @@
         <div class="tab" data-cat="Kaart" onclick="filterCategorie('Kaart', this)">🗺️ Kaart (Overzicht)</div>
     </div>
 
-    <!-- Zoekbalk met Zoekknop -->
+    <!-- Zoekbalk met Wisknop -->
     <div class="search-container" id="zoek-sectie">
         <input type="text" id="zoek-input" class="search-input" placeholder="🔍 Zoek op titel, datering, materiaal, locatie of info...">
-        <button type="button" class="search-btn" onclick="toonVondsten()">Zoek</button>
+        <button type="button" class="clear-search-btn" onclick="wisZoekbalk()">❌ Wis</button>
     </div>
 
     <!-- Interactieve Kaart Container -->
@@ -1225,12 +1225,11 @@
 
         const zoekInputEl = document.getElementById('zoek-input');
         zoekInputEl.addEventListener('input', () => toonVondsten());
-        zoekInputEl.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                toonVondsten();
-            }
-        });
+
+        window.wisZoekbalk = function() {
+            document.getElementById('zoek-input').value = '';
+            toonVondsten();
+        };
 
         window.toonVondsten = function() {
             const lijstContainer = document.getElementById('vondsten-lijst');
