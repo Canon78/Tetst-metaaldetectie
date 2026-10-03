@@ -419,6 +419,10 @@
             align-items: center;
             justify-content: center;
         }
+        /* Specifieke omlijsting/label voor de referentiefoto (foto 3) */
+        .img-wrapper.orig-staat-wrapper {
+            border: 2px dashed var(--accent-gold) !important;
+        }
         .card-img {
             width: 100%;
             height: 100%;
@@ -433,6 +437,18 @@
             border-radius: 4px;
             padding: 2px 5px;
             font-size: 10px;
+            pointer-events: none;
+            font-weight: bold;
+        }
+        .orig-label {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background-color: rgba(241, 196, 15, 0.9);
+            color: #000;
+            border-radius: 4px;
+            padding: 1px 4px;
+            font-size: 9px;
             pointer-events: none;
             font-weight: bold;
         }
@@ -455,6 +471,9 @@
             border-radius: 8px;
             border: 1px solid #475569;
             color: #cbd5e1;
+        }
+        .preview-wrapper.orig-staat-preview {
+            border: 1px dashed var(--accent-gold);
         }
         .preview-wrapper span {
             font-size: 12px;
@@ -765,7 +784,7 @@
                     <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 2)">
                 </div>
                 <div class="form-group">
-                    <label for="foto3">🏛️ Foto 3 (Originele Staat / Referentie)</label>
+                    <label for="foto3">💡 Foto 3 (Originele Staat / Referentie)</label>
                     <input type="file" id="foto3" accept="image/*" onchange="verwerkFoto(event, 3)">
                 </div>
             </div>
@@ -780,8 +799,8 @@
                     <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
                     <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis foto 2</button>
                 </div>
-                <div id="wrapper-preview3" class="preview-wrapper">
-                    <span>Origineel voorbeeld</span>
+                <div id="wrapper-preview3" class="preview-wrapper orig-staat-preview">
+                    <span>💡 Originele Staat</span>
                     <img id="img-preview3" class="preview-img" alt="Voorbeeld Origineel">
                     <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(3)">🗑️ Wis foto 3</button>
                 </div>
@@ -1059,9 +1078,7 @@
         function initialiseerKaart() {
             const mapContainer = document.getElementById('map-container');
             
-            // Als de kaart al bestaat, even hertekenen
             if (!map) {
-                // Standaard coördinaten op Stabroek gezet (Antwerpen, België)
                 map = L.map('map-container').setView([51.3400, 4.4000], 13);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
@@ -1079,7 +1096,6 @@
 
             alleVondsten.forEach(v => {
                 if (v.locatieGps) {
-                    // Haal coördinaten uit string (bijv. "51.321, 4.392")
                     let coordsMatch = v.locatieGps.match(/([0-9]+\.[0-9]+)[^0-9\-]+([0-9]+\.[0-9]+)/);
                     if (coordsMatch) {
                         let lat = parseFloat(coordsMatch[1]);
@@ -1152,16 +1168,29 @@
                 const card = document.createElement('div');
                 card.className = `vondst-card cat-${v.categorie}`;
                 let fotosHtml = '';
+                
                 [1, 2, 3].forEach(num => {
                     if (v[`foto${num}`]) {
-                        fotosHtml += `
-                            <div class="img-wrapper" onclick="openLightbox('${v[`foto${num}`]}')">
-                                <img src="${v[`foto${num}`]}" class="card-img" alt="Foto ${num}">
-                                <div class="zoom-icon">vergroot</div>
-                            </div>
-                        `;
+                        if (num === 3) {
+                            // Foto 3 krijgt een afwijkend stijltje met "Originele Staat" label
+                            fotosHtml += `
+                                <div class="img-wrapper orig-staat-wrapper" onclick="openLightbox('${v.foto3}')">
+                                    <img src="${v.foto3}" class="card-img" alt="Originele Staat">
+                                    <div class="orig-label">💡 Originele Staat</div>
+                                    <div class="zoom-icon">vergroot</div>
+                                </div>
+                            `;
+                        } else {
+                            fotosHtml += `
+                                <div class="img-wrapper" onclick="openLightbox('${v[`foto${num}`]}')">
+                                    <img src="${v[`foto${num}`]}" class="card-img" alt="Foto ${num}">
+                                    <div class="zoom-icon">vergroot</div>
+                                </div>
+                            `;
+                        }
                     }
                 });
+
                 card.innerHTML = `
                     <div class="vondst-header">
                         <span class="vondst-titel-text">${escapeHtml(v.titel)}</span>
