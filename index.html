@@ -1060,10 +1060,7 @@
             if (!inputStr) return null;
             let str = inputStr.trim();
 
-            // Check op Google Maps korte link of gewone url met @lat,lon
             if (str.includes('http://') || str.includes('https://')) {
-                // Als het een korte link is, kunnen we hem helaas niet direct uitlezen zonder server, 
-                // maar we kunnen proberen te kijken of er coördinaten in de url staan of een q= parameter
                 let latLonMatch = str.match(/@([0-9\.\-]+),([0-9\.\-]+)/);
                 if (latLonMatch) {
                     return { lat: parseFloat(latLonMatch[1]), lon: parseFloat(latLonMatch[2]) };
@@ -1074,7 +1071,6 @@
                 }
             }
 
-            // Check op graden notatie zoals 51°00'36.0"N 2°41'45.6"E
             let dmsMatch = str.match(/([0-9]+)[°\s]+([0-9]+)['\s]+([0-9]+(\.[0-9]+)?)["\s]*([NS])[,]?\s*([0-9]+)[°\s]+([0-9]+)['\s]+([0-9]+(\.[0-9]+)?)["\s]*([EW])/i);
             if (dmsMatch) {
                 let latDeg = parseFloat(dmsMatch[1]), latMin = parseFloat(dmsMatch[2]), latSec = parseFloat(dmsMatch[3]);
@@ -1090,7 +1086,6 @@
                 return { lat: lat, lon: lon };
             }
 
-            // Standaard decimale coördinaten (bijv. 51.2194, 4.4025)
             let coordsMatch = str.match(/([0-9]+\.[0-9]+)[^0-9\-]+([0-9]+\.[0-9]+)/);
             if (coordsMatch) {
                 return { lat: parseFloat(coordsMatch[1]), lon: parseFloat(coordsMatch[2]) };
@@ -1103,16 +1098,13 @@
             const bewerkId = document.getElementById('bewerk-id').value;
             let gpsInput = document.getElementById('locatie-gps').value.trim();
 
-            // Als het een korte Google Maps link is die niet direct coördinaten bevat, proberen op te lossen of waarschuwen
             if (gpsInput.includes('maps.app.goo.gl')) {
                 try {
                     let response = await fetch(gpsInput, { method: 'HEAD', redirect: 'follow' });
                     if (response.url) {
-                        gpsInput = response.url; // De volledige uitgevouwen URL
+                        gpsInput = response.url;
                     }
-                } catch(e) {
-                    // CORS kan dit blokkeren in sommige browsers, dan vallen we terug op de tekst
-                }
+                } catch(e) {}
             }
 
             const data = {
@@ -1166,7 +1158,7 @@
 
                 updateStatistieken();
                 toonVondsten();
-            } cache (err) {
+            } catch (err) {
                 console.error("Fout bij laden van vondsten:", err);
             }
         }
@@ -1232,7 +1224,6 @@
                 if (data && data.display_name) {
                     let el = document.getElementById(elementId);
                     if (el) {
-                        // Maak een korter, leesbaar adres (straat + plaats of gemeente)
                         let addr = data.address;
                         let straat = addr.road || addr.suburb || addr.village || '';
                         let stad = addr.city || addr.town || addr.municipality || addr.county || '';
@@ -1240,9 +1231,7 @@
                         el.innerHTML = `📍 <b>Adres/Gebied:</b> ${escapeHtml(leesbaar)}`;
                     }
                 }
-            } catch(e) {
-                // Stil falen als internet of nominatim trager is
-            }
+            } catch(e) {}
         }
 
         function initialiseerKaart() {
@@ -1308,7 +1297,6 @@
 
                         let marker = L.marker([lat, lon], { icon: customIcon }).bindPopup(popupContent);
                         
-                        // Zodra iemand op het pinnetje klikt om de pop-up te openen, halen we het adres op
                         marker.on('popupopen', () => {
                             haalAdresOp(lat, lon, adresId);
                         });
