@@ -804,7 +804,7 @@
                         <option value="eigen">📸 Eigen Vondst</option>
                         <option value="referentie">💡 Originele Staat / Ref</option>
                     </select>
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis</button>
+                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️️ Wis</button>
                 </div>
                 <div id="wrapper-preview2" class="preview-wrapper">
                     <span>Foto 2</span>
@@ -1136,6 +1136,21 @@
             }
         };
 
+        function getCategorieKleur(cat) {
+            switch(cat) {
+                case 'Munten': return '#ffd700';
+                case 'Gespen': return '#00b4d8';
+                case 'Knopen': return '#00f5d4';
+                case 'Militaria': return '#ff4d4d';
+                case 'Gebruiksvoorwerpen': return '#00e676';
+                case 'Loodjes': return '#f97316';
+                case 'Hangertjes': return '#ec4899';
+                case 'Varia': return '#8b5cf6';
+                case 'Keramiek': return '#14b8a6';
+                default: return '#f1c40f';
+            }
+        }
+
         function initialiseerKaart() {
             const mapContainer = document.getElementById('map-container');
             
@@ -1164,7 +1179,23 @@
                         heeftPuntjes = true;
                         bounds.push([lat, lon]);
 
-                        let thumbnailHtml = v.foto1 ? `<img src="${v.foto1}" style="width:60px; height:60px; object-fit:contain; border-radius:4px; margin-bottom:5px; display:block;">` : '';
+                        let thumbnailHtml = '';
+                        // Zoek de eerste eigen foto voor de thumbnail in de popup
+                        for(let i=1; i<=4; i++) {
+                            if(v[`foto${i}`] && !v[`foto${i}Ref`]) {
+                                thumbnailHtml = `<img src="${v[`foto${i}`]}" style="width:60px; height:60px; object-fit:contain; border-radius:4px; margin-bottom:5px; display:block;">`;
+                                break;
+                            }
+                        }
+                        // Als er geen eigen foto is, neem dan de eerste die er wel is
+                        if(!thumbnailHtml) {
+                            for(let i=1; i<=4; i++) {
+                                if(v[`foto${i}`]) {
+                                    thumbnailHtml = `<img src="${v[`foto${i}`]}" style="width:60px; height:60px; object-fit:contain; border-radius:4px; margin-bottom:5px; display:block;">`;
+                                    break;
+                                }
+                            }
+                        }
                         
                         let popupContent = `
                             <div style="font-family:'Segoe UI',sans-serif; text-align:center; min-width:120px;">
@@ -1175,7 +1206,16 @@
                             </div>
                         `;
 
-                        let marker = L.marker([lat, lon]).bindPopup(popupContent);
+                        // Maak een gekleurde cirkelpion op basis van de categoriekleur
+                        let catKleur = getCategorieKleur(v.categorie);
+                        let customIcon = L.divIcon({
+                            className: 'custom-map-pin',
+                            html: `<div style="background-color: ${catKleur}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 6px rgba(0,0,0,0.8);"></div>`,
+                            iconSize: [20, 20],
+                            iconAnchor: [10, 10]
+                        });
+
+                        let marker = L.marker([lat, lon], { icon: customIcon }).bindPopup(popupContent);
                         markersLayer.addLayer(marker);
                     }
                 }
