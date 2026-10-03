@@ -23,10 +23,12 @@
             --btn-green: #2ecc71;
             --btn-purple: #9b59b6;
 
-            /* Fellere, sprekendere categoriekleuren */
+            /* Categoriekleuren inclusief Loodjes en Hangertjes */
             --col-munten: #ffd700;
             --col-gespen: #00b4d8;
             --col-knopen: #00f5d4;
+            --col-loodjes: #94a3b8;
+            --col-hangertjes: #f472b6;
             --col-militaria: #ff4d4d;
             --col-voorwerpen: #00e676;
             --col-overig: #d946ef;
@@ -113,9 +115,9 @@
 
         .stat-item {
             flex: 1;
-            min-width: 110px;
+            min-width: 100px;
             text-align: center;
-            padding: 12px 8px;
+            padding: 12px 6px;
             border-radius: 8px;
             border: 1px solid #334155;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -130,6 +132,8 @@
         .stat-item.munt { border-color: var(--col-munten); background: linear-gradient(135deg, #1a202c 0%, rgba(255, 215, 0, 0.18) 100%); }
         .stat-item.gesp { border-color: var(--col-gespen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 180, 216, 0.18) 100%); }
         .stat-item.knoop { border-color: var(--col-knopen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 245, 212, 0.18) 100%); }
+        .stat-item.loodje { border-color: var(--col-loodjes); background: linear-gradient(135deg, #1a202c 0%, rgba(148, 163, 184, 0.18) 100%); }
+        .stat-item.hangertje { border-color: var(--col-hangertjes); background: linear-gradient(135deg, #1a202c 0%, rgba(244, 114, 182, 0.18) 100%); }
         .stat-item.mili { border-color: var(--col-militaria); background: linear-gradient(135deg, #1a202c 0%, rgba(255, 77, 77, 0.18) 100%); }
         .stat-item.voorw { border-color: var(--col-voorwerpen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 230, 118, 0.18) 100%); }
         .stat-item.over { border-color: var(--col-overig); background: linear-gradient(135deg, #1a202c 0%, rgba(217, 70, 239, 0.18) 100%); }
@@ -242,36 +246,6 @@
             color: white;
         }
 
-        .tabs {
-            display: flex;
-            overflow-x: auto;
-            gap: 8px;
-            margin-bottom: 20px;
-            padding-bottom: 5px;
-        }
-
-        .tab {
-            padding: 10px 18px;
-            background-color: var(--card-bg);
-            border-radius: 30px;
-            white-space: nowrap;
-            cursor: pointer;
-            border: 2px solid #475569;
-            font-size: 14px;
-            color: #cbd5e1;
-            font-weight: 600;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-            transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
-        }
-
-        .tab.active[data-cat="Alles"] { background-color: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: bold; }
-        .tab.active[data-cat="Munten"] { background-color: var(--col-munten); border-color: var(--col-munten); color: #000; font-weight: bold; }
-        .tab.active[data-cat="Gespen"] { background-color: var(--col-gespen); border-color: var(--col-gespen); color: #000; font-weight: bold; }
-        .tab.active[data-cat="Knopen"] { background-color: var(--col-knopen); border-color: var(--col-knopen); color: #000; font-weight: bold; }
-        .tab.active[data-cat="Militaria"] { background-color: var(--col-militaria); border-color: var(--col-militaria); color: #000; font-weight: bold; }
-        .tab.active[data-cat="Gebruiksvoorwerpen"] { background-color: var(--col-voorwerpen); border-color: var(--col-voorwerpen); color: #000; font-weight: bold; }
-        .tab.active[data-cat="Overig"] { background-color: var(--col-overig); border-color: var(--col-overig); color: #000; font-weight: bold; }
-
         .vondst-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -284,6 +258,8 @@
         .vondst-card.cat-Munten { border-left-color: var(--col-munten); }
         .vondst-card.cat-Gespen { border-left-color: var(--col-gespen); }
         .vondst-card.cat-Knopen { border-left-color: var(--col-knopen); }
+        .vondst-card.cat-Loodjes { border-left-color: var(--col-loodjes); }
+        .vondst-card.cat-Hangertjes { border-left-color: var(--col-hangertjes); }
         .vondst-card.cat-Militaria { border-left-color: var(--col-militaria); }
         .vondst-card.cat-Gebruiksvoorwerpen { border-left-color: var(--col-voorwerpen); }
         .vondst-card.cat-Overig { border-left-color: var(--col-overig); }
@@ -329,6 +305,8 @@
         .cat-Munten .vondst-grid-meta { background-color: rgba(255, 215, 0, 0.12); border-left-color: var(--col-munten); }
         .cat-Gespen .vondst-grid-meta { background-color: rgba(0, 180, 216, 0.12); border-left-color: var(--col-gespen); }
         .cat-Knopen .vondst-grid-meta { background-color: rgba(0, 245, 212, 0.12); border-left-color: var(--col-knopen); }
+        .cat-Loodjes .vondst-grid-meta { background-color: rgba(148, 163, 184, 0.12); border-left-color: var(--col-loodjes); }
+        .cat-Hangertjes .vondst-grid-meta { background-color: rgba(244, 114, 182, 0.12); border-left-color: var(--col-hangertjes); }
         .cat-Militaria .vondst-grid-meta { background-color: rgba(255, 77, 77, 0.12); border-left-color: var(--col-militaria); }
         .cat-Gebruiksvoorwerpen .vondst-grid-meta { background-color: rgba(0, 230, 118, 0.12); border-left-color: var(--col-voorwerpen); }
         .cat-Overig .vondst-grid-meta { background-color: rgba(217, 70, 239, 0.12); border-left-color: var(--col-overig); }
@@ -342,7 +320,6 @@
             color: #94a3b8;
         }
 
-        /* Inklapbare Info Box */
         .info-dropdown-container {
             margin-top: 12px;
         }
@@ -611,6 +588,7 @@
         <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuwe Vondst</button>
     </div>
 
+    <!-- Uitgebreide Statistieken Dashboard inclusief Loodjes en Hangertjes -->
     <div class="stats-dashboard" id="dashboard-balk">
         <div class="stat-item total" onclick="filterCategorie('Alles')">
             <div class="stat-val" id="stat-total">0</div>
@@ -627,6 +605,14 @@
         <div class="stat-item knoop" onclick="filterCategorie('Knopen')">
             <div class="stat-val" id="stat-knopen">0</div>
             <div class="stat-lbl">🧷 Knopen</div>
+        </div>
+        <div class="stat-item loodje" onclick="filterCategorie('Loodjes')">
+            <div class="stat-val" id="stat-loodjes">0</div>
+            <div class="stat-lbl">⚖️ Loodjes</div>
+        </div>
+        <div class="stat-item hangertje" onclick="filterCategorie('Hangertjes')">
+            <div class="stat-val" id="stat-hangertjes">0</div>
+            <div class="stat-lbl">💎 Hangertjes</div>
         </div>
         <div class="stat-item mili" onclick="filterCategorie('Militaria')">
             <div class="stat-val" id="stat-militaria">0</div>
@@ -655,6 +641,8 @@
                         <option value="Munten">🪙 Munten</option>
                         <option value="Gespen">🔍 Gespen</option>
                         <option value="Knopen">🧷 Knopen</option>
+                        <option value="Loodjes">⚖️ Loodjes</option>
+                        <option value="Hangertjes">💎 Hangertjes</option>
                         <option value="Militaria">🛡️ Militaria</option>
                         <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
                         <option value="Overig">🏺 Overig / Keramiek</option>
@@ -709,7 +697,7 @@
 
             <div class="form-group">
                 <label for="titel">Beschrijving / Naam</label>
-                <input type="text" id="titel" placeholder="Bijv. Romeinse denarius, koperen knoop...">
+                <input type="text" id="titel" placeholder="Bijv. Textielloodje, pelgrimsinsigne, Romeinse denarius...">
             </div>
 
             <div class="form-group">
@@ -784,13 +772,13 @@
             </div>
 
             <div class="form-buttons-row">
-                <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan in Cloud</button>
+                <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan in Lokaal Geheugen</button>
                 <button type="button" class="cancel-btn" onclick="toggleInvoerFormulier()">❌ Annuleren</button>
             </div>
         </div>
     </div>
 
-    <!-- NIEUW: Vrije Zoekbalk en Extra Filters (Op het eerste blad) -->
+    <!-- Zoekbalk en Filters -->
     <div style="background-color: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #334155;">
         <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
             <div style="flex: 2; min-width: 200px;">
@@ -820,117 +808,332 @@
                     <option value="WO2">WO2</option>
                 </select>
             </div>
-            <div>
-                <button type="button" onclick="resetFilters()" style="padding: 12px 15px; background-color: #0d1117; color: var(--accent-gold); border: 1px solid var(--accent-gold); border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap;">Reset</button>
-            </div>
         </div>
     </div>
 
-    <!-- Categorie Filter Tabs -->
-    <div class="tabs" id="filter-tabs">
-        <div class="tab active" data-cat="Alles" onclick="filterCategorie('Alles', this)">📜 Alle Vondsten</div>
-        <div class="tab" data-cat="Munten" onclick="filterCategorie('Munten', this)">🪙 Munten</div>
-        <div class="tab" data-cat="Gespen" onclick="filterCategorie('Gespen', this)">🔍 Gespen</div>
-        <div class="tab" data-cat="Knopen" onclick="filterCategorie('Knopen', this)">🧷 Knopen</div>
-        <div class="tab" data-cat="Militaria" onclick="filterCategorie('Militaria', this)">🛡️ Militaria</div>
-        <div class="tab" data-cat="Gebruiksvoorwerpen" onclick="filterCategorie('Gebruiksvoorwerpen', this)">🗝️ Gebruiksvoorwerpen</div>
-        <div class="tab" data-cat="Overig" onclick="filterCategorie('Overig', this)">🏺 Overig</div>
-    </div>
-
-    <div id="vondsten-lijst"></div>
+    <!-- Weergave van Vondsten -->
+    <div id="vondsten-lijst-container"></div>
 
     <!-- Scroll naar boven knop -->
-    <button id="scroll-top-btn" onclick="scrollToTop()" title="Naar boven">▲</button>
+    <button id="scroll-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑</button>
 
-    <!-- Lightbox voor foto vergroten -->
+    <!-- Lightbox voor afbeeldingen -->
     <div id="lightbox" class="lightbox" onclick="sluitLightbox()">
-        <button class="lightbox-close">Sluiten</button>
-        <img id="lightbox-img" class="lightbox-img">
+        <button class="lightbox-close" onclick="sluitLightbox()">Sluiten ✕</button>
+        <img id="lightbox-img" class="lightbox-img" alt="Vergrote foto">
     </div>
 
-    <!-- Firebase & Database Koppeling -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    <script>
+        let vondstenLijst = JSON.parse(localStorage.getItem('metaaldetectie_vondsten')) || [];
+        let actieveCategorieFilter = 'Alles';
+        let tijdelijkeFoto1 = '';
+        let tijdelijkeFoto2 = '';
+        let tijdelijkeFoto3 = '';
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyB0g9D2CFoCVOAqk3KZ0JmTQXZjooWU7WE",
-            authDomain: "test-metaaldetectie.firebaseapp.com",
-            projectId: "test-metaaldetectie",
-            storageBucket: "test-metaaldetectie.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:1234567890:web:abcdef"
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVondsten();
+            updateDashboardStatistieken();
+        });
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        let alleVondsten = [];
-        let huidigeCategorie = 'Alles';
-        let actieveFotos = { foto1: '', foto2: '', foto3: '' };
-
-        // Globale functies beschikbaar maken voor HTML onclicks
-        window.toggleInvoerFormulier = function() {
+        function toggleInvoerFormulier() {
             const pagina = document.getElementById('page-invoer');
-            const btn = document.getElementById('top-toggle-btn');
+            const knop = document.getElementById('top-toggle-btn');
             if (pagina.classList.contains('active')) {
                 pagina.classList.remove('active');
-                btn.textContent = "➕ Nieuwe Vondst";
-                wisFormulier();
+                knop.innerText = '➕ Nieuwe Vondst';
+                resetFormulier();
             } else {
                 pagina.classList.add('active');
-                btn.textContent = "✖️ Sluiten";
+                knop.innerText = '📂 Sluiten';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-        };
+        }
 
-        window.setDatering = function(waarde) {
-            document.getElementById('datering').value = waarde;
-        };
+        function setDatering(periode) {
+            document.getElementById('datering').value = periode;
+        }
 
-        window.haalGPS = function() {
+        function haalGPS() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const lat = position.coords.latitude.toFixed(6);
-                    const lon = position.coords.longitude.toFixed(6);
-                    document.getElementById('locatie-gps').value = `${lat}, ${lon}`;
-                }, () => {
-                    alert('Kon GPS-locatie niet ophalen.');
-                });
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(6);
+                        const lon = position.coords.longitude.toFixed(6);
+                        document.getElementById('locatie-gps').value = `${lat}, ${lon}`;
+                        alert('GPS-coördinaten succesvol opgehaald!');
+                    },
+                    (error) => {
+                        alert('Kon geen GPS ophalen. Controleer of locatievoorzieningen aanstaan.');
+                    }
+                );
             } else {
-                alert('Geolocatie wordt niet ondersteund door je browser.');
+                alert('Geolocatie wordt niet ondersteund door jouw browser.');
             }
-        };
+        }
 
-        window.verwerkFoto = function(event, fotoNummer) {
+        function verwerkFoto(event, fotoNummer) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const base64String = e.target.result;
-                actieveFotos[`foto${fotoNummer}`] = base64String;
-                
-                const previewImg = document.getElementById(`img-preview${fotoNummer}`);
-                const wrapper = document.getElementById(`wrapper-preview${fotoNummer}`);
-                previewImg.src = base64String;
-                wrapper.style.display = 'flex';
+                const base64Data = e.target.result;
+                if (fotoNummer === 1) {
+                    tijdelijkeFoto1 = base64Data;
+                    document.getElementById('img-preview1').src = base64Data;
+                    document.getElementById('wrapper-preview1').style.display = 'flex';
+                } else if (fotoNummer === 2) {
+                    tijdelijkeFoto2 = base64Data;
+                    document.getElementById('img-preview2').src = base64Data;
+                    document.getElementById('wrapper-preview2').style.display = 'flex';
+                } else if (fotoNummer === 3) {
+                    tijdelijkeFoto3 = base64Data;
+                    document.getElementById('img-preview3').src = base64Data;
+                    document.getElementById('wrapper-preview3').style.display = 'flex';
+                }
             };
             reader.readAsDataURL(file);
-        };
+        }
 
-        window.wisSpecifiekeFoto = function(fotoNummer) {
-            actieveFotos[`foto${fotoNummer}`] = '';
-            document.getElementById(`foto${fotoNummer}`).value = '';
-            document.getElementById(`wrapper-preview${fotoNummer}`).style.display = 'none';
-        };
+        function wisSpecifiekeFoto(fotoNummer) {
+            if (fotoNummer === 1) {
+                tijdelijkeFoto1 = '';
+                document.getElementById('foto1').value = '';
+                document.getElementById('wrapper-preview1').style.display = 'none';
+            } else if (fotoNummer === 2) {
+                tijdelijkeFoto2 = '';
+                document.getElementById('foto2').value = '';
+                document.getElementById('wrapper-preview2').style.display = 'none';
+            } else if (fotoNummer === 3) {
+                tijdelijkeFoto3 = '';
+                document.getElementById('foto3').value = '';
+                document.getElementById('wrapper-preview3').style.display = 'none';
+            }
+        }
 
-        window.wisFormulier = function() {
+        function opslaanVondst() {
+            const id = document.getElementById('bewerk-id').value;
+            const categorie = document.getElementById('categorie').value;
+            const materiaal = document.getElementById('materiaal').value;
+            const vondstType = document.getElementById('vondstType').value;
+            const staat = document.getElementById('staat').value;
+            const diameter = document.getElementById('diameter').value;
+            const gewicht = document.getElementById('gewicht').value;
+            const titel = document.getElementById('titel').value.trim() || 'Naamloze vondst';
+            const datering = document.getElementById('datering').value;
+            const locatieNaam = document.getElementById('locatie-naam').value;
+            const locatieGps = document.getElementById('locatie-gps').value;
+            const weblink = document.getElementById('weblink').value;
+            const info = document.getElementById('info').value;
+
+            const nieuweVondst = {
+                id: id ? parseInt(id) : Date.now(),
+                categorie,
+                materiaal,
+                vondstType,
+                staat,
+                diameter,
+                gewicht,
+                titel,
+                datering,
+                locatieNaam,
+                locatieGps,
+                weblink,
+                info,
+                foto1: tijdelijkeFoto1,
+                foto2: tijdelijkeFoto2,
+                foto3: tijdelijkeFoto3,
+                datumInvoer: id ? vondstenLijst.find(v => v.id == id).datumInvoer : new Date().toLocaleDateString('nl-NL')
+            };
+
+            if (id) {
+                const index = vondstenLijst.findIndex(v => v.id == id);
+                if (index !== -1) {
+                    if (!tijdelijkeFoto1) nieuweVondst.foto1 = vondstenLijst[index].foto1;
+                    if (!tijdelijkeFoto2) nieuweVondst.foto2 = vondstenLijst[index].foto2;
+                    if (!tijdelijkeFoto3) nieuweVondst.foto3 = vondstenLijst[index].foto3;
+                    vondstenLijst[index] = nieuweVondst;
+                }
+            } else {
+                vondstenLijst.unshift(nieuweVondst);
+            }
+
+            localStorage.setItem('metaaldetectie_vondsten', JSON.stringify(vondstenLijst));
+            toggleInvoerFormulier();
+            renderVondsten();
+            updateDashboardStatistieken();
+        }
+
+        function filterCategorie(cat) {
+            actieveCategorieFilter = cat;
+            renderVondsten();
+        }
+
+        function voerFilterUit() {
+            renderVondsten();
+        }
+
+        function renderVondsten() {
+            const container = document.getElementById('vondsten-lijst-container');
+            const zoekTerm = document.getElementById('vrije-zoekbalk').value.toLowerCase();
+            const filterMat = document.getElementById('filter-materiaal').value;
+            const filterPer = document.getElementById('filter-periode').value;
+
+            let gefilterd = vondstenLijst.filter(v => {
+                const matchCat = (actieveCategorieFilter === 'Alles' || v.categorie === actieveCategorieFilter);
+                const matchMat = (!filterMat || v.materiaal === filterMat);
+                const matchPer = (!filterPer || (v.datering && v.datering.toLowerCase().includes(filterPer.toLowerCase())));
+                const matchZoek = (!zoekTerm || 
+                    v.titel.toLowerCase().includes(zoekTerm) ||
+                    (v.locatieNaam && v.locatieNaam.toLowerCase().includes(zoekTerm)) ||
+                    (v.info && v.info.toLowerCase().includes(zoekTerm)) ||
+                    (v.datering && v.datering.toLowerCase().includes(zoekTerm))
+                );
+                return matchCat && matchMat && matchPer && matchZoek;
+            });
+
+            if (gefilterd.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 40px; color: #94a3b8; font-style: italic;">Geen vondsten gevonden binnen deze selectie.</div>`;
+                return;
+            }
+
+            let html = '';
+            gefilterd.forEach(v => {
+                let fotosHtml = '';
+                [v.foto1, v.foto2, v.foto3].forEach((f, idx) => {
+                    if (f) {
+                        fotosHtml += `
+                            <div class="img-wrapper" onclick="openLightbox('${f}')">
+                                <img src="${f}" class="card-img" alt="Foto ${idx+1}">
+                                <div class="zoom-icon">🔍</div>
+                            </div>
+                        `;
+                    }
+                });
+
+                html += `
+                    <div class="vondst-card cat-${v.categorie}">
+                        <div class="vondst-header">
+                            <span class="vondst-titel-text">${v.titel}</span>
+                            <span class="vondst-cat-badge">${v.categorie}</span>
+                        </div>
+                        <div class="vondst-grid-meta">
+                            <div class="vondst-meta"><b>Materiaal:</b> ${v.materiaal || '-'}</div>
+                            <div class="vondst-meta"><b>Periode:</b> ${v.datering || '-'}</div>
+                            <div class="vondst-meta"><b>Staat:</b> ${v.staat || '-'}</div>
+                            <div class="vondst-meta"><b>Diameter:</b> ${v.diameter ? v.diameter + ' mm' : '-'}</div>
+                            <div class="vondst-meta"><b>Gewicht:</b> ${v.gewicht ? v.gewicht + ' g' : '-'}</div>
+                            <div class="vondst-meta"><b>Locatie:</b> ${v.locatieNaam || '-'}</div>
+                            <div class="vondst-meta"><b>Vondstdatum:</b> ${v.datumInvoer || '-'}</div>
+                        </div>
+                        ${v.locatieGps ? `<div style="font-size: 13px; color: #3498db; margin-top: 8px;">🌍 GPS / Kaart: <a href="https://maps.google.com/?q=${encodeURIComponent(v.locatieGps)}" target="_blank" style="color: #3498db;">${v.locatieGps}</a></div>` : ''}
+                        ${v.weblink ? `<div style="font-size: 13px; margin-top: 4px;">🌐 Referentie: <a href="${v.weblink}" target="_blank" style="color: var(--accent-gold);">${v.weblink}</a></div>` : ''}
+                        
+                        ${v.info ? `
+                            <div class="info-dropdown-container">
+                                <button class="btn-toggle-info" onclick="toggleInfoBox(this)">📜 Toon Historische Info</button>
+                                <div class="info-content-box">${v.info}</div>
+                            </div>
+                        ` : ''}
+
+                        ${fotosHtml ? `<div class="foto-container">${fotosHtml}</div>` : ''}
+
+                        <div class="action-buttons">
+                            <button class="btn-small btn-edit" onclick="bewerkVondst(${v.id})">✏️ Bewerken</button>
+                            <button class="btn-small btn-delete" onclick="verwijderVondst(${v.id})">🗑️ Verwijderen</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function updateDashboardStatistieken() {
+            document.getElementById('stat-total').innerText = vondstenLijst.length;
+            document.getElementById('stat-munten').innerText = vondstenLijst.filter(v => v.categorie === 'Munten').length;
+            document.getElementById('stat-gespen').innerText = vondstenLijst.filter(v => v.categorie === 'Gespen').length;
+            document.getElementById('stat-knopen').innerText = vondstenLijst.filter(v => v.categorie === 'Knopen').length;
+            document.getElementById('stat-loodjes').innerText = vondstenLijst.filter(v => v.categorie === 'Loodjes').length;
+            document.getElementById('stat-hangertjes').innerText = vondstenLijst.filter(v => v.categorie === 'Hangertjes').length;
+            document.getElementById('stat-militaria').innerText = vondstenLijst.filter(v => v.categorie === 'Militaria').length;
+            document.getElementById('stat-voorwerpen').innerText = vondstenLijst.filter(v => v.categorie === 'Gebruiksvoorwerpen').length;
+            document.getElementById('stat-overig').innerText = vondstenLijst.filter(v => v.categorie === 'Overig').length;
+        }
+
+        function toggleInfoBox(btn) {
+            const box = btn.nextElementSibling;
+            if (box.style.display === 'block') {
+                box.style.display = 'none';
+                btn.innerText = '📜 Toon Historische Info';
+            } else {
+                box.style.display = 'block';
+                btn.innerText = '📜 Verberg Historische Info';
+            }
+        }
+
+        function bewerkVondst(id) {
+            const v = vondstenLijst.find(item => item.id === id);
+            if (!v) return;
+
+            document.getElementById('bewerk-id').value = v.id;
+            document.getElementById('categorie').value = v.categorie;
+            document.getElementById('materiaal').value = v.materiaal;
+            document.getElementById('vondstType').value = v.vondstType || 'Signaal (Metaaldetector)';
+            document.getElementById('staat').value = v.staat;
+            document.getElementById('diameter').value = v.diameter || '';
+            document.getElementById('gewicht').value = v.gewicht || '';
+            document.getElementById('titel').value = v.titel;
+            document.getElementById('datering').value = v.datering || '';
+            document.getElementById('locatie-naam').value = v.locatieNaam || '';
+            document.getElementById('locatie-gps').value = v.locatieGps || '';
+            document.getElementById('weblink').value = v.weblink || '';
+            document.getElementById('info').value = v.info || '';
+
+            tijdelijkeFoto1 = v.foto1 || '';
+            tijdelijkeFoto2 = v.foto2 || '';
+            tijdelijkeFoto3 = v.foto3 || '';
+
+            if (tijdelijkeFoto1) {
+                document.getElementById('img-preview1').src = tijdelijkeFoto1;
+                document.getElementById('wrapper-preview1').style.display = 'flex';
+            } else {
+                document.getElementById('wrapper-preview1').style.display = 'none';
+            }
+            if (tijdelijkeFoto2) {
+                document.getElementById('img-preview2').src = tijdelijkeFoto2;
+                document.getElementById('wrapper-preview2').style.display = 'flex';
+            } else {
+                document.getElementById('wrapper-preview2').style.display = 'none';
+            }
+            if (tijdelijkeFoto3) {
+                document.getElementById('img-preview3').src = tijdelijkeFoto3;
+                document.getElementById('wrapper-preview3').style.display = 'flex';
+            } else {
+                document.getElementById('wrapper-preview3').style.display = 'none';
+            }
+
+            document.getElementById('form-titel').innerText = 'Vondst Bewerken';
+            const pagina = document.getElementById('page-invoer');
+            pagina.classList.add('active');
+            document.getElementById('top-toggle-btn').innerText = '📂 Sluiten';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function verwijderVondst(id) {
+            if (confirm('Weet je zeker dat je deze vondst wilt verwijderen?')) {
+                vondstenLijst = vondstenLijst.filter(v => v.id !== id);
+                localStorage.setItem('metaaldetectie_vondsten', JSON.stringify(vondstenLijst));
+                renderVondsten();
+                updateDashboardStatistieken();
+            }
+        }
+
+        function resetFormulier() {
             document.getElementById('bewerk-id').value = '';
-            document.getElementById('form-titel').textContent = 'Nieuwe Vondst';
-            document.getElementById('categorie').value = 'Munten';
-            document.getElementById('materiaal').value = 'Onbekend';
-            document.getElementById('vondstType').value = 'Signaal (Metaaldetector)';
-            document.getElementById('staat').value = 'Bodemvondst (Topeffect)';
+            document.getElementById('form-titel').innerText = 'Nieuwe Vondst';
+            document.getElementById('categorie').selectedIndex = 0;
+            document.getElementById('materiaal').selectedIndex = 0;
+            document.getElementById('vondstType').selectedIndex = 0;
+            document.getElementById('staat').selectedIndex = 0;
             document.getElementById('diameter').value = '';
             document.getElementById('gewicht').value = '';
             document.getElementById('titel').value = '';
@@ -939,259 +1142,34 @@
             document.getElementById('locatie-gps').value = '';
             document.getElementById('weblink').value = '';
             document.getElementById('info').value = '';
-
-            actieveFotos = { foto1: '', foto2: '', foto3: '' };
-            for (let i = 1; i <= 3; i++) {
-                document.getElementById(`foto${i}`).value = '';
-                document.getElementById(`wrapper-preview${i}`).style.display = 'none';
-            }
-        };
-
-        window.opslaanVondst = async function() {
-            const bewerkId = document.getElementById('bewerk-id').value;
-            const data = {
-                titel: document.getElementById('titel').value || 'Naamloze vondst',
-                categorie: document.getElementById('categorie').value,
-                materiaal: document.getElementById('materiaal').value,
-                vondstType: document.getElementById('vondstType').value,
-                staat: document.getElementById('staat').value,
-                diameter: document.getElementById('diameter').value,
-                gewicht: document.getElementById('gewicht').value,
-                datering: document.getElementById('datering').value,
-                locatieNaam: document.getElementById('locatie-naam').value,
-                locatieGps: document.getElementById('locatie-gps').value,
-                weblink: document.getElementById('weblink').value,
-                info: document.getElementById('info').value,
-                foto1: actieveFotos.foto1,
-                foto2: actieveFotos.foto2,
-                foto3: actieveFotos.foto3,
-                datumToegevoegd: new Date().toISOString()
-            };
-
-            try {
-                if (bewerkId) {
-                    await updateDoc(doc(db, "vondsten", bewerkId), data);
-                } else {
-                    await addDoc(collection(db, "vondsten"), data);
-                }
-                toggleInvoerFormulier();
-                laadVondsten();
-            } catch (error) {
-                console.error("Fout bij opslaan: ", error);
-                alert("Opslaan mislukt.");
-            }
-        };
-
-        window.laadVondsten = async function() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "vondsten"));
-                alleVondsten = [];
-                querySnapshot.forEach((docSnap) => {
-                    alleVondsten.push({ id: docSnap.id, ...docSnap.data() });
-                });
-                
-                updateStatistieken();
-                voerFilterUit();
-            } catch (error) {
-                console.error("Fout bij laden: ", error);
-            }
-        };
-
-        window.updateStatistieken = function() {
-            document.getElementById('stat-total').textContent = alleVondsten.length;
-            document.getElementById('stat-munten').textContent = alleVondsten.filter(v => v.categorie === 'Munten').length;
-            document.getElementById('stat-gespen').textContent = alleVondsten.filter(v => v.categorie === 'Gespen').length;
-            document.getElementById('stat-knopen').textContent = alleVondsten.filter(v => v.categorie === 'Knopen').length;
-            document.getElementById('stat-militaria').textContent = alleVondsten.filter(v => v.categorie === 'Militaria').length;
-            document.getElementById('stat-voorwerpen').textContent = alleVondsten.filter(v => v.categorie === 'Gebruiksvoorwerpen').length;
-            document.getElementById('stat-overig').textContent = alleVondsten.filter(v => v.categorie === 'Overig').length;
-        };
-
-        // Uitgebreide filterfunctie
-        window.voerFilterUit = function() {
-            const zoekTerm = document.getElementById('vrije-zoekbalk').value.toLowerCase();
-            const geselecteerdMateriaal = document.getElementById('filter-materiaal').value;
-            const geselecteerdePeriode = document.getElementById('filter-periode').value;
-
-            const gefilterd = alleVondsten.filter(vondst => {
-                const matchCat = (huidigeCategorie === 'Alles' || vondst.categorie === huidigeCategorie);
-                
-                const combinatieTekst = `${vondst.titel || ''} ${vondst.info || ''} ${vondst.locatieNaam || ''} ${vondst.materiaal || ''} ${vondst.datering || ''}`.toLowerCase();
-                const matchZoek = combinatieTekst.includes(zoekTerm);
-
-                const matchMat = (!geselecteerdMateriaal || vondst.materiaal === geselecteerdMateriaal);
-                const matchPer = (!geselecteerdePeriode || (vondst.datering && vondst.datering.toLowerCase().includes(geselecteerdePeriode.toLowerCase())));
-
-                return matchCat && matchZoek && matchMat && matchPer;
-            });
-
-            tekenVondstenLijst(gefilterd);
-        };
-
-        window.resetFilters = function() {
-            document.getElementById('vrije-zoekbalk').value = '';
-            document.getElementById('filter-materiaal').value = '';
-            document.getElementById('filter-periode').value = '';
-            huidigeCategorie = 'Alles';
-            
-            document.querySelectorAll('.tabs .tab').forEach(t => {
-                if(t.getAttribute('data-cat') === 'Alles') t.classList.add('active');
-                else t.classList.remove('active');
-            });
-
-            voerFilterUit();
-        };
-
-        window.filterCategorie = function(cat, element = null) {
-            huidigeCategorie = cat;
-            if (element) {
-                document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
-                element.classList.add('active');
-            }
-            voerFilterUit();
-        };
-
-        window.tekenVondstenLijst = function(lijst) {
-            const container = document.getElementById('vondsten-lijst');
-            container.innerHTML = '';
-
-            if (lijst.length === 0) {
-                container.innerHTML = `<div style="text-align: center; padding: 30px; color: #94a3b8;">Geen vondsten gevonden die aan je filters voldoen.</div>`;
-                return;
-            }
-
-            lijst.forEach(v => {
-                const card = document.createElement('div');
-                card.className = `vondst-card cat-${v.categorie}`;
-
-                let fotosHtml = '';
-                ['foto1', 'foto2', 'foto3'].forEach((fKey, index) => {
-                    if (v[fKey]) {
-                        fotosHtml += `
-                            <div class="img-wrapper" onclick="openLightbox('${v[fKey]}')">
-                                <img src="${v[fKey]}" class="card-img" alt="Foto ${index+1}">
-                                <div class="zoom-icon">vergroot</div>
-                            </div>
-                        `;
-                    }
-                });
-
-                card.innerHTML = `
-                    <div class="vondst-header">
-                        <span class="vondst-titel-text">${escapeHtml(v.titel)}</span>
-                        <span class="vondst-cat-badge">${escapeHtml(v.categorie)}</span>
-                    </div>
-                    <div class="vondst-grid-meta">
-                        <div class="vondst-meta"><b>Materiaal:</b> ${escapeHtml(v.materiaal || 'Onbekend')}</div>
-                        <div class="vondst-meta"><b>Periode:</b> ${escapeHtml(v.datering || 'Onbekend')}</div>
-                        <div class="vondst-meta"><b>Staat:</b> ${escapeHtml(v.staat || '-')}</div>
-                        <div class="vondst-meta"><b>Locatie:</b> ${escapeHtml(v.locatieNaam || '-')}</div>
-                        ${v.diameter ? `<div class="vondst-meta"><b>Diameter:</b> ${v.diameter} mm</div>` : ''}
-                        ${v.gewicht ? `<div class="vondst-meta"><b>Gewicht:</b> ${v.gewicht} g</div>` : ''}
-                    </div>
-                    ${v.info ? `
-                        <div class="info-dropdown-container">
-                            <button type="button" class="btn-toggle-info" onclick="toggleInfoBox(this)">📜 Toon info & historiek</button>
-                            <div class="info-content-box">${escapeHtml(v.info)}</div>
-                        </div>
-                    ` : ''}
-                    ${fotosHtml ? `<div class="foto-container">${fotosHtml}</div>` : ''}
-                    <div class="action-buttons">
-                        <button class="btn-small btn-edit" onclick="bewerkVondst('${v.id}')">✏️ Bewerken</button>
-                        <button class="btn-small btn-delete" onclick="verwijderVondst('${v.id}')">🗑️ Verwijderen</button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        };
-
-        window.toggleInfoBox = function(btn) {
-            const box = btn.nextElementSibling;
-            if (box.style.display === 'block') {
-                box.style.display = 'none';
-                btn.textContent = '📜 Toon info & historiek';
-            } else {
-                box.style.display = 'block';
-                btn.textContent = '📜 Verberg info';
-            }
-        };
-
-        window.openLightbox = function(src) {
-            document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox').style.display = 'flex';
-        };
-
-        window.sluitLightbox = function() {
-            document.getElementById('lightbox').style.display = 'none';
-        };
-
-        window.bewerkVondst = function(id) {
-            const v = alleVondsten.find(item => item.id === id);
-            if (!v) return;
-
-            document.getElementById('bewerk-id').value = v.id;
-            document.getElementById('form-titel').textContent = 'Vondst Bewerken';
-            document.getElementById('categorie').value = v.categorie || 'Munten';
-            document.getElementById('materiaal').value = v.materiaal || 'Onbekend';
-            document.getElementById('vondstType').value = v.vondstType || 'Signaal (Metaaldetector)';
-            document.getElementById('staat').value = v.staat || 'Bodemvondst (Topeffect)';
-            document.getElementById('diameter').value = v.diameter || '';
-            document.getElementById('gewicht').value = v.gewicht || '';
-            document.getElementById('titel').value = v.titel || '';
-            document.getElementById('datering').value = v.datering || '';
-            document.getElementById('locatie-naam').value = v.locatieNaam || '';
-            document.getElementById('locatie-gps').value = v.locatieGps || '';
-            document.getElementById('weblink').value = v.weblink || '';
-            document.getElementById('info').value = v.info || '';
-
-            actieveFotos = { foto1: v.foto1 || '', foto2: v.foto2 || '', foto3: v.foto3 || '' };
-            ['foto1', 'foto2', 'foto3'].forEach((fKey, index) => {
-                const num = index + 1;
-                if (v[fKey]) {
-                    document.getElementById(`img-preview${num}`).src = v[fKey];
-                    document.getElementById(`wrapper-preview${num}`).style.display = 'flex';
-                } else {
-                    document.getElementById(`wrapper-preview${num}`).style.display = 'none';
-                }
-            });
-
-            document.getElementById('page-invoer').classList.add('active');
-            document.getElementById('top-toggle-btn').textContent = "✖️ Sluiten";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.verwijderVondst = async function(id) {
-            if (confirm("Weet je zeker dat je deze vondst wilt verwijderen?")) {
-                try {
-                    await deleteDoc(doc(db, "vondsten", id));
-                    laadVondsten();
-                } catch (error) {
-                    console.error("Fout bij verwijderen: ", error);
-                    alert("Verwijderen mislukt.");
-                }
-            }
-        };
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            document.getElementById('foto1').value = '';
+            document.getElementById('foto2').value = '';
+            document.getElementById('foto3').value = '';
+            tijdelijkeFoto1 = '';
+            tijdelijkeFoto2 = '';
+            tijdelijkeFoto3 = '';
+            document.getElementById('wrapper-preview1').style.display = 'none';
+            document.getElementById('wrapper-preview2').style.display = 'none';
+            document.getElementById('wrapper-preview3').style.display = 'none';
         }
 
-        window.scrollToTop = function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
 
-        window.addEventListener('scroll', () => {
+        function sluitLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        window.onscroll = function() {
             const btn = document.getElementById('scroll-top-btn');
-            if (window.scrollY > 300) {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
                 btn.classList.add('show');
             } else {
                 btn.classList.remove('show');
             }
-        });
-
-        // Laad direct bij opstarten
-        laadVondsten();
+        };
     </script>
 </body>
 </html>
