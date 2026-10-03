@@ -20,7 +20,6 @@
             --accent-red: #ff3838;
             --btn-green: #2ecc71;
             --btn-purple: #9b59b6;
-            /* Fellere, sprekendere categoriekleuren */
             --col-munten: #ffd700;
             --col-gespen: #00b4d8;
             --col-knopen: #00f5d4;
@@ -194,10 +193,12 @@
             resize: vertical;
         }
         .search-container {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
         }
         .search-input {
-            width: 100%;
+            flex: 1;
             padding: 12px 16px;
             border-radius: 8px;
             border: 1px solid #475569;
@@ -210,6 +211,20 @@
         }
         .search-input:focus {
             border-color: var(--accent-gold);
+        }
+        .search-btn {
+            background-color: var(--accent-gold);
+            color: #000;
+            border: none;
+            padding: 0 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+        .search-btn:hover {
+            opacity: 0.9;
         }
         .quick-tags {
             display: flex;
@@ -318,7 +333,6 @@
         .vondst-meta b {
             color: #94a3b8;
         }
-        /* Inklapbare Info Box */
         .info-dropdown-container {
             margin-top: 12px;
         }
@@ -738,9 +752,10 @@
         <div class="tab" data-cat="Overig" onclick="filterCategorie('Overig', this)">🏺 Overig</div>
     </div>
 
-    <!-- Zoekbalk -->
+    <!-- Zoekbalk met Zoekknop -->
     <div class="search-container">
-        <input type="text" id="zoek-input" class="search-input" placeholder="🔍 Zoek op titel, datering, materiaal, locatie of info..." oninput="toonVondsten()">
+        <input type="text" id="zoek-input" class="search-input" placeholder="🔍 Zoek op titel, datering, materiaal, locatie of info...">
+        <button type="button" class="search-btn" onclick="toonVondsten()">Zoek</button>
     </div>
 
     <div id="vondsten-lijst"></div>
@@ -933,22 +948,35 @@
                 document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
                 tabElement.classList.add('active');
             }
+            // Als er op een categorie-tab geklikt wordt, zetten we de zoekbalk automatisch op 'Alles' tab zodat je direct al je vondsten binnen die categorie ziet
             toonVondsten();
         };
 
-        function toonVondsten() {
+        // Zorg dat live meefiteren én Enter toets correct werken
+        const zoekInputEl = document.getElementById('zoek-input');
+        zoekInputEl.addEventListener('input', () => toonVondsten());
+        zoekInputEl.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                toonVondsten();
+            }
+        });
+
+        window.toonVondsten = function() {
             const lijstContainer = document.getElementById('vondsten-lijst');
             const zoekTerm = document.getElementById('zoek-input').value.toLowerCase().trim();
             lijstContainer.innerHTML = '';
 
-            // Filter eerst op categorie
+            // Als er gezocht wordt, zetten we het filter eventueel automatisch naar 'Alles' als de gebruiker per ongeluk in een specifieke categorie zat te zoeken waar het niet in stond
             let gefilterd = huidigeFilter === 'Alles' 
                 ? alleVondsten 
                 : alleVondsten.filter(v => v.categorie === huidigeFilter);
 
-            // Filter daarna op zoekterm (als er iets is ingetypt)
+            // Als er een zoekterm is ingevuld, doorzoeken we óók over alle categorieën heen of binnen de geselecteerde categorie
+            let bronLijst = (zoekTerm !== '' && huidigeFilter === 'Alles') ? alleVondsten : gefilterd;
+
             if (zoekTerm !== '') {
-                gefilterd = gefilterd.filter(v => {
+                bronLijst = bronLijst.filter(v => {
                     return (
                         (v.titel && v.titel.toLowerCase().includes(zoekTerm)) ||
                         (v.datering && v.datering.toLowerCase().includes(zoekTerm)) ||
@@ -961,12 +989,12 @@
                 });
             }
 
-            if (gefilterd.length === 0) {
+            if (bronLijst.length === 0) {
                 lijstContainer.innerHTML = `<p style="text-align:center; color:#94a3b8; padding:20px;">Geen vondsten gevonden die aan je zoekopdracht voldoen.</p>`;
                 return;
             }
 
-            gefilterd.forEach(v => {
+            bronLijst.forEach(v => {
                 const card = document.createElement('div');
                 card.className = `vondst-card cat-${v.categorie}`;
                 let fotosHtml = '';
