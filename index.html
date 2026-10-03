@@ -14,24 +14,22 @@
 
     <style>
         :root {
-            --bg-color: #11151c;
-            --card-bg: #1a202c;
-            --text-color: #f1f5f9;
-            --accent-gold: #f1c40f;
-            --accent-blue: #3498db;
-            --accent-red: #ff3838;
-            --btn-green: #2ecc71;
-            --btn-purple: #9b59b6;
+           --bg-color: #11151c;
+           --card-bg: #1a202c;
+           --text-color: #f1f5f9;
+           --accent-gold: #f1c40f;
+           --accent-blue: #3498db;
+           --accent-red: #ff3838;
+           --btn-green: #2ecc71;
+           --btn-purple: #9b59b6;
 
-            /* Categoriekleuren inclusief Loodjes en Hangertjes */
-            --col-munten: #ffd700;
-            --col-gespen: #00b4d8;
-            --col-knopen: #00f5d4;
-            --col-loodjes: #94a3b8;
-            --col-hangertjes: #f472b6;
-            --col-militaria: #ff4d4d;
-            --col-voorwerpen: #00e676;
-            --col-overig: #d946ef;
+           /* Fellere, sprekendere categoriekleuren */
+           --col-munten: #ffd700;
+           --col-gespen: #00b4d8;
+           --col-knopen: #00f5d4;
+           --col-militaria: #ff4d4d;
+           --col-voorwerpen: #00e676;
+           --col-overig: #d946ef;
         }
 
         html {
@@ -39,30 +37,30 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
+           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+           background-color: var(--bg-color);
+           color: var(--text-color);
+           margin: 0;
+           padding: 20px;
         }
 
         .app-header {
             display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            border-bottom: 2px solid rgba(241, 196, 15, 0.3);
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            margin-top: 10px;
+           grid-template-columns: 1fr auto 1fr;
+           align-items: center;
+           border-bottom: 2px solid rgba(241, 196, 15, 0.3);
+           padding-bottom: 15px;
+           margin-bottom: 15px;
+           margin-top: 10px;
         }
 
         .main-app-title-container {
             grid-column: 2;
             display: flex;
-            align-items: center;
-            justify-content: center;
+           align-items: center;
+           justify-content: center;
             gap: 15px;
-            text-align: center;
+           text-align: center;
         }
 
         .detector-icon-svg {
@@ -70,7 +68,7 @@
             height: 32px;
             fill: var(--accent-gold);
             filter: drop-shadow(0 0 6px rgba(241, 196, 15, 0.5));
-            flex-shrink: 0;
+           flex-shrink: 0;
             display: block;
         }
 
@@ -78,10 +76,10 @@
             font-family: 'Playfair Display', serif;
             font-size: 28px;
             color: var(--accent-gold);
-            letter-spacing: 1px;
-            text-transform: uppercase;
+           letter-spacing: 1px;
+           text-transform: uppercase;
             margin: 0;
-            white-space: nowrap;
+           white-space: nowrap;
         }
 
         .btn-top-invoer {
@@ -92,36 +90,36 @@
             border: 2px solid var(--accent-gold);
             padding: 8px 14px;
             font-size: 14px;
-            font-weight: 600;
-            border-radius: 6px;
+           font-weight: 600;
+           border-radius: 6px;
             cursor: pointer;
             width: auto;
             margin: 0;
-            white-space: nowrap;
-            transition: all 0.2s;
+           white-space: nowrap;
+           transition: all 0.2s;
         }
 
         .btn-top-invoer:hover {
-            background-color: rgba(241, 196, 15, 0.15);
+           background-color: rgba(241, 196, 15, 0.15);
         }
 
         .stats-dashboard {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 25px;
+           margin-bottom: 25px;
             padding: 5px;
         }
 
         .stat-item {
             flex: 1;
-            min-width: 100px;
-            text-align: center;
-            padding: 12px 6px;
-            border-radius: 8px;
+            min-width: 110px;
+           text-align: center;
+            padding: 12px 8px;
+           border-radius: 8px;
             border: 1px solid #334155;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-            transition: transform 0.2s, border-color 0.2s;
+           box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+           transition: transform 0.2s, border-color 0.2s;
             cursor: pointer;
         }
         .stat-item:hover {
@@ -132,34 +130,32 @@
         .stat-item.munt { border-color: var(--col-munten); background: linear-gradient(135deg, #1a202c 0%, rgba(255, 215, 0, 0.18) 100%); }
         .stat-item.gesp { border-color: var(--col-gespen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 180, 216, 0.18) 100%); }
         .stat-item.knoop { border-color: var(--col-knopen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 245, 212, 0.18) 100%); }
-        .stat-item.loodje { border-color: var(--col-loodjes); background: linear-gradient(135deg, #1a202c 0%, rgba(148, 163, 184, 0.18) 100%); }
-        .stat-item.hangertje { border-color: var(--col-hangertjes); background: linear-gradient(135deg, #1a202c 0%, rgba(244, 114, 182, 0.18) 100%); }
         .stat-item.mili { border-color: var(--col-militaria); background: linear-gradient(135deg, #1a202c 0%, rgba(255, 77, 77, 0.18) 100%); }
         .stat-item.voorw { border-color: var(--col-voorwerpen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 230, 118, 0.18) 100%); }
         .stat-item.over { border-color: var(--col-overig); background: linear-gradient(135deg, #1a202c 0%, rgba(217, 70, 239, 0.18) 100%); }
 
         .stat-val {
             font-size: 22px;
-            font-weight: bold;
+           font-weight: bold;
             color: white;
-            margin-bottom: 2px;
+           margin-bottom: 2px;
         }
         .stat-item.total .stat-val { color: var(--accent-gold); }
 
         .stat-lbl {
             font-size: 11px;
             color: #cbd5e1;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: bold;
+           text-transform: uppercase;
+           letter-spacing: 0.5px;
+           font-weight: bold;
         }
 
         h2 {
-            font-family: 'Playfair Display', serif;
+           font-family: 'Playfair Display', serif;
             font-size: 24px;
             color: var(--accent-gold);
-            margin-top: 5px;
-            margin-bottom: 15px;
+           margin-top: 5px;
+           margin-bottom: 15px;
         }
 
         .app-page {
@@ -171,12 +167,12 @@
         }
 
         .form-container {
-            background-color: var(--card-bg);
+           background-color: var(--card-bg);
             padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
+           border-radius: 12px;
+           margin-bottom: 25px;
             border: 1px solid #334155;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+           box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
         .form-row {
@@ -191,13 +187,13 @@
         }
 
         .form-group {
-            margin-bottom: 18px;
+           margin-bottom: 18px;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
+           margin-bottom: 6px;
+           font-weight: 600;
             font-size: 14px;
             color: #cbd5e1;
         }
@@ -205,19 +201,19 @@
         input, select, textarea {
             width: 100%;
             padding: 12px;
-            border-radius: 8px;
+           border-radius: 8px;
             border: 1px solid #475569 !important;
             background-color: #0d1117 !important;
             color: #f1f5f9 !important;
-            box-sizing: border-box;
+           box-sizing: border-box;
             font-size: 16px;
-            font-family: inherit;
+           font-family: inherit;
             outline: none !important;
-            box-shadow: none !important;
+           box-shadow: none !important;
         }
 
         input:focus, select:focus, textarea:focus {
-            border-color: var(--accent-gold) !important;
+           border-color: var(--accent-gold) !important;
         }
 
         textarea {
@@ -229,84 +225,110 @@
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
-            margin-top: 6px;
+           margin-top: 6px;
         }
 
         .tag-btn {
-            background-color: #1a202c;
+           background-color: #1a202c;
             color: #cbd5e1;
             border: 1px solid #475569;
             padding: 4px 10px;
             font-size: 12px;
-            border-radius: 4px;
+           border-radius: 4px;
             cursor: pointer;
         }
         .tag-btn:hover {
-            border-color: var(--accent-gold);
+           border-color: var(--accent-gold);
             color: white;
         }
 
+        .tabs {
+            display: flex;
+           overflow-x: auto;
+            gap: 8px;
+           margin-bottom: 20px;
+           padding-bottom: 5px;
+        }
+
+        .tab {
+            padding: 10px 18px;
+           background-color: var(--card-bg);
+           border-radius: 30px;
+           white-space: nowrap;
+            cursor: pointer;
+            border: 2px solid #475569;
+            font-size: 14px;
+            color: #cbd5e1;
+           font-weight: 600;
+           box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
+        }
+
+        .tab.active[data-cat="Alles"] { background-color: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Munten"] { background-color: var(--col-munten); border-color: var(--col-munten); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Gespen"] { background-color: var(--col-gespen); border-color: var(--col-gespen); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Knopen"] { background-color: var(--col-knopen); border-color: var(--col-knopen); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Militaria"] { background-color: var(--col-militaria); border-color: var(--col-militaria); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Gebruiksvoorwerpen"] { background-color: var(--col-voorwerpen); border-color: var(--col-voorwerpen); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Overig"] { background-color: var(--col-overig); border-color: var(--col-overig); color: #000; font-weight: bold; }
+
         .vondst-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
+           background-color: var(--card-bg);
+           border-radius: 12px;
             padding: 18px;
-            margin-bottom: 18px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border-left: 6px solid #475569;
+           margin-bottom: 18px;
+           box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+           border-left: 6px solid #475569;
         }
 
         .vondst-card.cat-Munten { border-left-color: var(--col-munten); }
         .vondst-card.cat-Gespen { border-left-color: var(--col-gespen); }
         .vondst-card.cat-Knopen { border-left-color: var(--col-knopen); }
-        .vondst-card.cat-Loodjes { border-left-color: var(--col-loodjes); }
-        .vondst-card.cat-Hangertjes { border-left-color: var(--col-hangertjes); }
         .vondst-card.cat-Militaria { border-left-color: var(--col-militaria); }
         .vondst-card.cat-Gebruiksvoorwerpen { border-left-color: var(--col-voorwerpen); }
         .vondst-card.cat-Overig { border-left-color: var(--col-overig); }
 
         .vondst-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+           justify-content: space-between;
+           align-items: center;
             font-family: 'Playfair Display', serif;
             font-size: 20px;
-            font-weight: bold;
-            background-color: rgba(13, 17, 23, 0.8);
+           font-weight: bold;
+           background-color: rgba(13, 17, 23, 0.8);
             padding: 10px 14px;
-            border-radius: 6px;
-            margin-bottom: 14px;
+           border-radius: 6px;
+           margin-bottom: 14px;
             border: 1px solid rgba(255,255,255,0.08);
         }
 
         .vondst-titel-text {
             color: var(--accent-gold) !important;
-            letter-spacing: 0.5px;
+           letter-spacing: 0.5px;
         }
 
         .vondst-cat-badge {
             font-size: 13px;
             font-family: 'Segoe UI', sans-serif;
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 0.5px;
+           text-transform: uppercase;
+           font-weight: bold;
+           letter-spacing: 0.5px;
         }
 
         .vondst-grid-meta {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+           grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 8px 15px;
-            margin-bottom: 10px;
+           margin-bottom: 10px;
             padding: 12px 14px;
-            border-radius: 0 8px 8px 0;
-            border-left: 5px solid #475569;
-            background-color: rgba(255, 255, 255, 0.04);
+           border-radius: 0 8px 8px 0;
+           border-left: 5px solid #475569;
+           background-color: rgba(255, 255, 255, 0.04);
         }
 
         .cat-Munten .vondst-grid-meta { background-color: rgba(255, 215, 0, 0.12); border-left-color: var(--col-munten); }
         .cat-Gespen .vondst-grid-meta { background-color: rgba(0, 180, 216, 0.12); border-left-color: var(--col-gespen); }
         .cat-Knopen .vondst-grid-meta { background-color: rgba(0, 245, 212, 0.12); border-left-color: var(--col-knopen); }
-        .cat-Loodjes .vondst-grid-meta { background-color: rgba(148, 163, 184, 0.12); border-left-color: var(--col-loodjes); }
-        .cat-Hangertjes .vondst-grid-meta { background-color: rgba(244, 114, 182, 0.12); border-left-color: var(--col-hangertjes); }
         .cat-Militaria .vondst-grid-meta { background-color: rgba(255, 77, 77, 0.12); border-left-color: var(--col-militaria); }
         .cat-Gebruiksvoorwerpen .vondst-grid-meta { background-color: rgba(0, 230, 118, 0.12); border-left-color: var(--col-voorwerpen); }
         .cat-Overig .vondst-grid-meta { background-color: rgba(217, 70, 239, 0.12); border-left-color: var(--col-overig); }
@@ -320,47 +342,48 @@
             color: #94a3b8;
         }
 
+        /* Inklapbare Info Box */
         .info-dropdown-container {
             margin-top: 12px;
         }
 
         .btn-toggle-info {
-            background-color: #0d1117;
+           background-color: #0d1117;
             color: var(--accent-gold);
             border: 1px solid rgba(241, 196, 15, 0.4);
             padding: 8px 14px;
             font-size: 13px;
-            border-radius: 6px;
+           border-radius: 6px;
             cursor: pointer;
-            font-weight: 600;
+           font-weight: 600;
             display: inline-flex;
-            align-items: center;
+           align-items: center;
             gap: 6px;
-            transition: background-color 0.2s;
+           transition: background-color 0.2s;
         }
 
         .btn-toggle-info:hover {
-            background-color: rgba(241, 196, 15, 0.15);
+           background-color: rgba(241, 196, 15, 0.15);
         }
 
         .info-content-box {
             display: none;
-            margin-top: 8px;
+           margin-top: 8px;
             padding: 14px;
-            background-color: rgba(13, 17, 23, 0.9);
+           background-color: rgba(13, 17, 23, 0.9);
             border: 1px solid #334155;
-            border-radius: 8px;
+           border-radius: 8px;
             font-size: 13.5px;
-            line-height: 1.5;
+           line-height: 1.5;
             color: #cbd5e1;
-            word-break: break-word;
+           word-break: break-word;
         }
 
         .foto-container {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            margin-top: 14px;
+           margin-top: 14px;
             padding: 0 4px;
         }
 
@@ -369,52 +392,52 @@
             width: 110px;
             height: 110px;
             border: 2px solid #475569 !important;
-            border-radius: 8px;
+           border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
-            background-color: #0d1117 !important;
+           background-color: #0d1117 !important;
             display: flex;
-            align-items: center;
-            justify-content: center;
+           align-items: center;
+           justify-content: center;
         }
 
         .card-img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+           object-fit: contain;
         }
 
         .zoom-icon {
             position: absolute;
             bottom: 4px;
             right: 4px;
-            background-color: rgba(0, 0, 0, 0.8);
+           background-color: rgba(0, 0, 0, 0.8);
             color: var(--accent-gold);
-            border-radius: 4px;
+           border-radius: 4px;
             padding: 2px 5px;
             font-size: 10px;
-            pointer-events: none;
-            font-weight: bold;
+           pointer-events: none;
+           font-weight: bold;
         }
 
         .preview-img-container {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
-            margin-top: 12px;
-            margin-bottom: 15px;
+           margin-top: 12px;
+           margin-bottom: 15px;
         }
 
         .preview-wrapper {
             display: none;
-            flex-direction: column;
+           flex-direction: column;
             width: 30%;
             min-width: 130px;
             flex-grow: 1;
-            align-items: center;
-            background-color: #0d1117;
+           align-items: center;
+           background-color: #0d1117;
             padding: 12px;
-            border-radius: 8px;
+           border-radius: 8px;
             border: 1px solid #475569;
             color: #cbd5e1;
         }
@@ -422,18 +445,18 @@
         .preview-wrapper span {
             font-size: 12px;
             color: var(--accent-gold);
-            margin-bottom: 6px;
-            font-weight: 600;
-            text-align: center;
+           margin-bottom: 6px;
+           font-weight: 600;
+           text-align: center;
         }
 
         .preview-img {
             max-width: 100%;
-            max-height: 140px;
-            border-radius: 6px;
-            object-fit: contain;
+           max-height: 140px;
+           border-radius: 6px;
+           object-fit: contain;
             border: 1px solid #334155;
-            background-color: #11151c;
+           background-color: #11151c;
         }
 
         .btn-delete-photo {
@@ -442,31 +465,31 @@
             border: 1px solid var(--accent-red);
             font-size: 11px;
             padding: 6px 10px;
-            border-radius: 4px;
+           border-radius: 4px;
             cursor: pointer;
-            margin-top: 10px;
-            font-weight: bold;
+           margin-top: 10px;
+           font-weight: bold;
             width: 100%;
-            text-align: center;
+           text-align: center;
         }
 
         .action-buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 15px;
-            border-top: 1px solid #334155;
-            padding-top: 12px;
+           margin-top: 15px;
+           border-top: 1px solid #334155;
+           padding-top: 12px;
         }
 
         .btn-small {
             padding: 8px 14px;
             font-size: 13px;
-            border-radius: 6px;
-            font-weight: bold;
+           border-radius: 6px;
+           font-weight: bold;
             cursor: pointer;
             border: 1px solid transparent !important;
-            background-color: #0d1117 !important;
+           background-color: #0d1117 !important;
         }
         .btn-edit { color: #f39c12 !important; border-color: rgba(243, 156, 18, 0.5) !important; }
         .btn-delete { color: #ff6b6b !important; border-color: rgba(255, 56, 56, 0.5) !important; }
@@ -479,44 +502,44 @@
         button.main-btn {
             flex: 2;
             padding: 14px;
-            background-color: var(--accent-gold);
+           background-color: var(--accent-gold);
             color: #000;
             border: none;
-            border-radius: 8px;
+           border-radius: 8px;
             font-size: 16px;
-            font-weight: bold;
+           font-weight: bold;
             cursor: pointer;
-            margin-bottom: 10px;
+           margin-bottom: 10px;
         }
 
         button.cancel-btn {
             flex: 1;
             padding: 14px;
-            background-color: #0d1117;
+           background-color: #0d1117;
             color: #cbd5e1;
             border: 1px solid #475569;
-            border-radius: 8px;
+           border-radius: 8px;
             font-size: 16px;
-            font-weight: bold;
+           font-weight: bold;
             cursor: pointer;
-            margin-bottom: 10px;
+           margin-bottom: 10px;
         }
         button.cancel-btn:hover {
             color: white;
-            border-color: #cbd5e1;
+           border-color: #cbd5e1;
         }
 
         button.gps-btn {
-            background-color: #0d1117;
+           background-color: #0d1117;
             color: var(--col-gespen);
             border: 1px solid rgba(0, 180, 216, 0.5);
-            margin-top: 6px;
+           margin-top: 6px;
             padding: 10px;
             font-size: 14px;
             width: 100%;
-            border-radius: 8px;
+           border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
+           font-weight: bold;
         }
 
         #scroll-top-btn {
@@ -524,51 +547,51 @@
             bottom: 25px;
             right: 25px;
             z-index: 999;
-            background-color: var(--card-bg);
+           background-color: var(--card-bg);
             color: var(--accent-gold);
             border: 2px solid var(--accent-gold);
             width: 46px;
             height: 46px;
-            border-radius: 50%;
+           border-radius: 50%;
             display: flex;
-            align-items: center;
-            justify-content: center;
+           align-items: center;
+           justify-content: center;
             font-size: 20px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+           box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+           visibility: hidden;
+           transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
         }
 
         #scroll-top-btn.show {
             opacity: 1;
-            visibility: visible;
+           visibility: visible;
         }
 
         #scroll-top-btn:hover {
             transform: scale(1.1);
-            background-color: rgba(241, 196, 15, 0.2);
+           background-color: rgba(241, 196, 15, 0.2);
         }
 
         .lightbox {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
+           background-color: rgba(0, 0, 0, 0.95);
             z-index: 9999;
-            justify-content: center; align-items: center;
+           justify-content: center; align-items: center;
             flex-direction: column; padding: 20px;
         }
         .lightbox-img {
             max-width: 90%; max-height: 80%;
-            border-radius: 8px; border: 2px solid var(--accent-gold);
+           border-radius: 8px; border: 2px solid var(--accent-gold);
         }
         .lightbox-close {
             position: absolute; top: 20px; right: 20px;
-            background-color: #11151c; color: var(--accent-gold);
+           background-color: #11151c; color: var(--accent-gold);
             border: 1px solid var(--accent-gold); padding: 8px 16px;
-            border-radius: 6px; font-weight: bold; cursor: pointer;
+           border-radius: 6px; font-weight: bold; cursor: pointer;
         }
     </style>
 </head>
@@ -578,17 +601,16 @@
         <div></div>
         <div class="main-app-title-container">
             <svg class="detector-icon-svg" viewBox="0 0 64 64">
-                <path d="M52.1 41.4l-11.8-19c-.3-.5-.9-.8-1.5-.8h-4.3l3-7.6c.4-1 .1-2.1-.8-2.6L24.8 4.7c-.9-.5-2.1-.1-2.6.8l-3 7.6H15c-.6 0-1.2.3-1.5.8l-4.2 6.8c-.5.8-.4 1.9.3 2.6l1 1c.5.5 1.2.6 1.8.3l3.2-1.7 6.1 14.8c.2.5.7.9 1.3 1h9.1l11.8 19c.4.6 1 .9 1.7.9h4.1c1 0 1.8-.8 1.8-1.8 0-.4-.1-.9-.3-1.2zM25.7 8.3l9.4 5.2-1.6 4.1h-6.2l-1.6-4.1 3-5.2zM15 37.5c-4.1 0-7.5 3.4-7.5 7.5s3.4 7.5 7.5 7.5 7.5-3.4 7.5-7.5-3.4-7.5-7.5-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/>
+               <path d="M52.1 41.4l-11.8-19c-.3-.5-.9-.8-1.5-.8h-4.3l3-7.6c.4-1.1-2.1-.8-2.6L24.8 4.7c-.9-.5-2.1-.1-2.6.8l-3 7.6H15c-.6 0-1.2.3-1.5.8l-4.2 6.8c-.5.8-.4 1.9.3 2.6l1 1c.5.5 1.2.6 1.8.3l3.2-1.7 6.1 14.8c.2.5.7.9 1.3 1h9.1l11.8 19c.4.6 1 .9 1.7.9h4.1c1 0 1.8-.8 1.8-1.8 0-.4-.1-.9-.3-1.2zM25.7 8.3l9.4 5.2-1.6 4.1h-6.2l-1.6-4.1 3-5.2zM15 37.5c-4.1 0-7.5 3.4-7.5 7.5s3.4 7.5 7.5 7.5 7.5-3.4 7.5-7.5-3.4-7.5-7.5-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/>
             </svg>
             <h1 class="main-app-title">Metaaldetectievondsten</h1>
             <svg class="detector-icon-svg" viewBox="0 0 64 64">
-                <path d="M52.1 41.4l-11.8-19c-.3-.5-.9-.8-1.5-.8h-4.3l3-7.6c.4-1 .1-2.1-.8-2.6L24.8 4.7c-.9-.5-2.1-.1-2.6.8l-3 7.6H15c-.6 0-1.2.3-1.5.8l-4.2 6.8c-.5.8-.4 1.9.3 2.6l1 1c.5.5 1.2.6 1.8.3l3.2-1.7 6.1 14.8c.2.5.7.9 1.3 1h9.1l11.8 19c.4.6 1 .9 1.7.9h4.1c1 0 1.8-.8 1.8-1.8 0-.4-.1-.9-.3-1.2zM25.7 8.3l9.4 5.2-1.6 4.1h-6.2l-1.6-4.1 3-5.2zM15 37.5c-4.1 0-7.5 3.4-7.5 7.5s3.4 7.5 7.5 7.5 7.5-3.4 7.5-7.5-3.4-7.5-7.5-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/>
+               <path d="M52.1 41.4l-11.8-19c-.3-.5-.9-.8-1.5-.8h-4.3l3-7.6c.4-1.1-2.1-.8-2.6L24.8 4.7c-.9-.5-2.1-.1-2.6.8l-3 7.6H15c-.6 0-1.2.3-1.5.8l-4.2 6.8c-.5.8-.4 1.9.3 2.6l1 1c.5.5 1.2.6 1.8.3l3.2-1.7 6.1 14.8c.2.5.7.9 1.3 1h9.1l11.8 19c.4.6 1 .9 1.7.9h4.1c1 0 1.8-.8 1.8-1.8 0-.4-.1-.9-.3-1.2zM25.7 8.3l9.4 5.2-1.6 4.1h-6.2l-1.6-4.1 3-5.2zM15 37.5c-4.1 0-7.5 3.4-7.5 7.5s3.4 7.5 7.5 7.5 7.5-3.4 7.5-7.5-3.4-7.5-7.5-7.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/>
             </svg>
         </div>
         <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuwe Vondst</button>
     </div>
 
-    <!-- Uitgebreide Statistieken Dashboard inclusief Loodjes en Hangertjes -->
     <div class="stats-dashboard" id="dashboard-balk">
         <div class="stat-item total" onclick="filterCategorie('Alles')">
             <div class="stat-val" id="stat-total">0</div>
@@ -605,14 +627,6 @@
         <div class="stat-item knoop" onclick="filterCategorie('Knopen')">
             <div class="stat-val" id="stat-knopen">0</div>
             <div class="stat-lbl">🧷 Knopen</div>
-        </div>
-        <div class="stat-item loodje" onclick="filterCategorie('Loodjes')">
-            <div class="stat-val" id="stat-loodjes">0</div>
-            <div class="stat-lbl">⚖️ Loodjes</div>
-        </div>
-        <div class="stat-item hangertje" onclick="filterCategorie('Hangertjes')">
-            <div class="stat-val" id="stat-hangertjes">0</div>
-            <div class="stat-lbl">💎 Hangertjes</div>
         </div>
         <div class="stat-item mili" onclick="filterCategorie('Militaria')">
             <div class="stat-val" id="stat-militaria">0</div>
@@ -635,505 +649,254 @@
             <input type="hidden" id="bewerk-id" value="">
             
             <div class="form-row">
-                <div class="form-group">
-                    <label for="categorie">Categorie (Mapje)</label>
-                    <select id="categorie">
-                        <option value="Munten">🪙 Munten</option>
-                        <option value="Gespen">🔍 Gespen</option>
-                        <option value="Knopen">🧷 Knopen</option>
-                        <option value="Loodjes">⚖️ Loodjes</option>
-                        <option value="Hangertjes">💎 Hangertjes</option>
-                        <option value="Militaria">🛡️ Militaria</option>
-                        <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
-                        <option value="Overig">🏺 Overig / Keramiek</option>
-                    </select>
-                </div>
+               <div class="form-group">
+                   <label for="categorie">Categorie (Mapje)</label>
+                   <select id="categorie">
+                       <option value="Munten">🪙 Munten</option>
+                       <option value="Gespen">🔍 Gespen</option>
+                       <option value="Knopen">🧷 Knopen</option>
+                       <option value="Militaria">🛡️ Militaria</option>
+                       <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
+                       <option value="Overig">🏺 Overig / Keramiek</option>
+                   </select>
+               </div>
 
                 <div class="form-group">
-                    <label for="materiaal">Metaal / Materiaal</label>
-                    <select id="materiaal">
-                        <option value="Onbekend">❓ Onbekend</option>
-                        <option value="Goud">🪙 Goud</option>
-                        <option value="Zilver">🥈 Zilver</option>
-                        <option value="Brons / Koper">🥉 Brons / Koper</option>
-                        <option value="Lood / Tin">🛡️ Lood / Tin</option>
-                        <option value="IJzer">⚙️ IJzer</option>
-                        <option value="Glas / Keramiek">🏺 Glas / Keramiek</option>
-                    </select>
-                </div>
+                   <label for="materiaal">Metaal / Materiaal</label>
+                   <select id="materiaal">
+                       <option value="Onbekend">❓ Onbekend</option>
+                       <option value="Goud">🪙 Goud</option>
+                       <option value="Zilver">🥈 Zilver</option>
+                       <option value="Brons / Koper">🥉 Brons / Koper</option>
+                       <option value="Lood / Tin">🛡️ Lood / Tin</option>
+                       <option value="IJzer">⚙️ IJzer</option>
+                       <option value="Glas / Keramiek">🏺 Glas / Keramiek</option>
+                   </select>
+               </div>
 
-                <div class="form-group">
-                    <label for="vondstType">Type Vondst</label>
-                    <select id="vondstType">
-                        <option value="Signaal (Metaaldetector)">🌟 Signaal (Metaaldetector)</option>
-                        <option value="Oogvondst (Zonder detector)">👀 Oogvondst (Zonder detector)</option>
-                    </select>
-                </div>
+               <div class="form-group">
+                   <label for="vondstType">Type Vondst</label>
+                   <select id="vondstType">
+                       <option value="Signaal (Metaaldetector)">🌟 Signaal (Metaaldetector)</option>
+                       <option value="Oogvondst (Zonder detector)">👀 Oogvondst (Zonder detector)</option>
+                   </select>
+               </div>
             </div>
 
             <div class="form-row">
-                <div class="form-group">
-                    <label for="staat">Staat van de vondst</label>
-                    <select id="staat">
-                        <option value="Bodemvondst (Topeffect)">Bodemvondst (Topeffect)</option>
-                        <option value="Prachtig">✨ Prachtig</option>
-                        <option value="Mooi">👍 Mooi</option>
-                        <option value="Matig">📉 Matig</option>
-                        <option value="Onleesbaar">❌ Onleesbaar / Afgesleten</option>
-                        <option value="Voorkant blank">🔲 Voorkant blank</option>
-                        <option value="Achterkant blank">🔲 Achterkant blank</option>
-                        <option value="Fragment">🧩 Fragment / Stukje</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="diameter">Diameter (mm)</label>
-                    <input type="number" id="diameter" step="0.1" placeholder="Bijv. 23.5">
-                </div>
-                <div class="form-group">
-                    <label for="gewicht">Gewicht (gram)</label>
-                    <input type="number" id="gewicht" step="0.01" placeholder="Bijv. 4.25">
-                </div>
+               <div class="form-group">
+                   <label for="staat">Staat van de vondst</label>
+                   <select id="staat">
+                       <option value="Bodemvondst (Topeffect)">Bodemvondst (Topeffect)</option>
+                       <option value="Prachtig">✨ Prachtig</option>
+                       <option value="Mooi">👍 Mooi</option>
+                       <option value="Matig">📉 Matig</option>
+                       <option value="Onleesbaar">❌ Onleesbaar / Afgesleten</option>
+                       <option value="Voorkant blank">🔲 Voorkant blank</option>
+                       <option value="Achterkant blank">🔲 Achterkant blank</option>
+                       <option value="Fragment">🧩 Fragment / Stukje</option>
+                   </select>
+               </div>
+               <div class="form-group">
+                   <label for="diameter">Diameter (mm)</label>
+                   <input type="number" id="diameter" step="0.1" placeholder="Bijv. 23.5">
+               </div>
+               <div class="form-group">
+                   <label for="gewicht">Gewicht (gram)</label>
+                   <input type="number" id="gewicht" step="0.01" placeholder="Bijv. 4.25">
+               </div>
             </div>
 
             <div class="form-group">
-                <label for="titel">Beschrijving / Naam</label>
-                <input type="text" id="titel" placeholder="Bijv. Textielloodje, pelgrimsinsigne, Romeinse denarius...">
+               <label for="titel">Beschrijving / Naam</label>
+               <input type="text" id="titel" placeholder="Bijv. Romeinse denarius, koperen knoop...">
             </div>
 
             <div class="form-group">
-                <label for="datering">Vermoedelijke Periode</label>
-                <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr, 18e eeuw...">
-                <div class="quick-tags">
-                    <button type="button" class="tag-btn" onclick="setDatering('Romeins')">Romeins</button>
-                    <button type="button" class="tag-btn" onclick="setDatering('Middeleeuws')">Middeleeuws</button>
-                    <button type="button" class="tag-btn" onclick="setDatering('16e eeuw')">16e eeuw</button>
-                    <button type="button" class="tag-btn" onclick="setDatering('17e eeuw')">17e eeuw</button>
-                    <button type="button" class="tag-btn" onclick="setDatering('18e eeuw')">18e eeuw</button>
-                    <button type="button" class="tag-btn" onclick="setDatering('19e eeuw')">19e eeuw</button>
-                    <button type="button" class="tag-btn" onclick="setDatering('WO1')">WO1</button>
-                    <button type="button" class="tag-btn" onclick="setDatering('WO2')">WO2</button>
-                </div>
+               <label for="datering">Vermoedelijke Periode</label>
+               <input type="text" id="datering" placeholder="Bijv. 2e eeuw na Chr, 18e eeuw...">
+               <div class="quick-tags">
+                   <button type="button" class="tag-btn" onclick="setDatering('Romeins')">Romeins</button>
+                   <button type="button" class="tag-btn" onclick="setDatering('Middeleeuws')">Middeleeuws</button>
+                   <button type="button" class="tag-btn" onclick="setDatering('16e eeuw')">16e eeuw</button>
+                   <button type="button" class="tag-btn" onclick="setDatering('17e eeuw')">17e eeuw</button>
+                   <button type="button" class="tag-btn" onclick="setDatering('18e eeuw')">18e eeuw</button>
+                   <button type="button" class="tag-btn" onclick="setDatering('19e eeuw')">19e eeuw</button>
+                   <button type="button" class="tag-btn" onclick="setDatering('WO1')">WO1</button>
+                   <button type="button" class="tag-btn" onclick="setDatering('WO2')">WO2</button>
+               </div>
             </div>
 
             <div class="form-group">
-                <label for="locatie-naam">📍 Stad / Dorp / Zoekveld</label>
-                <input type="text" id="locatie-naam" placeholder="Bijv. Stabroek...">
+               <label for="locatie-naam">📍 Stad / Dorp / Zoekveld</label>
+               <input type="text" id="locatie-naam" placeholder="Bijv. Stabroek...">
             </div>
 
             <div class="form-group">
-                <label for="locatie-gps">🌍 Exacte GPS Coördinaten of Google Maps Link</label>
-                <input type="text" id="locatie-gps" placeholder="Plak hier coördinaten of de complete Google Maps link">
-                <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige Exacte GPS Vast</button>
+               <label for="locatie-gps">🌍 Exacte GPS Coördinaten of Google Maps Link</label>
+               <input type="text" id="locatie-gps" placeholder="Plak hier coördinaten of de complete Google Maps link">
+               <button type="button" class="gps-btn" onclick="haalGPS()">📍 Leg Huidige Exacte GPS Vast</button>
             </div>
 
             <div class="form-group">
-                <label for="weblink">🌐 Referentie Website / Link</label>
-                <input type="url" id="weblink" placeholder="https://www.example.com">
+               <label for="weblink">🌐 Referentie Website / Link</label>
+               <input type="url" id="weblink" placeholder="https://www.example.com">
             </div>
 
             <div class="form-group">
-                <label for="info">📜 Extra Informatie & Historisch Gebruik</label>
-                <textarea id="info" placeholder="Waarvoor diende het? Hoe werd het gebruikt in die tijd? Details..."></textarea>
+               <label for="info">📜 Extra Informatie & Historisch Gebruik</label>
+               <textarea id="info" placeholder="Waarvoor diende het? Hoe werd het gebruikt in die tijd? Details..."></textarea>
             </div>
 
             <div class="form-row">
-                <div class="form-group">
-                    <label for="foto1">📸 Foto 1 (Voorkant vondst)</label>
-                    <input type="file" id="foto1" accept="image/*" onchange="verwerkFoto(event, 1)">
-                </div>
+               <div class="form-group">
+                   <label for="foto1">📸 Foto 1 (Voorkant vondst)</label>
+                   <input type="file" id="foto1" accept="image/*" onchange="verwerkFoto(event, 1)">
+               </div>
 
-                <div class="form-group">
-                    <label for="foto2">📸 Foto 2 (Achterkant vondst)</label>
-                    <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 2)">
-                </div>
+               <div class="form-group">
+                   <label for="foto2">📸 Foto 2 (Achterkant vondst)</label>
+                   <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 2)">
+               </div>
 
-                <div class="form-group">
-                    <label for="foto3">🏛️ Foto 3 (Originele Staat / Referentie)</label>
-                    <input type="file" id="foto3" accept="image/*" onchange="verwerkFoto(event, 3)">
-                </div>
+               <div class="form-group">
+                   <label for="foto3">🏛️ Foto 3 (Originele Staat / Referentie)</label>
+                   <input type="file" id="foto3" accept="image/*" onchange="verwerkFoto(event, 3)">
+               </div>
             </div>
 
             <div class="preview-img-container">
-                <div id="wrapper-preview1" class="preview-wrapper">
-                    <span>Voorkant voorbeeld</span>
-                    <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis foto 1</button>
-                </div>
-                <div id="wrapper-preview2" class="preview-wrapper">
-                    <span>Achterkant voorbeeld</span>
-                    <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis foto 2</button>
-                </div>
-                <div id="wrapper-preview3" class="preview-wrapper">
-                    <span>Origineel voorbeeld</span>
-                    <img id="img-preview3" class="preview-img" alt="Voorbeeld Origineel">
-                    <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(3)">🗑️ Wis foto 3</button>
-                </div>
+               <div id="wrapper-preview1" class="preview-wrapper">
+                   <span>Voorkant voorbeeld</span>
+                   <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
+                   <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis foto 1</button>
+               </div>
+               <div id="wrapper-preview2" class="preview-wrapper">
+                   <span>Achterkant voorbeeld</span>
+                   <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
+                   <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis foto 2</button>
+               </div>
+               <div id="wrapper-preview3" class="preview-wrapper">
+                   <span>Origineel voorbeeld</span>
+                   <img id="img-preview3" class="preview-img" alt="Voorbeeld Origineel">
+                   <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(3)">🗑️ Wis foto 3</button>
+               </div>
             </div>
 
             <div class="form-buttons-row">
-                <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan in Lokaal Geheugen</button>
-                <button type="button" class="cancel-btn" onclick="toggleInvoerFormulier()">❌ Annuleren</button>
+               <button type="button" class="main-btn" onclick="opslaanVondst()">Opslaan in Cloud</button>
+               <button type="button" class="cancel-btn" onclick="toggleInvoerFormulier()">❌ Annuleren</button>
             </div>
         </div>
     </div>
 
-    <!-- Zoekbalk en Filters -->
-    <div style="background-color: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #334155;">
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-            <div style="flex: 2; min-width: 200px;">
-                <input type="text" id="vrije-zoekbalk" placeholder="🔍 Zoek op trefwoord, beschrijving, locatie..." oninput="voerFilterUit()" style="margin-bottom: 0;">
-            </div>
-            <div style="flex: 1; min-width: 140px;">
-                <select id="filter-materiaal" onchange="voerFilterUit()" style="margin-bottom: 0;">
-                    <option value="">Alle materialen</option>
-                    <option value="Goud">Goud</option>
-                    <option value="Zilver">Zilver</option>
-                    <option value="Brons / Koper">Brons / Koper</option>
-                    <option value="Lood / Tin">Lood / Tin</option>
-                    <option value="IJzer">IJzer</option>
-                    <option value="Glas / Keramiek">Glas / Keramiek</option>
-                </select>
-            </div>
-            <div style="flex: 1; min-width: 140px;">
-                <select id="filter-periode" onchange="voerFilterUit()" style="margin-bottom: 0;">
-                    <option value="">Alle periodes</option>
-                    <option value="Romeins">Romeins</option>
-                    <option value="Middeleeuws">Middeleeuws</option>
-                    <option value="16e eeuw">16e eeuw</option>
-                    <option value="17e eeuw">17e eeuw</option>
-                    <option value="18e eeuw">18e eeuw</option>
-                    <option value="19e eeuw">19e eeuw</option>
-                    <option value="WO1">WO1</option>
-                    <option value="WO2">WO2</option>
-                </select>
-            </div>
-        </div>
+    <!-- Categorie Filter Tabs -->
+    <div class="tabs" id="filter-tabs">
+        <div class="tab active" data-cat="Alles" onclick="filterCategorie('Alles', this)">📜 Alle Vondsten</div>
+        <div class="tab" data-cat="Munten" onclick="filterCategorie('Munten', this)">🪙 Munten</div>
+        <div class="tab" data-cat="Gespen" onclick="filterCategorie('Gespen', this)">🔍 Gespen</div>
+        <div class="tab" data-cat="Knopen" onclick="filterCategorie('Knopen', this)">🧷 Knopen</div>
+        <div class="tab" data-cat="Militaria" onclick="filterCategorie('Militaria', this)">🛡️ Militaria</div>
+        <div class="tab" data-cat="Gebruiksvoorwerpen" onclick="filterCategorie('Gebruiksvoorwerpen', this)">🗝️ Gebruiksvoorwerpen</div>
+        <div class="tab" data-cat="Overig" onclick="filterCategorie('Overig', this)">🏺 Overig</div>
     </div>
 
-    <!-- Weergave van Vondsten -->
-    <div id="vondsten-lijst-container"></div>
+    <div id="vondsten-lijst"></div>
 
     <!-- Scroll naar boven knop -->
-    <button id="scroll-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑</button>
+    <button id="scroll-top-btn" onclick="scrollToTop()" title="Naar boven">▲</button>
 
-    <!-- Lightbox voor afbeeldingen -->
+    <!-- Lightbox voor foto vergroten -->
     <div id="lightbox" class="lightbox" onclick="sluitLightbox()">
-        <button class="lightbox-close" onclick="sluitLightbox()">Sluiten ✕</button>
-        <img id="lightbox-img" class="lightbox-img" alt="Vergrote foto">
+        <button class="lightbox-close">Sluiten</button>
+        <img id="lightbox-img" class="lightbox-img">
     </div>
 
-    <script>
-        let vondstenLijst = JSON.parse(localStorage.getItem('metaaldetectie_vondsten')) || [];
-        let actieveCategorieFilter = 'Alles';
-        let tijdelijkeFoto1 = '';
-        let tijdelijkeFoto2 = '';
-        let tijdelijkeFoto3 = '';
+    <!-- Firebase & Database Koppeling -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderVondsten();
-            updateDashboardStatistieken();
-        });
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0g9D2CFoCVOAqk3KZ0JmTQXZjooWU7WE",
+           authDomain: "test-metaaldetectie.firebaseapp.com",
+            projectId: "test-metaaldetectie",
+           storageBucket: "test-metaaldetectie.appspot.com",
+           messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef"
+        };
 
-        function toggleInvoerFormulier() {
-            const pagina = document.getElementById('page-invoer');
-            const knop = document.getElementById('top-toggle-btn');
-            if (pagina.classList.contains('active')) {
-                pagina.classList.remove('active');
-                knop.innerText = '➕ Nieuwe Vondst';
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let alleVondsten = [];
+        let huidigeCategorieFilter = 'Alles';
+        let fotoBase64 = { 1: '', 2: '', 3: '' };
+
+        // Globale functies beschikbaar maken voor window
+        window.toggleInvoerFormulier = function() {
+            const page = document.getElementById('page-invoer');
+            const btn = document.getElementById('top-toggle-btn');
+            if (page.classList.contains('active')) {
+                page.classList.remove('active');
+                btn.innerHTML = '➕ Nieuwe Vondst';
                 resetFormulier();
             } else {
-                pagina.classList.add('active');
-                knop.innerText = '📂 Sluiten';
+                page.classList.add('active');
+                btn.innerHTML = '✖️ Sluiten';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-        }
+        };
 
-        function setDatering(periode) {
+        window.setDatering = function(periode) {
             document.getElementById('datering').value = periode;
-        }
+        };
 
-        function haalGPS() {
+        window.haalGPS = function() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude.toFixed(6);
                         const lon = position.coords.longitude.toFixed(6);
                         document.getElementById('locatie-gps').value = `${lat}, ${lon}`;
-                        alert('GPS-coördinaten succesvol opgehaald!');
                     },
                     (error) => {
-                        alert('Kon geen GPS ophalen. Controleer of locatievoorzieningen aanstaan.');
+                        alert('Kon GPS-locatie niet ophalen: ' + error.message);
                     }
                 );
             } else {
-                alert('Geolocatie wordt niet ondersteund door jouw browser.');
+                alert('Geolokalisatie wordt niet ondersteund door deze browser.');
             }
-        }
+        };
 
-        function verwerkFoto(event, fotoNummer) {
+        window.verwerkFoto = function(event, fotoNummer) {
             const file = event.target.files[0];
             if (!file) return;
+
             const reader = new FileReader();
             reader.onload = function(e) {
-                const base64Data = e.target.result;
-                if (fotoNummer === 1) {
-                    tijdelijkeFoto1 = base64Data;
-                    document.getElementById('img-preview1').src = base64Data;
-                    document.getElementById('wrapper-preview1').style.display = 'flex';
-                } else if (fotoNummer === 2) {
-                    tijdelijkeFoto2 = base64Data;
-                    document.getElementById('img-preview2').src = base64Data;
-                    document.getElementById('wrapper-preview2').style.display = 'flex';
-                } else if (fotoNummer === 3) {
-                    tijdelijkeFoto3 = base64Data;
-                    document.getElementById('img-preview3').src = base64Data;
-                    document.getElementById('wrapper-preview3').style.display = 'flex';
-                }
+                fotoBase64[fotoNummer] = e.target.result;
+                const imgPre = document.getElementById(`img-preview${fotoNummer}`);
+                const wrapperPre = document.getElementById(`wrapper-preview${fotoNummer}`);
+                imgPre.src = e.target.result;
+                wrapperPre.style.display = 'flex';
             };
             reader.readAsDataURL(file);
-        }
+        };
 
-        function wisSpecifiekeFoto(fotoNummer) {
-            if (fotoNummer === 1) {
-                tijdelijkeFoto1 = '';
-                document.getElementById('foto1').value = '';
-                document.getElementById('wrapper-preview1').style.display = 'none';
-            } else if (fotoNummer === 2) {
-                tijdelijkeFoto2 = '';
-                document.getElementById('foto2').value = '';
-                document.getElementById('wrapper-preview2').style.display = 'none';
-            } else if (fotoNummer === 3) {
-                tijdelijkeFoto3 = '';
-                document.getElementById('foto3').value = '';
-                document.getElementById('wrapper-preview3').style.display = 'none';
-            }
-        }
-
-        function opslaanVondst() {
-            const id = document.getElementById('bewerk-id').value;
-            const categorie = document.getElementById('categorie').value;
-            const materiaal = document.getElementById('materiaal').value;
-            const vondstType = document.getElementById('vondstType').value;
-            const staat = document.getElementById('staat').value;
-            const diameter = document.getElementById('diameter').value;
-            const gewicht = document.getElementById('gewicht').value;
-            const titel = document.getElementById('titel').value.trim() || 'Naamloze vondst';
-            const datering = document.getElementById('datering').value;
-            const locatieNaam = document.getElementById('locatie-naam').value;
-            const locatieGps = document.getElementById('locatie-gps').value;
-            const weblink = document.getElementById('weblink').value;
-            const info = document.getElementById('info').value;
-
-            const nieuweVondst = {
-                id: id ? parseInt(id) : Date.now(),
-                categorie,
-                materiaal,
-                vondstType,
-                staat,
-                diameter,
-                gewicht,
-                titel,
-                datering,
-                locatieNaam,
-                locatieGps,
-                weblink,
-                info,
-                foto1: tijdelijkeFoto1,
-                foto2: tijdelijkeFoto2,
-                foto3: tijdelijkeFoto3,
-                datumInvoer: id ? vondstenLijst.find(v => v.id == id).datumInvoer : new Date().toLocaleDateString('nl-NL')
-            };
-
-            if (id) {
-                const index = vondstenLijst.findIndex(v => v.id == id);
-                if (index !== -1) {
-                    if (!tijdelijkeFoto1) nieuweVondst.foto1 = vondstenLijst[index].foto1;
-                    if (!tijdelijkeFoto2) nieuweVondst.foto2 = vondstenLijst[index].foto2;
-                    if (!tijdelijkeFoto3) nieuweVondst.foto3 = vondstenLijst[index].foto3;
-                    vondstenLijst[index] = nieuweVondst;
-                }
-            } else {
-                vondstenLijst.unshift(nieuweVondst);
-            }
-
-            localStorage.setItem('metaaldetectie_vondsten', JSON.stringify(vondstenLijst));
-            toggleInvoerFormulier();
-            renderVondsten();
-            updateDashboardStatistieken();
-        }
-
-        function filterCategorie(cat) {
-            actieveCategorieFilter = cat;
-            renderVondsten();
-        }
-
-        function voerFilterUit() {
-            renderVondsten();
-        }
-
-        function renderVondsten() {
-            const container = document.getElementById('vondsten-lijst-container');
-            const zoekTerm = document.getElementById('vrije-zoekbalk').value.toLowerCase();
-            const filterMat = document.getElementById('filter-materiaal').value;
-            const filterPer = document.getElementById('filter-periode').value;
-
-            let gefilterd = vondstenLijst.filter(v => {
-                const matchCat = (actieveCategorieFilter === 'Alles' || v.categorie === actieveCategorieFilter);
-                const matchMat = (!filterMat || v.materiaal === filterMat);
-                const matchPer = (!filterPer || (v.datering && v.datering.toLowerCase().includes(filterPer.toLowerCase())));
-                const matchZoek = (!zoekTerm || 
-                    v.titel.toLowerCase().includes(zoekTerm) ||
-                    (v.locatieNaam && v.locatieNaam.toLowerCase().includes(zoekTerm)) ||
-                    (v.info && v.info.toLowerCase().includes(zoekTerm)) ||
-                    (v.datering && v.datering.toLowerCase().includes(zoekTerm))
-                );
-                return matchCat && matchMat && matchPer && matchZoek;
-            });
-
-            if (gefilterd.length === 0) {
-                container.innerHTML = `<div style="text-align: center; padding: 40px; color: #94a3b8; font-style: italic;">Geen vondsten gevonden binnen deze selectie.</div>`;
-                return;
-            }
-
-            let html = '';
-            gefilterd.forEach(v => {
-                let fotosHtml = '';
-                [v.foto1, v.foto2, v.foto3].forEach((f, idx) => {
-                    if (f) {
-                        fotosHtml += `
-                            <div class="img-wrapper" onclick="openLightbox('${f}')">
-                                <img src="${f}" class="card-img" alt="Foto ${idx+1}">
-                                <div class="zoom-icon">🔍</div>
-                            </div>
-                        `;
-                    }
-                });
-
-                html += `
-                    <div class="vondst-card cat-${v.categorie}">
-                        <div class="vondst-header">
-                            <span class="vondst-titel-text">${v.titel}</span>
-                            <span class="vondst-cat-badge">${v.categorie}</span>
-                        </div>
-                        <div class="vondst-grid-meta">
-                            <div class="vondst-meta"><b>Materiaal:</b> ${v.materiaal || '-'}</div>
-                            <div class="vondst-meta"><b>Periode:</b> ${v.datering || '-'}</div>
-                            <div class="vondst-meta"><b>Staat:</b> ${v.staat || '-'}</div>
-                            <div class="vondst-meta"><b>Diameter:</b> ${v.diameter ? v.diameter + ' mm' : '-'}</div>
-                            <div class="vondst-meta"><b>Gewicht:</b> ${v.gewicht ? v.gewicht + ' g' : '-'}</div>
-                            <div class="vondst-meta"><b>Locatie:</b> ${v.locatieNaam || '-'}</div>
-                            <div class="vondst-meta"><b>Vondstdatum:</b> ${v.datumInvoer || '-'}</div>
-                        </div>
-                        ${v.locatieGps ? `<div style="font-size: 13px; color: #3498db; margin-top: 8px;">🌍 GPS / Kaart: <a href="https://maps.google.com/?q=${encodeURIComponent(v.locatieGps)}" target="_blank" style="color: #3498db;">${v.locatieGps}</a></div>` : ''}
-                        ${v.weblink ? `<div style="font-size: 13px; margin-top: 4px;">🌐 Referentie: <a href="${v.weblink}" target="_blank" style="color: var(--accent-gold);">${v.weblink}</a></div>` : ''}
-                        
-                        ${v.info ? `
-                            <div class="info-dropdown-container">
-                                <button class="btn-toggle-info" onclick="toggleInfoBox(this)">📜 Toon Historische Info</button>
-                                <div class="info-content-box">${v.info}</div>
-                            </div>
-                        ` : ''}
-
-                        ${fotosHtml ? `<div class="foto-container">${fotosHtml}</div>` : ''}
-
-                        <div class="action-buttons">
-                            <button class="btn-small btn-edit" onclick="bewerkVondst(${v.id})">✏️ Bewerken</button>
-                            <button class="btn-small btn-delete" onclick="verwijderVondst(${v.id})">🗑️ Verwijderen</button>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function updateDashboardStatistieken() {
-            document.getElementById('stat-total').innerText = vondstenLijst.length;
-            document.getElementById('stat-munten').innerText = vondstenLijst.filter(v => v.categorie === 'Munten').length;
-            document.getElementById('stat-gespen').innerText = vondstenLijst.filter(v => v.categorie === 'Gespen').length;
-            document.getElementById('stat-knopen').innerText = vondstenLijst.filter(v => v.categorie === 'Knopen').length;
-            document.getElementById('stat-loodjes').innerText = vondstenLijst.filter(v => v.categorie === 'Loodjes').length;
-            document.getElementById('stat-hangertjes').innerText = vondstenLijst.filter(v => v.categorie === 'Hangertjes').length;
-            document.getElementById('stat-militaria').innerText = vondstenLijst.filter(v => v.categorie === 'Militaria').length;
-            document.getElementById('stat-voorwerpen').innerText = vondstenLijst.filter(v => v.categorie === 'Gebruiksvoorwerpen').length;
-            document.getElementById('stat-overig').innerText = vondstenLijst.filter(v => v.categorie === 'Overig').length;
-        }
-
-        function toggleInfoBox(btn) {
-            const box = btn.nextElementSibling;
-            if (box.style.display === 'block') {
-                box.style.display = 'none';
-                btn.innerText = '📜 Toon Historische Info';
-            } else {
-                box.style.display = 'block';
-                btn.innerText = '📜 Verberg Historische Info';
-            }
-        }
-
-        function bewerkVondst(id) {
-            const v = vondstenLijst.find(item => item.id === id);
-            if (!v) return;
-
-            document.getElementById('bewerk-id').value = v.id;
-            document.getElementById('categorie').value = v.categorie;
-            document.getElementById('materiaal').value = v.materiaal;
-            document.getElementById('vondstType').value = v.vondstType || 'Signaal (Metaaldetector)';
-            document.getElementById('staat').value = v.staat;
-            document.getElementById('diameter').value = v.diameter || '';
-            document.getElementById('gewicht').value = v.gewicht || '';
-            document.getElementById('titel').value = v.titel;
-            document.getElementById('datering').value = v.datering || '';
-            document.getElementById('locatie-naam').value = v.locatieNaam || '';
-            document.getElementById('locatie-gps').value = v.locatieGps || '';
-            document.getElementById('weblink').value = v.weblink || '';
-            document.getElementById('info').value = v.info || '';
-
-            tijdelijkeFoto1 = v.foto1 || '';
-            tijdelijkeFoto2 = v.foto2 || '';
-            tijdelijkeFoto3 = v.foto3 || '';
-
-            if (tijdelijkeFoto1) {
-                document.getElementById('img-preview1').src = tijdelijkeFoto1;
-                document.getElementById('wrapper-preview1').style.display = 'flex';
-            } else {
-                document.getElementById('wrapper-preview1').style.display = 'none';
-            }
-            if (tijdelijkeFoto2) {
-                document.getElementById('img-preview2').src = tijdelijkeFoto2;
-                document.getElementById('wrapper-preview2').style.display = 'flex';
-            } else {
-                document.getElementById('wrapper-preview2').style.display = 'none';
-            }
-            if (tijdelijkeFoto3) {
-                document.getElementById('img-preview3').src = tijdelijkeFoto3;
-                document.getElementById('wrapper-preview3').style.display = 'flex';
-            } else {
-                document.getElementById('wrapper-preview3').style.display = 'none';
-            }
-
-            document.getElementById('form-titel').innerText = 'Vondst Bewerken';
-            const pagina = document.getElementById('page-invoer');
-            pagina.classList.add('active');
-            document.getElementById('top-toggle-btn').innerText = '📂 Sluiten';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function verwijderVondst(id) {
-            if (confirm('Weet je zeker dat je deze vondst wilt verwijderen?')) {
-                vondstenLijst = vondstenLijst.filter(v => v.id !== id);
-                localStorage.setItem('metaaldetectie_vondsten', JSON.stringify(vondstenLijst));
-                renderVondsten();
-                updateDashboardStatistieken();
-            }
-        }
+        window.wisSpecifiekeFoto = function(fotoNummer) {
+            fotoBase64[fotoNummer] = '';
+            document.getElementById(`foto${fotoNummer}`).value = '';
+            document.getElementById(`wrapper-preview${fotoNummer}`).style.display = 'none';
+        };
 
         function resetFormulier() {
             document.getElementById('bewerk-id').value = '';
             document.getElementById('form-titel').innerText = 'Nieuwe Vondst';
-            document.getElementById('categorie').selectedIndex = 0;
-            document.getElementById('materiaal').selectedIndex = 0;
-            document.getElementById('vondstType').selectedIndex = 0;
-            document.getElementById('staat').selectedIndex = 0;
+            document.getElementById('categorie').value = 'Munten';
+            document.getElementById('materiaal').value = 'Onbekend';
+            document.getElementById('vondstType').value = 'Signaal (Metaaldetector)';
+            document.getElementById('staat').value = 'Bodemvondst (Topeffect)';
             document.getElementById('diameter').value = '';
             document.getElementById('gewicht').value = '';
             document.getElementById('titel').value = '';
@@ -1142,34 +905,230 @@
             document.getElementById('locatie-gps').value = '';
             document.getElementById('weblink').value = '';
             document.getElementById('info').value = '';
-            document.getElementById('foto1').value = '';
-            document.getElementById('foto2').value = '';
-            document.getElementById('foto3').value = '';
-            tijdelijkeFoto1 = '';
-            tijdelijkeFoto2 = '';
-            tijdelijkeFoto3 = '';
-            document.getElementById('wrapper-preview1').style.display = 'none';
-            document.getElementById('wrapper-preview2').style.display = 'none';
-            document.getElementById('wrapper-preview3').style.display = 'none';
+            
+            fotoBase64 = { 1: '', 2: '', 3: '' };
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`foto${i}`).value = '';
+                document.getElementById(`wrapper-preview${i}`).style.display = 'none';
+            }
         }
 
-        function openLightbox(src) {
+        window.opslaanVondst = async function() {
+            const bewerkId = document.getElementById('bewerk-id').value;
+            const data = {
+                categorie: document.getElementById('categorie').value,
+                materiaal: document.getElementById('materiaal').value,
+                vondstType: document.getElementById('vondstType').value,
+                staat: document.getElementById('staat').value,
+                diameter: document.getElementById('diameter').value,
+                gewicht: document.getElementById('gewicht').value,
+                titel: document.getElementById('titel').value || 'Naamloze vondst',
+                datering: document.getElementById('datering').value,
+                locatieNaam: document.getElementById('locatie-naam').value,
+                locatieGps: document.getElementById('locatie-gps').value,
+                weblink: document.getElementById('weblink').value,
+                info: document.getElementById('info').value,
+                foto1: fotoBase64[1],
+                foto2: fotoBase64[2],
+                foto3: fotoBase64[3],
+                datumToegevoegd: new Date().toISOString()
+            };
+
+            try {
+                if (bewerkId) {
+                    await updateDoc(doc(db, "vondsten", bewerkId), data);
+                } else {
+                    await addDoc(collection(db, "vondsten"), data);
+                }
+                toggleInvoerFormulier();
+                laadVondsten();
+            } catch (e) {
+                console.error("Fout bij opslaan: ", e);
+                alert("Er is een fout opgetreden bij het opslaan.");
+            }
+        };
+
+        async function laadVondsten() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "vondsten"));
+                alleVondsten = [];
+                querySnapshot.forEach((docSnap) => {
+                    alleVondsten.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                updateStatistieken();
+                renderVondsten();
+            } catch (e) {
+                console.error("Fout bij laden: ", e);
+            }
+        }
+
+        function updateStatistieken() {
+            document.getElementById('stat-total').innerText = alleVondsten.length;
+            document.getElementById('stat-munten').innerText = alleVondsten.filter(v => v.categorie === 'Munten').length;
+            document.getElementById('stat-gespen').innerText = alleVondsten.filter(v => v.categorie === 'Gespen').length;
+            document.getElementById('stat-knopen').innerText = alleVondsten.filter(v => v.categorie === 'Knopen').length;
+            document.getElementById('stat-militaria').innerText = alleVondsten.filter(v => v.categorie === 'Militaria').length;
+            document.getElementById('stat-voorwerpen').innerText = alleVondsten.filter(v => v.categorie === 'Gebruiksvoorwerpen').length;
+            document.getElementById('stat-overig').innerText = alleVondsten.filter(v => v.categorie === 'Overig').length;
+        }
+
+        window.filterCategorie = function(cat, element) {
+            huidigeCategorieFilter = cat;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            if (element) {
+                element.classList.add('active');
+            } else {
+                const tabEl = document.querySelector(`.tab[data-cat="${cat}"]`);
+                if (tabEl) tabEl.classList.add('active');
+            }
+            renderVondsten();
+        };
+
+        function renderVondsten() {
+            const lijstEl = document.getElementById('vondsten-lijst');
+            lijstEl.innerHTML = '';
+
+            const gefilterd = huidigeCategorieFilter === 'Alles' 
+                ? alleVondsten 
+                : alleVondsten.filter(v => v.categorie === huidigeCategorieFilter);
+
+            if (gefilterd.length === 0) {
+                lijstEl.innerHTML = `<div style="text-align:center; padding: 40px; color: #94a3b8;">Geen vondsten gevonden in deze categorie.</div>`;
+                return;
+            }
+
+            gefilterd.forEach(v => {
+                const card = document.createElement('div');
+                card.className = `vondst-card cat-${v.categorie}`;
+                
+                let fotosHtml = '';
+                [v.foto1, v.foto2, v.foto3].forEach((f, idx) => {
+                    if (f) {
+                        fotosHtml += `
+                            <div class="img-wrapper" onclick="openLightbox('${f}')">
+                                <img src="${f}" class="card-img" alt="Foto ${idx+1}">
+                                <div class="zoom-icon">vergroot</div>
+                            </div>
+                        `;
+                    }
+                });
+
+                card.innerHTML = `
+                    <div class="vondst-header">
+                        <span class="vondst-titel-text">${escapeHtml(v.titel)}</span>
+                        <span class="vondst-cat-badge">${v.categorie}</span>
+                    </div>
+                    <div class="vondst-grid-meta">
+                        <div class="vondst-meta"><b>Materiaal:</b> ${escapeHtml(v.materiaal || '-')}</div>
+                        <div class="vondst-meta"><b>Periode:</b> ${escapeHtml(v.datering || '-')}</div>
+                        <div class="vondst-meta"><b>Staat:</b> ${escapeHtml(v.staat || '-')}</div>
+                        <div class="vondst-meta"><b>Diameter:</b> ${v.diameter ? v.diameter + ' mm' : '-'}</div>
+                        <div class="vondst-meta"><b>Gewicht:</b> ${v.gewicht ? v.gewicht + ' g' : '-'}</div>
+                        <div class="vondst-meta"><b>Locatie:</b> ${escapeHtml(v.locatieNaam || '-')}</div>
+                    </div>
+                    ${v.info ? `
+                        <div class="info-dropdown-container">
+                            <button class="btn-toggle-info" onclick="toggleInfo(this)">📜 Historische Info</button>
+                            <div class="info-content-box">${escapeHtml(v.info)}</div>
+                        </div>
+                    ` : ''}
+                    ${fotosHtml ? `<div class="foto-container">${fotosHtml}</div>` : ''}
+                    <div class="action-buttons">
+                        <button class="btn-small btn-edit" onclick="bewerkVondst('${v.id}')">✏️ Bewerken</button>
+                        <button class="btn-small btn-delete" onclick="verwijderVondst('${v.id}')">🗑️ Verwijderen</button>
+                    </div>
+                `;
+                lijstEl.appendChild(card);
+            });
+        }
+
+        window.toggleInfo = function(btn) {
+            const box = btn.nextElementSibling;
+            if (box.style.display === 'block') {
+                box.style.display = 'none';
+                btn.innerText = '📜 Historische Info';
+            } else {
+                box.style.display = 'block';
+                btn.innerText = '📜 Sluiten';
+            }
+        };
+
+        window.bewerkVondst = function(id) {
+            const v = alleVondsten.find(item => item.id === id);
+            if (!v) return;
+
+            document.getElementById('bewerk-id').value = v.id;
+            document.getElementById('form-titel').innerText = 'Vondst Bewerken';
+            document.getElementById('categorie').value = v.categorie;
+            document.getElementById('materiaal').value = v.materiaal;
+            document.getElementById('vondstType').value = v.vondstType;
+            document.getElementById('staat').value = v.staat;
+            document.getElementById('diameter').value = v.diameter || '';
+            document.getElementById('gewicht').value = v.gewicht || '';
+            document.getElementById('titel').value = v.titel || '';
+            document.getElementById('datering').value = v.datering || '';
+            document.getElementById('locatie-naam').value = v.locatieNaam || '';
+            document.getElementById('locatie-gps').value = v.locatieGps || '';
+            document.getElementById('weblink').value = v.weblink || '';
+            document.getElementById('info').value = v.info || '';
+
+            fotoBase64 = { 1: v.foto1 || '', 2: v.foto2 || '', 3: v.foto3 || '' };
+            for (let i = 1; i <= 3; i++) {
+                if (fotoBase64[i]) {
+                    document.getElementById(`img-preview${i}`).src = fotoBase64[i];
+                    document.getElementById(`wrapper-preview${i}`).style.display = 'flex';
+                } else {
+                    document.getElementById(`wrapper-preview${i}`).style.display = 'none';
+                }
+            }
+
+            document.getElementById('page-invoer').classList.add('active');
+            document.getElementById('top-toggle-btn').innerHTML = '✖️ Sluiten';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.verwijderVondst = async function(id) {
+            if (confirm('Weet je zeker dat je deze vondst wilt verwijderen?')) {
+                try {
+                    await deleteDoc(doc(db, "vondsten", id));
+                    laadVondsten();
+                } catch (e) {
+                    console.error("Fout bij verwijderen: ", e);
+                    alert("Verwijderen mislukt.");
+                }
+            }
+        };
+
+        window.openLightbox = function(src) {
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').style.display = 'flex';
-        }
+        };
 
-        function sluitLightbox() {
+        window.sluitLightbox = function() {
             document.getElementById('lightbox').style.display = 'none';
-        }
+        };
 
-        window.onscroll = function() {
+        window.scrollTo = window.scrollTo || function() {};
+        window.scrollToTop = function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.addEventListener('scroll', () => {
             const btn = document.getElementById('scroll-top-btn');
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            if (window.scrollY > 300) {
                 btn.classList.add('show');
             } else {
                 btn.classList.remove('show');
             }
-        };
+        });
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // Initieel laden
+        laadVondsten();
     </script>
 </body>
 </html>
