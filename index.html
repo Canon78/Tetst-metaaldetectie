@@ -998,7 +998,13 @@
             }
         }
 
-       function laadVondsten
+       async function laadVondsten() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "vondsten"));
+        const vondsten = [];
+        querySnapshot.forEach((doc) => {
+            vondsten.push({ id: doc.id, ...doc.data() });
+        });
 
         updateStatistieken(vondsten);
         
@@ -1008,36 +1014,51 @@
         const gefilterd = huidigeFilter === 'Alles' 
             ? vondsten 
             : vondsten.filter(v => v.categorie && v.categorie.toLowerCase() === huidigeFilter.toLowerCase());
-            updateStatistieken(vondsten);
+
+        if (gefilterd.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 40px; font-style: italic;">Geen vondsten gevonden in deze categorie.</div>`;
+            return;
+        }
+
+        gefilterd.forEach(v => {
+            const card = document.createElement('div');
+            card.className = `vondst-card cat-${v.categorie || 'overig'}`;
             
-            const container = document.getElementById('vondsten-lijst');
-            container.innerHTML = '';
-
-            const gefilterd = huidigeFilter === 'Alles' 
-                ? vondsten 
-                : vondsten.filter(v => v.categorie.toLowerCase() === huidigeFilter.toLowerCase());
-
-            if (gefilterd.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 40px; font-style: italic;">Geen vondsten gevonden in deze categorie.</div>`;
-                return;
-            }
-
-            gefilterd.forEach(v => {
-                const card = document.createElement('div');
-                // Voeg klasse toe als het een standaard categorie is, anders standaard styling
-                card.className = `vondst-card cat-${v.categorie}`;
-                
-                let fotosHtml = '';
-                for (let i = 1; i <= 3; i++) {
-                    if (v.fotos && v.fotos[i]) {
-                        fotosHtml += `
-                            <div class="img-wrapper" onclick="openLightbox('${v.fotos[i]}')">
-                                <img src="${v.fotos[i]}" class="card-img" alt="Foto ${i}">
-                                <div class="zoom-icon">🔍 Zoom</div>
-                            </div>
-                        `;
-                    }
+            let fotosHtml = '';
+            for (let i = 1; i <= 3; i++) {
+                if (v.fotos && v.fotos[i]) {
+                    fotosHtml += `
+                        <div class="img-wrapper" onclick="openLightbox('${v.fotos[i]}')">
+                            <img src="${v.fotos[i]}" class="card-img" alt="Foto ${i}">
+                            <div class="zoom-icon">🔍 Zoom</div>
+                        </div>`;
                 }
+            }
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="card-titel">${v.titel || 'Naamloze vondst'}</span>
+                    <span class="card-cat">${v.categorie || 'Overig'}</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-info">
+                        <p><strong>Datering:</strong> ${v.datering || 'Onbekend'}</p>
+                        <p><strong>Materiaal:</strong> ${v.materiaal || 'Onbekend'}</p>
+                        <p><strong>Locatie:</strong> ${v.locatieNaam || 'Onbekend'}</p>
+                    </div>
+                    <div class="card-fotos">${fotosHtml}</div>
+                </div>
+                <div class="card-footer">
+                    <button onclick="bewerkVondst('${v.id}')" class="btn-sm">Bewerken</button>
+                    <button onclick="verwijderVondst('${v.id}')" class="btn-sm btn-red">Verwijderen</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Fout bij het laden van vondsten uit Firebase: ", error);
+    }
+}
 
                 let infoDropdownHtml = '';
                 if (v.info && v.info.trim() !== '') {
