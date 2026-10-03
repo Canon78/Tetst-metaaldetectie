@@ -998,13 +998,7 @@
             }
         }
 
-       async function laadVondsten() {
-    try {
-        const querySnapshot = await getDocs(collection(db, "vondsten"));
-        const vondsten = [];
-        querySnapshot.forEach((doc) => {
-            vondsten.push({ id: doc.id, ...doc.data() });
-        });
+       function laadVondsten
 
         updateStatistieken(vondsten);
         
