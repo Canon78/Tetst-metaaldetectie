@@ -25,7 +25,10 @@
             --col-knopen: #00f5d4;
             --col-militaria: #ff4d4d;
             --col-voorwerpen: #00e676;
-            --col-overig: #d946ef;
+            --col-loodjes: #f97316;
+            --col-hangertjes: #ec4899;
+            --col-varia: #8b5cf6;
+            --col-keramiek: #14b8a6;
         }
         html {
             scroll-behavior: smooth;
@@ -117,7 +120,11 @@
         .stat-item.knoop { border-color: var(--col-knopen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 245, 212, 0.18) 100%); }
         .stat-item.mili { border-color: var(--col-militaria); background: linear-gradient(135deg, #1a202c 0%, rgba(255, 77, 77, 0.18) 100%); }
         .stat-item.voorw { border-color: var(--col-voorwerpen); background: linear-gradient(135deg, #1a202c 0%, rgba(0, 230, 118, 0.18) 100%); }
-        .stat-item.over { border-color: var(--col-overig); background: linear-gradient(135deg, #1a202c 0%, rgba(217, 70, 239, 0.18) 100%); }
+        .stat-item.lood { border-color: var(--col-loodjes); background: linear-gradient(135deg, #1a202c 0%, rgba(249, 115, 22, 0.18) 100%); }
+        .stat-item.hang { border-color: var(--col-hangertjes); background: linear-gradient(135deg, #1a202c 0%, rgba(236, 72, 153, 0.18) 100%); }
+        .stat-item.varia { border-color: var(--col-varia); background: linear-gradient(135deg, #1a202c 0%, rgba(139, 92, 246, 0.18) 100%); }
+        .stat-item.kera { border-color: var(--col-keramiek); background: linear-gradient(135deg, #1a202c 0%, rgba(20, 184, 166, 0.18) 100%); }
+
         .stat-val {
             font-size: 22px;
             font-weight: bold;
@@ -247,7 +254,7 @@
         }
         .tabs {
             display: flex;
-            overflow-x: auto;
+            flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 15px;
             padding-bottom: 5px;
@@ -271,7 +278,11 @@
         .tab.active[data-cat="Knopen"] { background-color: var(--col-knopen); border-color: var(--col-knopen); color: #000; font-weight: bold; }
         .tab.active[data-cat="Militaria"] { background-color: var(--col-militaria); border-color: var(--col-militaria); color: #000; font-weight: bold; }
         .tab.active[data-cat="Gebruiksvoorwerpen"] { background-color: var(--col-voorwerpen); border-color: var(--col-voorwerpen); color: #000; font-weight: bold; }
-        .tab.active[data-cat="Overig"] { background-color: var(--col-overig); border-color: var(--col-overig); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Loodjes"] { background-color: var(--col-loodjes); border-color: var(--col-loodjes); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Hangertjes"] { background-color: var(--col-hangertjes); border-color: var(--col-hangertjes); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Varia"] { background-color: var(--col-varia); border-color: var(--col-varia); color: #000; font-weight: bold; }
+        .tab.active[data-cat="Keramiek"] { background-color: var(--col-keramiek); border-color: var(--col-keramiek); color: #000; font-weight: bold; }
+
         .vondst-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -285,7 +296,11 @@
         .vondst-card.cat-Knopen { border-left-color: var(--col-knopen); }
         .vondst-card.cat-Militaria { border-left-color: var(--col-militaria); }
         .vondst-card.cat-Gebruiksvoorwerpen { border-left-color: var(--col-voorwerpen); }
-        .vondst-card.cat-Overig { border-left-color: var(--col-overig); }
+        .vondst-card.cat-Loodjes { border-left-color: var(--col-loodjes); }
+        .vondst-card.cat-Hangertjes { border-left-color: var(--col-hangertjes); }
+        .vondst-card.cat-Varia { border-left-color: var(--col-varia); }
+        .vondst-card.cat-Keramiek { border-left-color: var(--col-keramiek); }
+
         .vondst-header {
             display: flex;
             justify-content: space-between;
@@ -325,7 +340,11 @@
         .cat-Knopen .vondst-grid-meta { background-color: rgba(0, 245, 212, 0.12); border-left-color: var(--col-knopen); }
         .cat-Militaria .vondst-grid-meta { background-color: rgba(255, 77, 77, 0.12); border-left-color: var(--col-militaria); }
         .cat-Gebruiksvoorwerpen .vondst-grid-meta { background-color: rgba(0, 230, 118, 0.12); border-left-color: var(--col-voorwerpen); }
-        .cat-Overig .vondst-grid-meta { background-color: rgba(217, 70, 239, 0.12); border-left-color: var(--col-overig); }
+        .cat-Loodjes .vondst-grid-meta { background-color: rgba(249, 115, 22, 0.12); border-left-color: var(--col-loodjes); }
+        .cat-Hangertjes .vondst-grid-meta { background-color: rgba(236, 72, 153, 0.12); border-left-color: var(--col-hangertjes); }
+        .cat-Varia .vondst-grid-meta { background-color: rgba(139, 92, 246, 0.12); border-left-color: var(--col-varia); }
+        .cat-Keramiek .vondst-grid-meta { background-color: rgba(20, 184, 166, 0.12); border-left-color: var(--col-keramiek); }
+
         .vondst-meta {
             font-size: 14px;
             color: #f1f5f9;
@@ -577,6 +596,8 @@
         </div>
         <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuwe Vondst</button>
     </div>
+
+    <!-- Dashboard Statistieken -->
     <div class="stats-dashboard" id="dashboard-balk">
         <div class="stat-item total" onclick="filterCategorie('Alles')">
             <div class="stat-val" id="stat-total">0</div>
@@ -600,11 +621,23 @@
         </div>
         <div class="stat-item voorw" onclick="filterCategorie('Gebruiksvoorwerpen')">
             <div class="stat-val" id="stat-voorwerpen">0</div>
-            <div class="stat-lbl">🗝️ Voorwerpen</div>
+            <div class="stat-lbl">🗝️ Voorw.</div>
         </div>
-        <div class="stat-item over" onclick="filterCategorie('Overig')">
-            <div class="stat-val" id="stat-overig">0</div>
-            <div class="stat-lbl">🏺 Overig</div>
+        <div class="stat-item lood" onclick="filterCategorie('Loodjes')">
+            <div class="stat-val" id="stat-loodjes">0</div>
+            <div class="stat-lbl">⚖️ Loodjes</div>
+        </div>
+        <div class="stat-item hang" onclick="filterCategorie('Hangertjes')">
+            <div class="stat-val" id="stat-hangertjes">0</div>
+            <div class="stat-lbl">📿 Hangertjes</div>
+        </div>
+        <div class="stat-item varia" onclick="filterCategorie('Varia')">
+            <div class="stat-val" id="stat-varia">0</div>
+            <div class="stat-lbl">📦 Varia</div>
+        </div>
+        <div class="stat-item kera" onclick="filterCategorie('Keramiek')">
+            <div class="stat-val" id="stat-keramiek">0</div>
+            <div class="stat-lbl">🏺 Keramiek</div>
         </div>
     </div>
 
@@ -623,7 +656,10 @@
                         <option value="Knopen">🧷 Knopen</option>
                         <option value="Militaria">🛡️ Militaria</option>
                         <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
-                        <option value="Overig">🏺 Overig / Keramiek</option>
+                        <option value="Loodjes">⚖️ Loodjes</option>
+                        <option value="Hangertjes">📿 Hangertjes</option>
+                        <option value="Varia">📦 Varia</option>
+                        <option value="Keramiek">🏺 Keramiek</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -748,9 +784,12 @@
         <div class="tab" data-cat="Munten" onclick="filterCategorie('Munten', this)">🪙 Munten</div>
         <div class="tab" data-cat="Gespen" onclick="filterCategorie('Gespen', this)">🔍 Gespen</div>
         <div class="tab" data-cat="Knopen" onclick="filterCategorie('Knopen', this)">🧷 Knopen</div>
-        <div class="tab" data-cat="Militaria" onclick="filterCategorie('Militaria', this)">🛡️️ Militaria</div>
+        <div class="tab" data-cat="Militaria" onclick="filterCategorie('Militaria', this)">🛡️ Militaria</div>
         <div class="tab" data-cat="Gebruiksvoorwerpen" onclick="filterCategorie('Gebruiksvoorwerpen', this)">🗝️ Gebruiksvoorwerpen</div>
-        <div class="tab" data-cat="Overig" onclick="filterCategorie('Overig', this)">🏺 Overig</div>
+        <div class="tab" data-cat="Loodjes" onclick="filterCategorie('Loodjes', this)">⚖️ Loodjes</div>
+        <div class="tab" data-cat="Hangertjes" onclick="filterCategorie('Hangertjes', this)">📿 Hangertjes</div>
+        <div class="tab" data-cat="Varia" onclick="filterCategorie('Varia', this)">📦 Varia</div>
+        <div class="tab" data-cat="Keramiek" onclick="filterCategorie('Keramiek', this)">🏺 Keramiek</div>
     </div>
 
     <!-- Zoekbalk met Zoekknop -->
@@ -797,7 +836,6 @@
             const lijstContainer = document.getElementById('vondsten-lijst');
 
             if (page.classList.contains('active')) {
-                // Sluit formulier, toon tabs, zoekbalk en lijst weer
                 page.classList.remove('active');
                 btn.textContent = "➕ Nieuwe Vondst";
                 filterTabs.style.display = 'flex';
@@ -805,7 +843,6 @@
                 lijstContainer.style.display = 'block';
                 leegFormulier();
             } else {
-                // Open formulier, verberg tabs, zoekbalk en lijst zodat je alleen het formulier ziet
                 page.classList.add('active');
                 btn.textContent = "✖ Sluiten";
                 filterTabs.style.display = 'none';
@@ -959,7 +996,10 @@
             document.getElementById('stat-knopen').textContent = alleVondsten.filter(v => v.categorie === 'Knopen').length;
             document.getElementById('stat-militaria').textContent = alleVondsten.filter(v => v.categorie === 'Militaria').length;
             document.getElementById('stat-voorwerpen').textContent = alleVondsten.filter(v => v.categorie === 'Gebruiksvoorwerpen').length;
-            document.getElementById('stat-overig').textContent = alleVondsten.filter(v => v.categorie === 'Overig').length;
+            document.getElementById('stat-loodjes').textContent = alleVondsten.filter(v => v.categorie === 'Loodjes').length;
+            document.getElementById('stat-hangertjes').textContent = alleVondsten.filter(v => v.categorie === 'Hangertjes').length;
+            document.getElementById('stat-varia').textContent = alleVondsten.filter(v => v.categorie === 'Varia').length;
+            document.getElementById('stat-keramiek').textContent = alleVondsten.filter(v => v.categorie === 'Keramiek').length;
         }
 
         window.filterCategorie = function(cat, tabElement) {
@@ -1094,7 +1134,6 @@
                 }
             });
             
-            // Open formulier en verberg tabs/zoekbalk/lijst
             document.getElementById('page-invoer').classList.add('active');
             document.getElementById('top-toggle-btn').textContent = "✖ Sluiten";
             document.getElementById('filter-tabs').style.display = 'none';
