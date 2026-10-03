@@ -666,19 +666,22 @@
             <h2 id="form-titel">Nieuwe Vondst</h2>
             <input type="hidden" id="bewerk-id" value="">
             
-            <div class="form-row">
-               <div class="form-group">
-                   <label for="categorie">Categorie (Mapje)</label>
-                   <select id="categorie">
-                       <option value="Munten">🪙 Munten</option>
-                       <option value="Gespen">🔍 Gespen</option>
-                       <option value="Knopen">🧷 Knopen</option>
-                       <option value="Hangertjes">💎 Hangertjes</option>
-                       <option value="Loodjes">⚖️ Loodjes</option>
-                       <option value="Militaria">🛡️ Militaria</option>
-                       <option value="Gebruiksvoorwerpen">🗝️ Gebruiksvoorwerpen</option>
-                       <option value="Overig">🏺 Overig / Keramiek</option>
-                   </select>
+           <div class="form-row">
+    <div class="form-group">
+        <label for="categorie">Categorie (Mapje)</label>
+        <input type="text" id="categorie" list="categorie-lijst" placeholder="Kies uit lijst of typ zelf...">
+        <datalist id="categorie-lijst">
+            <option value="Munten">🪙 Munten</option>
+            <option value="Gespen">🔍 Gespen</option>
+            <option value="Knopen">🔗 Knopen</option>
+            <option value="Hangertjes">💎 Hangertjes</option>
+            <option value="Loodjes">⚖️ Loodjes</option>
+            <option value="Militaria">🛡️ Militaria</option>
+            <option value="Gebruiksvoorwerpen">🔑 Gebruiksvoorwerpen</option>
+            <option value="Overig">🏺 Overig / Keramiek</option>
+        </datalist>
+    </div>
+</div>
                </div>
 
                 <div class="form-group">
