@@ -998,8 +998,22 @@
             }
         }
 
-        function laadVondsten() {
-            const vondsten = JSON.parse(localStorage.getItem('museum_vondsten') || '[]');
+       async function laadVondsten() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "vondsten"));
+        const vondsten = [];
+        querySnapshot.forEach((doc) => {
+            vondsten.push({ id: doc.id, ...doc.data() });
+        });
+
+        updateStatistieken(vondsten);
+        
+        const container = document.getElementById('vondsten-lijst');
+        container.innerHTML = '';
+
+        const gefilterd = huidigeFilter === 'Alles' 
+            ? vondsten 
+            : vondsten.filter(v => v.categorie && v.categorie.toLowerCase() === huidigeFilter.toLowerCase());
             updateStatistieken(vondsten);
             
             const container = document.getElementById('vondsten-lijst');
