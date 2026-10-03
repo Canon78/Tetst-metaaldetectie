@@ -419,7 +419,7 @@
             align-items: center;
             justify-content: center;
         }
-        /* Specifieke omlijsting/label voor de referentiefoto (foto 3) */
+        /* Stijl als het een referentiefoto is */
         .img-wrapper.orig-staat-wrapper {
             border: 2px dashed var(--accent-gold) !important;
         }
@@ -490,6 +490,11 @@
             border: 1px solid #334155;
             background-color: #11151c;
         }
+        .foto-type-select {
+            margin-top: 8px;
+            font-size: 12px;
+            padding: 6px;
+        }
         .btn-delete-photo {
             background-color: rgba(255, 56, 56, 0.2);
             color: #ff6b6b;
@@ -498,7 +503,7 @@
             padding: 6px 10px;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 8px;
             font-weight: bold;
             width: 100%;
             text-align: center;
@@ -776,32 +781,44 @@
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="foto1">📸 Foto 1 (Voorkant vondst)</label>
+                    <label for="foto1">📸 Foto 1</label>
                     <input type="file" id="foto1" accept="image/*" onchange="verwerkFoto(event, 1)">
                 </div>
                 <div class="form-group">
-                    <label for="foto2">📸 Foto 2 (Achterkant vondst)</label>
+                    <label for="foto2">📸 Foto 2</label>
                     <input type="file" id="foto2" accept="image/*" onchange="verwerkFoto(event, 2)">
                 </div>
                 <div class="form-group">
-                    <label for="foto3">💡 Foto 3 (Originele Staat / Referentie)</label>
+                    <label for="foto3">📸 Foto 3</label>
                     <input type="file" id="foto3" accept="image/*" onchange="verwerkFoto(event, 3)">
                 </div>
             </div>
             <div class="preview-img-container">
                 <div id="wrapper-preview1" class="preview-wrapper">
-                    <span>Voorkant voorbeeld</span>
-                    <img id="img-preview1" class="preview-img" alt="Voorbeeld Voorkant">
+                    <span id="preview-title1">Foto 1</span>
+                    <img id="img-preview1" class="preview-img" alt="Voorbeeld 1">
+                    <select id="type-foto1" class="foto-type-select" onchange="updateFotoType(1)">
+                        <option value="eigen">📸 Eigen Vondst (Voorkant/Achterkant)</option>
+                        <option value="referentie">💡 Originele Staat / Referentie</option>
+                    </select>
                     <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(1)">🗑️ Wis foto 1</button>
                 </div>
                 <div id="wrapper-preview2" class="preview-wrapper">
-                    <span>Achterkant voorbeeld</span>
-                    <img id="img-preview2" class="preview-img" alt="Voorbeeld Achterkant">
+                    <span id="preview-title2">Foto 2</span>
+                    <img id="img-preview2" class="preview-img" alt="Voorbeeld 2">
+                    <select id="type-foto2" class="foto-type-select" onchange="updateFotoType(2)">
+                        <option value="eigen">📸 Eigen Vondst (Voorkant/Achterkant)</option>
+                        <option value="referentie">💡 Originele Staat / Referentie</option>
+                    </select>
                     <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(2)">🗑️ Wis foto 2</button>
                 </div>
-                <div id="wrapper-preview3" class="preview-wrapper orig-staat-preview">
-                    <span>💡 Originele Staat</span>
-                    <img id="img-preview3" class="preview-img" alt="Voorbeeld Origineel">
+                <div id="wrapper-preview3" class="preview-wrapper">
+                    <span id="preview-title3">Foto 3</span>
+                    <img id="img-preview3" class="preview-img" alt="Voorbeeld 3">
+                    <select id="type-foto3" class="foto-type-select" onchange="updateFotoType(3)">
+                        <option value="referentie">💡 Originele Staat / Referentie</option>
+                        <option value="eigen">📸 Eigen Vondst (Voorkant/Achterkant)</option>
+                    </select>
                     <button type="button" class="btn-delete-photo" onclick="wisSpecifiekeFoto(3)">🗑️ Wis foto 3</button>
                 </div>
             </div>
@@ -864,7 +881,11 @@
         const db = getFirestore(app);
         let alleVondsten = [];
         let huidigeFilter = 'Alles';
-        let fotoData = { 1: '', 2: '', 3: '' };
+        let fotoData = { 
+            1: { url: '', isReferentie: false }, 
+            2: { url: '', isReferentie: false }, 
+            3: { url: '', isReferentie: true } 
+        };
         
         let map = null;
         let markersLayer = null;
@@ -942,7 +963,9 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                    fotoData[fotoNummer] = compressedDataUrl;
+                    
+                    fotoData[fotoNummer].url = compressedDataUrl;
+                    
                     const previewImg = document.getElementById(`img-preview${fotoNummer}`);
                     const wrapper = document.getElementById(`wrapper-preview${fotoNummer}`);
                     previewImg.src = compressedDataUrl;
@@ -953,8 +976,22 @@
             reader.readAsDataURL(file);
         };
 
+        window.updateFotoType = function(fotoNummer) {
+            const selectEl = document.getElementById(`type-foto${fotoNummer}`);
+            const wrapper = document.getElementById(`wrapper-preview${fotoNummer}`);
+            const isRef = selectEl.value === 'referentie';
+            
+            fotoData[fotoNummer].isReferentie = isRef;
+            
+            if (isRef) {
+                wrapper.classList.add('orig-staat-preview');
+            } else {
+                wrapper.classList.remove('orig-staat-preview');
+            }
+        };
+
         window.wisSpecifiekeFoto = function(fotoNummer) {
-            fotoData[fotoNummer] = '';
+            fotoData[fotoNummer].url = '';
             document.getElementById(`foto${fotoNummer}`).value = '';
             document.getElementById(`wrapper-preview${fotoNummer}`).style.display = 'none';
         };
@@ -975,11 +1012,19 @@
             document.getElementById('weblink').value = '';
             document.getElementById('info').value = '';
             
-            fotoData = { 1: '', 2: '', 3: '' };
+            fotoData = { 
+                1: { url: '', isReferentie: false }, 
+                2: { url: '', isReferentie: false }, 
+                3: { url: '', isReferentie: true } 
+            };
+
             for (let i = 1; i <= 3; i++) {
                 document.getElementById(`foto${i}`).value = '';
                 document.getElementById(`wrapper-preview${i}`).style.display = 'none';
+                document.getElementById(`type-foto${i}`).value = (i === 3 ? 'referentie' : 'eigen');
+                document.getElementById(`wrapper-preview${i}`).classList.remove('orig-staat-preview');
             }
+            document.getElementById('wrapper-preview3').classList.add('orig-staat-preview');
         }
 
         window.opslaanVondst = async function() {
@@ -997,9 +1042,13 @@
                 locatieGps: document.getElementById('locatie-gps').value,
                 weblink: document.getElementById('weblink').value,
                 info: document.getElementById('info').value,
-                foto1: fotoData[1],
-                foto2: fotoData[2],
-                foto3: fotoData[3],
+                // Sla zowel URL als het type (eigen of referentie) op per foto
+                foto1: fotoData[1].url,
+                foto1Ref: fotoData[1].isReferentie,
+                foto2: fotoData[2].url,
+                foto2Ref: fotoData[2].isReferentie,
+                foto3: fotoData[3].url,
+                foto3Ref: fotoData[3].isReferentie,
                 datumToegevoegd: new Date().toISOString()
             };
             try {
@@ -1170,20 +1219,22 @@
                 let fotosHtml = '';
                 
                 [1, 2, 3].forEach(num => {
-                    if (v[`foto${num}`]) {
-                        if (num === 3) {
-                            // Foto 3 krijgt een afwijkend stijltje met "Originele Staat" label
+                    const fotoUrl = v[`foto${num}`];
+                    const isRef = v[`foto${num}Ref`];
+                    
+                    if (fotoUrl) {
+                        if (isRef) {
                             fotosHtml += `
-                                <div class="img-wrapper orig-staat-wrapper" onclick="openLightbox('${v.foto3}')">
-                                    <img src="${v.foto3}" class="card-img" alt="Originele Staat">
+                                <div class="img-wrapper orig-staat-wrapper" onclick="openLightbox('${fotoUrl}')">
+                                    <img src="${fotoUrl}" class="card-img" alt="Originele Staat">
                                     <div class="orig-label">💡 Originele Staat</div>
                                     <div class="zoom-icon">vergroot</div>
                                 </div>
                             `;
                         } else {
                             fotosHtml += `
-                                <div class="img-wrapper" onclick="openLightbox('${v[`foto${num}`]}')">
-                                    <img src="${v[`foto${num}`]}" class="card-img" alt="Foto ${num}">
+                                <div class="img-wrapper" onclick="openLightbox('${fotoUrl}')">
+                                    <img src="${fotoUrl}" class="card-img" alt="Foto ${num}">
                                     <div class="zoom-icon">vergroot</div>
                                 </div>
                             `;
@@ -1251,13 +1302,31 @@
             document.getElementById('locatie-gps').value = v.locatieGps || '';
             document.getElementById('weblink').value = v.weblink || '';
             document.getElementById('info').value = v.info || '';
-            fotoData = { 1: v.foto1 || '', 2: v.foto2 || '', 3: v.foto3 || '' };
+            
+            fotoData = {
+                1: { url: v.foto1 || '', isReferentie: !!v.foto1Ref },
+                2: { url: v.foto2 || '', isReferentie: !!v.foto2Ref },
+                3: { url: v.foto3 || '', isReferentie: v.foto3Ref !== undefined ? !!v.foto3Ref : true }
+            };
+
             [1, 2, 3].forEach(num => {
-                if (fotoData[num]) {
-                    document.getElementById(`img-preview${num}`).src = fotoData[num];
-                    document.getElementById(`wrapper-preview${num}`).style.display = 'flex';
+                const item = fotoData[num];
+                const selectEl = document.getElementById(`type-foto${num}`);
+                const wrapper = document.getElementById(`wrapper-preview${num}`);
+                
+                selectEl.value = item.isReferentie ? 'referentie' : 'eigen';
+                
+                if (item.isReferentie) {
+                    wrapper.classList.add('orig-staat-preview');
                 } else {
-                    document.getElementById(`wrapper-preview${num}`).style.display = 'none';
+                    wrapper.classList.remove('orig-staat-preview');
+                }
+
+                if (item.url) {
+                    document.getElementById(`img-preview${num}`).src = item.url;
+                    wrapper.style.display = 'flex';
+                } else {
+                    wrapper.style.display = 'none';
                 }
             });
             
