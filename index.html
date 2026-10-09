@@ -91,7 +91,6 @@
             background-color: rgba(241, 196, 15, 0.15);
         }
         
-        /* Media query voor grotere schermen om de titel wat groter te maken */
         @media (min-width: 600px) {
             .main-app-title {
                 font-size: 26px;
@@ -105,7 +104,6 @@
                 font-size: 14px;
             }
         }
-
         .stats-dashboard {
             display: flex;
             flex-wrap: wrap;
@@ -295,7 +293,7 @@
         .tab.active[data-cat="Varia"] { background-color: var(--col-varia); border-color: var(--col-varia); color: #000; font-weight: bold; }
         .tab.active[data-cat="Keramiek"] { background-color: var(--col-keramiek); border-color: var(--col-keramiek); color: #fff; font-weight: bold; }
         .tab.active[data-cat="Kaart"] { background-color: var(--accent-blue); border-color: var(--accent-blue); color: #fff; font-weight: bold; }
-        /* Kaart stijling */
+        
         #map-container {
             display: none;
             width: 100%;
@@ -643,7 +641,7 @@
         </div>
         <button id="top-toggle-btn" class="btn-top-invoer" onclick="toggleInvoerFormulier()">➕ Nieuwe Vondst</button>
     </div>
-    <!-- Dashboard Statistieken -->
+    
     <div class="stats-dashboard" id="dashboard-balk">
         <div class="stat-item total" onclick="filterCategorie('Alles')">
             <div class="stat-val" id="stat-total">0</div>
@@ -686,7 +684,7 @@
             <div class="stat-lbl">🏺 Keramiek</div>
         </div>
     </div>
-    <!-- Invoerformulier -->
+    
     <div id="page-invoer" class="app-page">
         <div class="form-container">
             <h2 id="form-titel">Nieuwe Vondst</h2>
@@ -872,7 +870,7 @@
             </div>
         </div>
     </div>
-    <!-- Categorie Filter Tabs & Kaart Tab -->
+    
     <div class="tabs" id="filter-tabs">
         <div class="tab active" data-cat="Alles" onclick="filterCategorie('Alles', this)">📜 Alle Vondsten</div>
         <div class="tab" data-cat="Munten" onclick="filterCategorie('Munten', this)">🪙 Munten</div>
@@ -886,22 +884,22 @@
         <div class="tab" data-cat="Keramiek" onclick="filterCategorie('Keramiek', this)">🏺 Keramiek</div>
         <div class="tab" data-cat="Kaart" onclick="filterCategorie('Kaart', this)">🗺️ Kaart (Overzicht)</div>
     </div>
-    <!-- Zoekbalk met Wisknop -->
+    
     <div class="search-container" id="zoek-sectie">
         <input type="text" id="zoek-input" class="search-input" placeholder="🔍 Zoek op titel, datering, materiaal, locatie of info...">
         <button type="button" class="clear-search-btn" onclick="wisZoekbalk()">❌ Wis</button>
     </div>
-    <!-- Interactieve Kaart Container -->
+    
     <div id="map-container"></div>
     <div id="vondsten-lijst"></div>
-    <!-- Scroll naar boven knop -->
+    
     <button id="scroll-top-btn" onclick="scrollToTop()" title="Naar boven">▲</button>
-    <!-- Lightbox voor foto vergroten -->
+    
     <div id="lightbox" class="lightbox" onclick="sluitLightbox()">
         <button class="lightbox-close">Sluiten</button>
         <img id="lightbox-img" class="lightbox-img">
     </div>
-    <!-- Firebase & Database Koppeling -->
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -910,9 +908,10 @@
             apiKey: "AIzaSyB0g9D2CFoCVOAqk3KZ0JmTQXZjooWU7WE",
             authDomain: "tetst-metaaldetectie.firebaseapp.com",
             projectId: "tetst-metaaldetectie",
-            storageBucket: "tetst-metaaldetectie.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:1234567890:web:abcdef"
+            storageBucket: "tetst-metaaldetectie.firebasestorage.app",
+            messagingSenderId: "680489884087",
+            appId: "1:680489884087:web:4f0bb208d21b739156f032",
+            measurementId: "G-JQ436BF560"
         };
         
         const app = initializeApp(firebaseConfig);
