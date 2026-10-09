@@ -5,13 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Metaaldetectievondsten - Museum Editie</title>
     
-    <!-- PWA / App Manifest koppeling voor Android & iOS -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#11151c">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="DetectieApp">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
@@ -701,6 +694,10 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <label for="inventarisnummer">🏷️ Inventarisnummer</label>
+                    <input type="text" id="inventarisnummer" placeholder="Bijv. INV-2026-001">
+                </div>
+                <div class="form-group">
                     <label for="materiaal">Metaal / Materiaal</label>
                     <select id="materiaal">
                         <option value="Onbekend">❓ Onbekend</option>
@@ -716,12 +713,25 @@
                         <option value="Keramiek">🏺 Keramiek</option>
                     </select>
                 </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group">
                     <label for="vondstType">Type Vondst</label>
                     <select id="vondstType">
                         <option value="Signaal (Metaaldetector)">🌟 Signaal (Metaaldetector)</option>
                         <option value="Oogvondst (Zonder detector)">👀 Oogvondst (Zonder detector)</option>
                     </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="conserveringswijze">🛡️ Conserveringswijze / Behandeling</label>
+                <input type="text" id="conserveringswijze" placeholder="Typ je eigen behandeling of klik op een snelle knop hieronder...">
+                <div class="quick-tags">
+                    <button type="button" class="tag-btn" onclick="setConservering('Nog te behandelen')">⏳ Nog te behandelen</button>
+                    <button type="button" class="tag-btn" onclick="setConservering('Alleen afgespoeld met water')">💧 Afgespoeld met water</button>
+                    <button type="button" class="tag-btn" onclick="setConservering('Mechanisch gereinigd')">🪡 Mechanisch gereinigd</button>
+                    <button type="button" class="tag-btn" onclick="setConservering('Gedestilleerd water bad')">🧪 Gedestilleerd water</button>
+                    <button type="button" class="tag-btn" onclick="setConservering('Conserverende laklaag / Paraloid')">✨ Paraloid / Laklaag</button>
                 </div>
             </div>
             <div class="form-row">
@@ -939,6 +949,9 @@
         window.setDatering = function(periode) {
             document.getElementById('datering').value = periode;
         };
+        window.setConservering = function(tekst) {
+            document.getElementById('conserveringswijze').value = tekst;
+        };
         window.haalGPS = function() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((pos) => {
@@ -1009,8 +1022,10 @@
             document.getElementById('bewerk-id').value = '';
             document.getElementById('form-titel').textContent = 'Nieuwe Vondst';
             document.getElementById('categorie').value = 'Munten';
+            document.getElementById('inventarisnummer').value = '';
             document.getElementById('materiaal').value = 'Onbekend';
             document.getElementById('vondstType').value = 'Signaal (Metaaldetector)';
+            document.getElementById('conserveringswijze').value = '';
             
             const vandaag = new Date().toISOString().split('T')[0];
             document.getElementById('vondstDatum').value = vandaag;
@@ -1083,8 +1098,10 @@
             }
             const data = {
                 categorie: document.getElementById('categorie').value,
+                inventarisnummer: document.getElementById('inventarisnummer').value,
                 materiaal: document.getElementById('materiaal').value,
                 vondstType: document.getElementById('vondstType').value,
+                conserveringswijze: document.getElementById('conserveringswijze').value,
                 vondstDatum: document.getElementById('vondstDatum').value,
                 staat: document.getElementById('staat').value,
                 diameter: document.getElementById('diameter').value,
@@ -1298,6 +1315,8 @@
                         (v.titel && v.titel.toLowerCase().includes(zoekTerm)) ||
                         (v.datering && v.datering.toLowerCase().includes(zoekTerm)) ||
                         (v.materiaal && v.materiaal.toLowerCase().includes(zoekTerm)) ||
+                        (v.inventarisnummer && v.inventarisnummer.toLowerCase().includes(zoekTerm)) ||
+                        (v.conserveringswijze && v.conserveringswijze.toLowerCase().includes(zoekTerm)) ||
                         (v.locatieNaam && v.locatieNaam.toLowerCase().includes(zoekTerm)) ||
                         (v.vondstDatum && v.vondstDatum.toLowerCase().includes(zoekTerm)) ||
                         (v.info && v.info.toLowerCase().includes(zoekTerm)) ||
@@ -1344,10 +1363,12 @@
                         <span class="vondst-cat-badge">${escapeHtml(v.categorie)}</span>
                     </div>
                     <div class="vondst-grid-meta">
+                        <div class="vondst-meta"><b>Inventarisnr:</b> ${escapeHtml(v.inventarisnummer || '-')}</div>
                         <div class="vondst-meta"><b>Datum:</b> ${escapeHtml(v.vondstDatum || '-')}</div>
                         <div class="vondst-meta"><b>Periode:</b> ${escapeHtml(v.datering || 'Onbekend')}</div>
                         <div class="vondst-meta"><b>Materiaal:</b> ${escapeHtml(v.materiaal)}</div>
                         <div class="vondst-meta"><b>Staat:</b> ${escapeHtml(v.staat)}</div>
+                        <div class="vondst-meta"><b>Conservering:</b> ${escapeHtml(v.conserveringswijze || '-')}</div>
                         <div class="vondst-meta"><b>Diameter:</b> ${v.diameter ? v.diameter + ' mm' : '-'}</div>
                         <div class="vondst-meta"><b>Gewicht:</b> ${v.gewicht ? v.gewicht + ' g' : '-'}</div>
                         <div class="vondst-meta"><b>Vondsttype:</b> ${escapeHtml(v.vondstType || '-')}</div>
@@ -1386,8 +1407,10 @@
             document.getElementById('bewerk-id').value = v.id;
             document.getElementById('form-titel').textContent = 'Vondst Bewerken';
             document.getElementById('categorie').value = v.categorie || 'Munten';
+            document.getElementById('inventarisnummer').value = v.inventarisnummer || '';
             document.getElementById('materiaal').value = v.materiaal || 'Onbekend';
             document.getElementById('vondstType').value = v.vondstType || 'Signaal (Metaaldetector)';
+            document.getElementById('conserveringswijze').value = v.conserveringswijze || '';
             document.getElementById('vondstDatum').value = v.vondstDatum || new Date().toISOString().split('T')[0];
             document.getElementById('staat').value = v.staat || 'Bodemvondst (Topeffect)';
             document.getElementById('diameter').value = v.diameter || '';
@@ -1450,9 +1473,6 @@
         };
         window.sluitLightbox = function() {
             document.getElementById('lightbox').style.display = 'none';
-        };
-        window.scrollToTestTop = function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         window.scrollToTop = function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
